@@ -1,6 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="HeaderController.ascx.cs" Inherits="GesPresta.UserFormController" %>
 
-<link href="StyleSheet.css" rel="stylesheet" />
+<link href="HeaderStyleSheet.css" rel="stylesheet" />
 
 <div id="Header">
     <asp:LinkButton ID="LinkButtonInicio" runat="server" CssClass="inicioBtn">Inicio</asp:LinkButton>

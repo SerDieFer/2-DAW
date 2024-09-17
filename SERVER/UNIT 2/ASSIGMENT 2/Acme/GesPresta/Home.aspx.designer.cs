@@ -15,22 +15,22 @@ namespace GesPresta
     {
 
         /// <summary>
-        /// Control form1.
+        /// Control formHome.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.HtmlControls.HtmlForm formHome;
 
         /// <summary>
-        /// Control UserFormController1.
+        /// Control HeaderController2.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::GesPresta.UserFormController UserFormController1;
+        protected global::GesPresta.UserFormController HeaderController2;
 
         /// <summary>
         /// Control LinkButtonAyudaSocialMail.

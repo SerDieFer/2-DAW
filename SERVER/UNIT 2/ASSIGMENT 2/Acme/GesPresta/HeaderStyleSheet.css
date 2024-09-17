@@ -4,21 +4,17 @@
 
 #Header {
     text-align: center;
-    position:center;
-}
-
-#InicioContainer {
-    margin-top:50px;
-}
-
-.inicioBtn, .empleadosBtn, .prestacionesBtn {
-    margin-left: 5px;
-    margin-right: 5px;
+    position: center;
 }
 
 h1 {
     padding-bottom: 0px;
     margin-bottom: 0px;
+}
+
+.inicioBtn, .empleadosBtn, .prestacionesBtn {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .subtitleLbl {

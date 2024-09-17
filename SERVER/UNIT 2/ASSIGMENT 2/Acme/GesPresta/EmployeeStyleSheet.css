@@ -1,0 +1,33 @@
+﻿#employeeDataDiv {
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr; 
+    gap: 20px; 
+}
+
+employeeDataDiv label {
+    text-align: left;
+}
+
+employeeDataDiv input,
+employeeDataDiv select,
+employeeDataDiv textarea {
+    padding: 5px;
+}
+
+.button-group {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+h2 {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
