@@ -67,35 +67,35 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="EmployeeStyleSheet.css" />
-    <Content Include="HomeStyleSheet.css" />
-    <Content Include="Home.aspx" />
-    <Content Include="Employees.aspx" />
-    <Content Include="HeaderStyleSheet.css" />
-    <Content Include="HeaderController.ascx" />
+    <Content Include="CSS\EmployeeStyleSheet.css" />
+    <Content Include="CSS\HomeStyleSheet.css" />
+    <Content Include="WebForms\Home.aspx" />
+    <Content Include="WebForms\Employees.aspx" />
+    <Content Include="CSS\HeaderStyleSheet.css" />
+    <Content Include="UserControllers\HeaderController.ascx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Home.aspx.cs">
+    <Compile Include="WebForms\Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Home.aspx.designer.cs">
+    <Compile Include="WebForms\Home.aspx.designer.cs">
       <DependentUpon>Home.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Employees.aspx.cs">
+    <Compile Include="WebForms\Employees.aspx.cs">
       <DependentUpon>Employees.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Employees.aspx.designer.cs">
+    <Compile Include="WebForms\Employees.aspx.designer.cs">
       <DependentUpon>Employees.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="HeaderController.ascx.cs">
+    <Compile Include="UserControllers\HeaderController.ascx.cs">
       <DependentUpon>HeaderController.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="HeaderController.ascx.designer.cs">
+    <Compile Include="UserControllers\HeaderController.ascx.designer.cs">
       <DependentUpon>HeaderController.ascx</DependentUpon>
     </Compile>
   </ItemGroup>
