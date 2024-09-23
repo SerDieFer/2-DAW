@@ -1,0 +1,36 @@
+﻿#lendingDataDiv {
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+    #lendingDataDiv label {
+        text-align: left;
+        align-content: center;
+    }
+
+    #lendingDataDiv input,
+    #lendingDataDiv select,
+    #lendingDataDiv textarea {
+        padding: 5px;
+    }
+
+.lendingDataButtonDiv {
+    padding-bottom: 60px;
+    padding-top: 60px;
+    height: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    gap: 20px;
+}
+
+h2 {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
