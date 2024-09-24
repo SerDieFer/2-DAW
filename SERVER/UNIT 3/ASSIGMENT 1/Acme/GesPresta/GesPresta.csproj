@@ -70,7 +70,6 @@
     <Content Include="CSS\LendingStyleSheet.css" />
     <Content Include="CSS\EmployeeStyleSheet.css" />
     <Content Include="CSS\HomeStyleSheet.css" />
-    <Content Include="WebForms\EmployeesDataValuesExample.aspx" />
     <Content Include="WebForms\Home.aspx" />
     <Content Include="WebForms\Employees.aspx" />
     <Content Include="CSS\HeaderStyleSheet.css" />
@@ -79,13 +78,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WebForms\EmployeesDataValuesExample.aspx.cs">
-      <DependentUpon>EmployeesDataValuesExample.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="WebForms\EmployeesDataValuesExample.aspx.designer.cs">
-      <DependentUpon>EmployeesDataValuesExample.aspx</DependentUpon>
-    </Compile>
     <Compile Include="WebForms\Home.aspx.cs">
       <DependentUpon>Home.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

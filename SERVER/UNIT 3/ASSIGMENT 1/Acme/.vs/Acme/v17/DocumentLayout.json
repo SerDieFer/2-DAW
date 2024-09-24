@@ -3,16 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|c:\\users\\serdiefer\\desktop\\2-daw\\server\\unit 3\\assigment 1\\acme\\gespresta\\webforms\\employeesdatavaluesexample.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\webforms\\employeesdatavaluesexample.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
+      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|c:\\users\\serdiefer\\desktop\\2-daw\\server\\unit 3\\assigment 1\\acme\\gespresta\\webforms\\employees.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\webforms\\employees.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|c:\\users\\serdiefer\\desktop\\2-daw\\server\\unit 3\\assigment 1\\acme\\gespresta\\css\\employeestylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\gespresta\\css\\employeestylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
       "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\css\\employeestylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|c:\\users\\serdiefer\\desktop\\2-daw\\server\\unit 3\\assigment 1\\acme\\gespresta\\webforms\\employeesdatavaluesexample.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\webforms\\employeesdatavaluesexample.aspx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,8 +18,21 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Employees.aspx",
+              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\GesPresta\\WebForms\\Employees.aspx",
+              "RelativeDocumentMoniker": "GesPresta\\WebForms\\Employees.aspx",
+              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\GesPresta\\WebForms\\Employees.aspx",
+              "RelativeToolTip": "GesPresta\\WebForms\\Employees.aspx",
+              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
+              "WhenOpened": "2024-09-24T13:55:19.019Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -32,35 +41,9 @@
               "RelativeDocumentMoniker": "GesPresta\\CSS\\EmployeeStyleSheet.css",
               "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\GesPresta\\CSS\\EmployeeStyleSheet.css",
               "RelativeToolTip": "GesPresta\\CSS\\EmployeeStyleSheet.css",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAACEAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2024-09-23T15:37:40.113Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "EmployeesDataValuesExample.aspx.cs",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\GesPresta\\WebForms\\EmployeesDataValuesExample.aspx.cs",
-              "RelativeDocumentMoniker": "GesPresta\\WebForms\\EmployeesDataValuesExample.aspx.cs",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\GesPresta\\WebForms\\EmployeesDataValuesExample.aspx.cs",
-              "RelativeToolTip": "GesPresta\\WebForms\\EmployeesDataValuesExample.aspx.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAqwCYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-23T15:32:24.579Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "EmployeesDataValuesExample.aspx",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\GesPresta\\WebForms\\EmployeesDataValuesExample.aspx",
-              "RelativeDocumentMoniker": "GesPresta\\WebForms\\EmployeesDataValuesExample.aspx",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 3\\ASSIGMENT 1\\Acme\\GesPresta\\WebForms\\EmployeesDataValuesExample.aspx",
-              "RelativeToolTip": "GesPresta\\WebForms\\EmployeesDataValuesExample.aspx",
-              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2024-09-23T15:05:26.686Z",
               "EditorCaption": ""
             }
           ]

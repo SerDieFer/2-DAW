@@ -6,8 +6,7 @@
     gap: 20px;
 }
 
-
-    #employeeDataDiv label, #lblFormData label {
+    #employeeDataDiv label {
         text-align: left;
         align-content: center;
     }
@@ -16,23 +15,6 @@
     #employeeDataDiv select,
     #employeeDataDiv textarea {
         padding: 5px;
-    }
-
-#lblFormData {
-    max-width: 800px;
-    margin: 0 auto;
-    display: grid;
-    grid-area:;
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
-    background-color: #66ffff;
-    padding-bottom: 20px;
-}
-
-    #lblFormData h3 {
-        grid-column: 1 / span 2;
-        text-align: center;
-        margin:10px;
     }
 
 .employeeDataButtonDiv {

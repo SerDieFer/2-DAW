@@ -1,0 +1,68 @@
+﻿#employeeDataDiv {
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+    #employeeDataDiv label, #lblFormData label {
+        text-align: left;
+        align-content: center;
+    }
+
+    #employeeDataDiv input,
+    #employeeDataDiv select,
+    #employeeDataDiv textarea {
+        padding: 5px;
+    }
+
+#divCalendarData {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    text-align: left;
+    grid-column: 1 / span 2;
+    align-items: start;
+}
+    #divCalendarData div {
+        text-align: left;
+        display: grid;
+        gap: 20px;
+        padding-top: 10px;
+    }
+
+#lblFormData {
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    background-color: #66ffff;
+    padding-bottom: 20px;
+}
+
+    #lblFormData h3 {
+        grid-column: 1 / span 2;
+        text-align: center;
+        margin:10px;
+    }
+
+
+.employeeDataButtonDiv {
+    padding-bottom: 20px;
+    padding-top: 40px;
+    height: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    gap: 20px;
+}
+
+h2 {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    padding-top: 20px;
+    margin-top: 20px;
+    text-align: center;
+}

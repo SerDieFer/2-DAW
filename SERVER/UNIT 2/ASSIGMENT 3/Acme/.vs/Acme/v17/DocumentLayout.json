@@ -3,36 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\gespresta\\css\\employeestylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\css\\employeestylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\gespresta\\webforms\\employees.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
+      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|c:\\users\\serdiefer\\desktop\\2-daw\\server\\unit 2\\assigment 3\\acme\\gespresta\\webforms\\employees.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
       "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\webforms\\employees.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\gespresta\\css\\lendingstylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\css\\lendingstylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\gespresta\\css\\homestylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\css\\homestylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|c:\\users\\serdiefer\\desktop\\2-daw\\server\\unit 2\\assigment 3\\acme\\gespresta\\webforms\\lendings.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\webforms\\lendings.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\gespresta\\webforms\\home.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\webforms\\home.aspx||{57312C73-6202-49E9-B1E1-40EA1A6DC1F6}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\gespresta\\usercontrollers\\headercontroller.ascx||{F390D63C-F7D8-4E74-AA04-57C1ECF53D4D}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\usercontrollers\\headercontroller.ascx||{F390D63C-F7D8-4E74-AA04-57C1ECF53D4D}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\gespresta\\css\\headerstylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{518BBA13-F5C8-4081-9C08-1D362B58A0A6}|GesPresta\\GesPresta.csproj|solutionrelative:gespresta\\css\\headerstylesheet.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -42,107 +14,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "HeaderController.ascx",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\UserControllers\\HeaderController.ascx",
-              "RelativeDocumentMoniker": "GesPresta\\UserControllers\\HeaderController.ascx",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\UserControllers\\HeaderController.ascx",
-              "RelativeToolTip": "GesPresta\\UserControllers\\HeaderController.ascx",
-              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003302|",
-              "WhenOpened": "2024-09-16T17:26:39.186Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "HeaderStyleSheet.css",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\CSS\\HeaderStyleSheet.css",
-              "RelativeDocumentMoniker": "GesPresta\\CSS\\HeaderStyleSheet.css",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\CSS\\HeaderStyleSheet.css",
-              "RelativeToolTip": "GesPresta\\CSS\\HeaderStyleSheet.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2024-09-16T17:56:33.781Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "HomeStyleSheet.css",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\CSS\\HomeStyleSheet.css",
-              "RelativeDocumentMoniker": "GesPresta\\CSS\\HomeStyleSheet.css",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\CSS\\HomeStyleSheet.css",
-              "RelativeToolTip": "GesPresta\\CSS\\HomeStyleSheet.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2024-09-17T17:54:06.642Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Home.aspx",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\WebForms\\Home.aspx",
-              "RelativeDocumentMoniker": "GesPresta\\WebForms\\Home.aspx",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\WebForms\\Home.aspx",
-              "RelativeToolTip": "GesPresta\\WebForms\\Home.aspx",
-              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2024-09-16T16:56:44.308Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "EmployeeStyleSheet.css",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\CSS\\EmployeeStyleSheet.css",
-              "RelativeDocumentMoniker": "GesPresta\\CSS\\EmployeeStyleSheet.css",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\CSS\\EmployeeStyleSheet.css",
-              "RelativeToolTip": "GesPresta\\CSS\\EmployeeStyleSheet.css",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAACMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2024-09-17T17:01:52.939Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Employees.aspx",
               "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\WebForms\\Employees.aspx",
               "RelativeDocumentMoniker": "GesPresta\\WebForms\\Employees.aspx",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\WebForms\\Employees.aspx",
-              "RelativeToolTip": "GesPresta\\WebForms\\Employees.aspx",
+              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\WebForms\\Employees.aspx*",
+              "RelativeToolTip": "GesPresta\\WebForms\\Employees.aspx*",
               "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2024-09-17T16:14:23.143Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LendingStyleSheet.css",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\CSS\\LendingStyleSheet.css",
-              "RelativeDocumentMoniker": "GesPresta\\CSS\\LendingStyleSheet.css",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\CSS\\LendingStyleSheet.css",
-              "RelativeToolTip": "GesPresta\\CSS\\LendingStyleSheet.css",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2024-09-18T18:25:19.722Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Lendings.aspx",
-              "DocumentMoniker": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\WebForms\\Lendings.aspx",
-              "RelativeDocumentMoniker": "GesPresta\\WebForms\\Lendings.aspx",
-              "ToolTip": "C:\\Users\\serdiefer\\Desktop\\2-DAW\\SERVER\\UNIT 2\\ASSIGMENT 3\\Acme\\GesPresta\\WebForms\\Lendings.aspx",
-              "RelativeToolTip": "GesPresta\\WebForms\\Lendings.aspx",
-              "LogicalView": "7651a703-06e5-11d1-8ebd-00a0c90f26ea",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000195|",
-              "WhenOpened": "2024-09-18T18:11:15.065Z",
+              "WhenOpened": "2024-09-24T16:49:20.274Z",
               "EditorCaption": ""
             }
           ]
