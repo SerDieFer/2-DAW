@@ -141,6 +141,15 @@ namespace GesPresta
         protected global::System.Web.UI.WebControls.Calendar calendarEmployeeEntryDate;
 
         /// <summary>
+        /// Control divEmployeeAntiquity.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divEmployeeAntiquity;
+
+        /// <summary>
         /// Control txtbEmployeeYearsAntiquity.
         /// </summary>
         /// <remarks>
@@ -177,21 +186,30 @@ namespace GesPresta
         protected global::System.Web.UI.WebControls.Button btnSendDataEmployee;
 
         /// <summary>
-        /// Control lblEmployeeDataFull.
+        /// Control lblError1.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEmployeeDataFull;
+        protected global::System.Web.UI.WebControls.Label lblError1;
 
         /// <summary>
-        /// Control lblEmployeeData.
+        /// Control lblError2.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEmployeeData;
+        protected global::System.Web.UI.WebControls.Label lblError2;
+
+        /// <summary>
+        /// Control lblError3.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblError3;
     }
 }

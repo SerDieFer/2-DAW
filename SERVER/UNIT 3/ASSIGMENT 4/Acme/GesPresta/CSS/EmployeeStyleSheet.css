@@ -1,9 +1,10 @@
-﻿#employeeDataDiv {
-    max-width: 800px;
+﻿
+#employeeDataDiv {
+    max-width: 50em;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 20px;
+    gap: 2em; 
 }
 
     #employeeDataDiv label, #lblFormData label {
@@ -14,55 +15,107 @@
     #employeeDataDiv input,
     #employeeDataDiv select,
     #employeeDataDiv textarea {
-        padding: 5px;
+        padding: 0.5em;
     }
 
 #divCalendarData {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 2em; 
     text-align: left;
     grid-column: 1 / span 2;
-    align-items: start;
+    align-items: start; 
 }
     #divCalendarData div {
-        text-align: left;
         display: grid;
-        gap: 20px;
-        padding-top: 10px;
+        gap: 2em;
+        padding-top: 1em;
     }
 
 #lblFormData {
-    max-width: 800px;
+    max-width: 50em; 
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 20px;
-    background-color: #66ffff;
-    padding-bottom: 20px;
+    gap: 2em; 
+    background-color: #66ffff; 
+    padding-bottom: 2em;
 }
 
+
     #lblFormData h3 {
-        grid-column: 1 / span 2;
+        grid-column: 1 / span 2; 
         text-align: center;
-        margin:10px;
+        margin: 1em; 
+    }
+
+#divEmployeeAntiquity {
+    display: grid;
+    grid-template-rows: auto auto auto; 
+    gap: 1em; 
+    grid-column: 1 / span 2;
+}
+
+    #divEmployeeAntiquity label {
+        grid-row: 1; 
+        font-weight: bold;
+        text-align: center;
+    }
+
+    #divEmployeeAntiquity #lblAntiquity {
+        background-color: #999999;
+        height: 2em;
     }
 
 
-.employeeDataButtonDiv {
-    padding-bottom: 20px;
-    padding-top: 40px;
-    height: 40px;
-    max-width: 800px;
-    margin: 0 auto;
+#employeeAntiquityValues {
     display: grid;
-    gap: 20px;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
+    #employeeAntiquityValues label {
+        grid-row: 1; 
+        text-align: center;
+    }
+
+    #employeeAntiquityValues input {
+        grid-row: 2; 
+        text-align: center;
+    }
+
+.employeeDataButtonDiv {
+    padding-bottom: 2em;
+    padding-top: 1em;
+    max-width: 50em;
+    margin: 0 auto;
+    display: grid;
+    gap: 0.5em;
+}
+    .employeeDataButtonDiv #btnSendDataButton {
+        text-align: center;
+        align-content: center;
+        height: 1em;
+    }
+
+    .employeeDataButtonDiv .employeeErrorsDiv {
+        background-color: red;
+        text-align: center;
+        align-content: center;
+        font-weight: 600;
+        display: grid;
+    }
+
+        .employeeDataButtonDiv .employeeErrorsDiv span {
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+            margin-bottom: 0.5em;
+            margin-top: 0.5em;
+        }
+
 h2 {
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    padding-top: 20px;
-    margin-top: 20px;
+    padding-bottom: 1em;
+    margin-bottom: 1em; 
+    padding-top: 1em; 
+    margin-top: 1em; 
     text-align: center;
 }

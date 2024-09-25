@@ -10,61 +10,120 @@ namespace GesPresta
 {
     public partial class EmployeesDataCalendarValues : System.Web.UI.Page
     {
+        DateTime todayDate = System.DateTime.Now;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             txtbEmployeeCode.Focus();
         }
 
-        protected void btnSendDataEmployee_Click(object sender, EventArgs e)
+        protected void calendarEmployeeBirthDate_SelectionChanged(object sender, EventArgs e)
         {
-            /* MÉTODO NORMAL
-            lblEployeeData.Visible = true;
-            // HE AÑADIDO MÁS VARIABLES DE ID PARA PODER MODIFICAR MEJOR EL CSS EN CASO NECESARIO
-            lblEployeeData.Text = 
-            "<div id=lblFormData>" +
-                "<h3>VALORES DEL FORMULARIO</h3>" +
-                "<label id=employeeCodeData> Código Empleado: </label>" + "<label id=employeeCodeValue>" + txtbEmployeeCode.Text + "</label>" +
-                "<label id=employeeNIFData> NIF: </label>" + "<label id=employeeNIFValue>" + txtbEmployeeNIF.Text + "</label>" +
-                "<label id=employeeFullNameData> Nombre y Apellidos: </label>" + "<label id=employeeFullNameValue>" + txtbEmployeeFullName.Text + "</label>" +
-                "<label id=employeeAdressData> Dirección: </label>" + "<label id=employeeAdressValue>" + txtbEmployeeAdress.Text + "</label>" +
-                "<label id=employeeCityData> Ciudad: </label>" + "<label id=employeeCityValue>" + txtbEmployeeCity.Text + "</label>" +
-                "<label id=employeePhonesData> Teléfonos: </label>" + "<label id=employeePhonesValue>" + txtbEmployeePhones.Text + "</label>" +
-                "<label id=employeeBirthdateData> Fecha de Nacimiento: </label>" + "<label id=employeeBirthdateValue>" + txtbEmployeeBirthDate.Text + "</label>" +
-                "<label id=employeeEntryDateData> Fecha de Ingreso: </label>" + "<label id=employeeEntryDateValue>" + txtbEmployeeEntryDate.Text + "</label>" +
-                "<label id=employeeGenderData> Sexo: </label>" + "<label id=employeeGenderValue>" + rblEmployeeGender.SelectedItem.Text + "</label>" +
-                "<label id=employeeDepartamentData> Departamento: </label> " + "<label id=employeeDepartamentValue>" + ddlEmployeeDepartment.SelectedItem.Text + "</label>" +
-            "</div>";
-            */
+            if (!DateError())
+            {
+                ShowAntiquitySection();
+                ShowSendDataSection();
+            }
+            else
+            {
+                HideAntiquitySection();
+            }
+            txtbEmployeeBirthDate.Text = calendarEmployeeBirthDate.SelectedDate.ToShortDateString();
+        }
 
+        protected void calendarEmployeeEntryDate_SelectionChanged(object sender, EventArgs e)
+        {
+            if (!DateError())
+            {
+                ShowAntiquitySection();
+                ShowSendDataSection();
+                CalculateAntiquity();
+            }
+            else
+            {
+                HideAntiquitySection();
+            }
+            txtbEmployeeEntryDate.Text = calendarEmployeeEntryDate.SelectedDate.ToShortDateString();
+        }
 
-            //MÉTODO MEDIANTE STRINGBUILDER
-            lblEmployeeData.Visible = true;
+        private void ShowAntiquitySection()
+        {
+            divEmployeeAntiquity.Visible = true;
+        }
 
-            StringBuilder employeeData = new StringBuilder();
-            employeeData.Append("<div id='lblFormData'>");
-            employeeData.Append("<h3>VALORES DEL FORMULARIO</h3>");
-            employeeData.Append("<label id='employeeCodeData'> Código Empleado: </label>");
-            employeeData.Append("<label id='employeeCodeValue'>" + txtbEmployeeCode.Text + "</label>");
-            employeeData.Append("<label id='employeeNIFData'> NIF: </label>");
-            employeeData.Append("<label id='employeeNIFValue'>" + txtbEmployeeNIF.Text + "</label>");
-            employeeData.Append("<label id='employeeFullNameData'> Nombre y Apellidos: </label>");
-            employeeData.Append("<label id='employeeFullNameValue'>" + txtbEmployeeFullName.Text + "</label>");
-            employeeData.Append("<label id='employeeAdressData'> Dirección: </label>");
-            employeeData.Append("<label id='employeeAdressValue'>" + txtbEmployeeAdress.Text + "</label>");
-            employeeData.Append("<label id='employeeCityData'> Ciudad: </label>");
-            employeeData.Append("<label id='employeeCityValue'>" + txtbEmployeeCity.Text + "</label>");
-            employeeData.Append("<label id='employeePhonesData'> Teléfonos: </label>");
-            employeeData.Append("<label id='employeePhonesValue'>" + txtbEmployeePhones.Text + "</label>");
-            employeeData.Append("<label id='employeeBirthdateData'> Fecha de Nacimiento: </label>");
-            employeeData.Append("<label id='employeeBirthdateValue'>" + txtbEmployeeBirthDate.Text + "</label>");
-            employeeData.Append("<label id='employeeEntryDateData'> Fecha de Ingreso: </label>");
-            employeeData.Append("<label id='employeeEntryDateValue'>" + txtbEmployeeEntryDate.Text + "</label>");
-            employeeData.Append("<label id='employeeGenderData'> Sexo: </label>");
-            employeeData.Append("<label id='employeeGenderValue'>" + rblEmployeeGender.SelectedItem.Text + "</label>");
-            employeeData.Append("<label id='employeeDepartamentData'> Departamento: </label>");
-            employeeData.Append("<label id='employeeDepartamentValue'>" + ddlEmployeeDepartment.SelectedItem.Text + "</label>");
-            employeeData.Append("</div>");
-            lblEmployeeData.Text = employeeData.ToString();
+        private void ShowSendDataSection()
+        {
+            btnSendDataEmployee.Visible = true;
+        }
+
+        private void HideAntiquitySection()
+        {
+            divEmployeeAntiquity.Visible = false;
+        }
+
+        private void HideSendDataSection()
+        {
+            btnSendDataEmployee.Visible = false;
+        }
+
+        private void CalculateAntiquity()
+        {
+            DateTime entryDate = calendarEmployeeEntryDate.SelectedDate;
+            TimeSpan dateDifference = todayDate - entryDate;
+            DateTime antiquityBase = new DateTime(1, 1, 1);
+
+            DateTime antiquity = antiquityBase + dateDifference;
+
+            txtbEmployeeYearsAntiquity.Text = (antiquity.Year - 1).ToString();
+            txtbEmployeeMonthsAntiquity.Text = (antiquity.Month - 1).ToString();
+            txtbEmployeeDaysAntiquity.Text = antiquity.Day.ToString();
+        }
+
+        private bool DateError()
+        {
+            DateTime entryDate = calendarEmployeeEntryDate.SelectedDate;
+            DateTime birthDate = calendarEmployeeBirthDate.SelectedDate;
+            bool errorFound = false;
+
+            // REINICIAR VISIBILIDAD DE LOS LABELS DE ERROR
+            lblError1.Visible = false;
+            lblError2.Visible = false;
+            lblError3.Visible = false;
+
+            // COMPROBAR SI LA FECHA DE INGRESO ES MENOR QUE LA FECHA DE NACIMIENTO
+            if (txtbEmployeeEntryDate.Text != string.Empty)
+            {
+                if (entryDate < birthDate)
+                {
+                    lblError1.Text = "ERROR: La fecha de ingreso no puede ser menor que la fecha de nacimiento.";
+                    lblError1.Visible = true;
+                    errorFound = true;
+                }
+
+                // COMPROBAR SI LA FECHA DE INGRESO ES MAYOR QUE LA FECHA ACTUAL
+                if (entryDate > todayDate)
+                {
+                    lblError2.Text = "ERROR: La fecha de ingreso no puede ser mayor que la fecha actual.";
+                    lblError2.Visible = true;
+                    errorFound = true;
+                }
+            }
+
+            // COMPROBAR SI LA FECHA DE NACIMIENTO ES MAYOR QUE LA FECHA ACTUAL
+            if (birthDate > todayDate)
+            {
+                lblError3.Text = "ERROR: La fecha de nacimiento no puede ser mayor que la fecha actual.";
+                lblError3.Visible = true;
+                errorFound = true;
+            }
+
+            // SI HAY ERRORES, OCULTAR LA SECCIÓN DE ENVÍO
+            if (errorFound)
+            {
+                HideSendDataSection();
+            }
+
+            return errorFound;
         }
     }
 }
