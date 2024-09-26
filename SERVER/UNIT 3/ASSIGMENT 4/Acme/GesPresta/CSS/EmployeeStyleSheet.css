@@ -8,14 +8,15 @@
 }
 
     #employeeDataDiv label, #lblFormData label {
-        text-align: left;
         align-content: center;
+        gap:
     }
 
     #employeeDataDiv input,
     #employeeDataDiv select,
     #employeeDataDiv textarea {
         padding: 0.5em;
+        text-align:center;
     }
 
 #divCalendarData {
@@ -28,8 +29,37 @@
 }
     #divCalendarData div {
         display: grid;
-        gap: 2em;
-        padding-top: 1em;
+        text-align: center;
+    }
+
+    #divCalendarData label {
+        height: 2.5em;
+        background-color: #ccc;
+        border: 1px solid #999;
+        font-weight: bold;
+    }
+
+    #divCalendarData #divEmployeeAntiquity {
+        padding-top: 0em;
+        border-color: #999999;
+        border-width: 1px;
+        border-style: solid;
+        margin: 0px;
+        padding: 0px;
+        gap: 0px;
+        background-color: #CCCCCC;
+    }
+
+    #divCalendarData #employeeAntiquityValues {
+        padding-top: 0em;
+        gap: 0em;
+    }
+
+    #divCalendarData #employeeAntiquityValues label {
+        padding-top: 0em;
+        gap:0em;
+        height:2em;
+        border:0px;
     }
 
 #lblFormData {
@@ -63,9 +93,14 @@
     }
 
     #divEmployeeAntiquity #lblAntiquity {
-        background-color: #999999;
-        height: 2em;
+        background-color: #999999;  
+        height: 2.5em;
     }
+    #divEmployeeAntiquity #employeeAntiquityValues {
+        border-top: 0px;
+    }
+
+
 
 
 #employeeAntiquityValues {
@@ -85,16 +120,16 @@
 
 .employeeDataButtonDiv {
     padding-bottom: 2em;
-    padding-top: 1em;
+    padding-top: 2em;
     max-width: 50em;
     margin: 0 auto;
     display: grid;
     gap: 0.5em;
 }
-    .employeeDataButtonDiv #btnSendDataButton {
+    .employeeDataButtonDiv .btnSendDataButton {
         text-align: center;
         align-content: center;
-        height: 1em;
+        height: 2.5em;
     }
 
     .employeeDataButtonDiv .employeeErrorsDiv {

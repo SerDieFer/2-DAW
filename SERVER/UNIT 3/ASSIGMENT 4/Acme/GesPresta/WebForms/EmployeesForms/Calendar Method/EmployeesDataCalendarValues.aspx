@@ -99,13 +99,13 @@
         <div class="employeeDataButtonDiv">
             <asp:Button ID="btnSendDataEmployee" CssClass="btnSendDataButton" runat="server" Text="Enviar"/>   
             <div class="employeeErrorsDiv">
-                <!-- Fecha ingreso compañía menor a la fecha de nacimiento-->
+                <!-- FECHA INGRESO COMPAÑÍA MENOR A LA FECHA DE NACIMIENTO-->
                 <asp:Label ID="lblError1" runat="server" Visible="false"></asp:Label>
                 <br />
-                <!-- Fecha ingreso compañía mayor a la fecha actual-->
+                <!-- FECHA INGRESO COMPAÑÍA MAYOR A LA FECHA ACTUAL-->
                 <asp:Label ID="lblError2" runat="server" Visible="false"></asp:Label>
                 <br />
-                <!-- Fecha nacimiento mayor a la fecha actual-->
+                <!-- FECHA NACIMIENTO MAYOR A LA FECHA ACTUAL-->
                 <asp:Label ID="lblError3" runat="server" Visible="false"></asp:Label>
                 <br />
             </div>
