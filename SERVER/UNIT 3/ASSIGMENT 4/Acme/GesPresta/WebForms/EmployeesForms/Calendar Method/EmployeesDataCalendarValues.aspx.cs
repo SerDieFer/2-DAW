@@ -17,6 +17,18 @@ namespace GesPresta
             txtbEmployeeCode.Focus();
         }
 
+        protected void txtbEmployeeBirthDate_TextChanged(object sender, EventArgs e)
+        {
+            calendarEmployeeBirthDate.SelectedDate = Convert.ToDateTime(txtbEmployeeBirthDate.Text);
+            HandleDateLogic();
+        }
+
+        protected void txtbEmployeeEntryDate_TextChanged(object sender, EventArgs e)
+        {
+            calendarEmployeeEntryDate.SelectedDate = Convert.ToDateTime(txtbEmployeeEntryDate.Text);
+            HandleDateLogic();
+        }
+
         protected void calendarEmployeeBirthDate_SelectionChanged(object sender, EventArgs e)
         {
             txtbEmployeeBirthDate.Text = calendarEmployeeBirthDate.SelectedDate.ToShortDateString();
@@ -32,15 +44,15 @@ namespace GesPresta
         // MANEJO DE LA LÓGICA DE LA FECHA SELECCIONADA DE ENTRADA
         private void HandleDateLogic()
         {
-            ShowAntiquitySection();
             ShowSendDataSection();
 
             // VERIFICAR ERRORES Y MOSTRAR MENSAJES DE ERROR, PERO REALIZAR EL CÁLCULO DE ANTIGÜEDAD SIEMPRE
             bool hasError = DateError();
 
-            // SE REALIZA EL CÁLCULO DE ANTIGÜEDAD AUNQUE HAYA ERRORES
+            // SE REALIZA EL CÁLCULO DE ANTIGÜEDAD AUNQUE HAYA ERRORES, Y SE COMIENZA A MOSTRAR LA ANTIGÜEDAD
             if (!string.IsNullOrEmpty(txtbEmployeeEntryDate.Text))
             {
+                ShowAntiquitySection();
                 CalculateAntiquity();
             }
 
@@ -90,6 +102,38 @@ namespace GesPresta
             return errorFound;
         }
 
+        // COLOCA LA FECHA DE INGRESO DEL TRABAJADOR DEPENDIENDO LOS DÍAS-MESES-AÑOS SELECCIONADOS EN LAS CASILLAS DE LA ANTIGÜEDAD
+        private void CalculateAntiquityDataToCalendarSelection()
+        {
+            DateTime actualDate = DateTime.Today;
+            int yearAntiquity = int.Parse(txtbEmployeeYearsAntiquity.Text) * (-1);
+            int monthAntiquity = int.Parse(txtbEmployeeMonthsAntiquity.Text) * (-1);
+            int dayAntiquity = (int.Parse(txtbEmployeeDaysAntiquity.Text) - 1) * (-1);
+
+            DateTime calculatedAntiquityDate = actualDate.AddYears(yearAntiquity)
+                                                         .AddMonths(monthAntiquity)
+                                                         .AddDays(dayAntiquity);
+
+            txtbEmployeeEntryDate.Text = calculatedAntiquityDate.ToShortDateString();
+            calendarEmployeeEntryDate.SelectedDate = calculatedAntiquityDate;
+            calendarEmployeeEntryDate.VisibleDate = calculatedAntiquityDate;
+        }
+
+        protected void txtbEmployeeDaysAntiquity_TextChanged(object sender, EventArgs e)
+        {
+            CalculateAntiquityDataToCalendarSelection();
+        }
+
+        protected void txtbEmployeeMonthsAntiquity_TextChanged(object sender, EventArgs e)
+        {
+            CalculateAntiquityDataToCalendarSelection();
+        }
+
+        protected void txtbEmployeeYearsAntiquity_TextChanged(object sender, EventArgs e)
+        {
+            CalculateAntiquityDataToCalendarSelection();
+        }
+
         private void CalculateAntiquity()
         {
             DateTime entryDate = calendarEmployeeEntryDate.SelectedDate;
@@ -131,5 +175,7 @@ namespace GesPresta
         {
             btnSendDataEmployee.Visible = false;
         }
+
+
     }
 }
