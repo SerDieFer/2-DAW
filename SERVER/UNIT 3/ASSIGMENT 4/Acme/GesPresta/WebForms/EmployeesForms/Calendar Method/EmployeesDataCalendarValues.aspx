@@ -108,6 +108,12 @@
                 <!-- FECHA NACIMIENTO MAYOR A LA FECHA ACTUAL-->
                 <asp:Label ID="lblError3" runat="server" Visible="false"></asp:Label>
                 <br />
+                <!-- FORMATO NACIMIENTO ESCRITO INVÁLIDO-->
+                <asp:Label ID="lblError4" runat="server" Visible="false"></asp:Label>
+                <br />
+                <!-- FORMATO ENTRADA EMPRESA ESCRITO INVÁLIDO-->
+                <asp:Label ID="lblError5" runat="server" Visible="false"></asp:Label>
+                <br />
             </div>
         </div>
     </form>
