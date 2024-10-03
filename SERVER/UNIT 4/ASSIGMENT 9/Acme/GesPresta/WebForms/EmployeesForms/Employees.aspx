@@ -25,6 +25,14 @@
                 ErrorMessage="The employee code is required" 
                 ControlToValidate="txtbEmployeeCode">
             </asp:RequiredFieldValidator>
+            <asp:RegularExpressionValidator 
+                ID="regtxtbEmployeeCode" 
+                runat="server" 
+                ForeColor="green"
+                ValidationExpression="\w\d{5}"
+                ErrorMessage="The data format must be something like: 'A12345' - '_54321'"
+                ControlToValidate="txtbEmployeeCode">
+            </asp:RegularExpressionValidator>
 
             <label>NIF</label>
             <asp:TextBox ID="txtbEmployeeNIF" runat="server"></asp:TextBox>
@@ -35,6 +43,14 @@
                 ErrorMessage="The employee NIF is required" 
                 ControlToValidate="txtbEmployeeNIF">
             </asp:RequiredFieldValidator>
+            <asp:RegularExpressionValidator 
+                ID="regtxtbEmployeeNIF" 
+                runat="server"
+                ForeColor="green"
+                ValidationExpression="\d{8}-\w"
+                ErrorMessage="The data format must be something like: '12345678A'"
+                ControlToValidate="txtbEmployeeNIF">
+            </asp:RegularExpressionValidator>
 
             <label>Apellidos y Nombre</label>
             <asp:TextBox ID="txtbEmployeeFullName" runat="server"></asp:TextBox>
@@ -95,6 +111,14 @@
                 ControlToCompare="txtbEmployeeEntryDate"
                 Operator="LessThan">
             </asp:CompareValidator>
+            <asp:RegularExpressionValidator 
+                ID="regtxtbEmployeeBirthDate" 
+                runat="server"
+                ForeColor="green"
+                ValidationExpression="\d\d\/\d\d\/\d\d\d\d"
+                ErrorMessage="The data format must be something like: '03/10/2024'"
+                ControlToValidate="txtbEmployeeBirthDate">
+            </asp:RegularExpressionValidator>
 
             <label>Fecha de Ingreso</label>
             <asp:TextBox ID="txtbEmployeeEntryDate" runat="server"></asp:TextBox>
@@ -105,6 +129,14 @@
                 ErrorMessage="The employee entry date is required" 
                 ControlToValidate="txtbEmployeeEntryDate">
             </asp:RequiredFieldValidator>
+            <asp:RegularExpressionValidator 
+                ID="regtxtbEmployeeEntryDate" 
+                runat="server"
+                ForeColor="green"
+                ValidationExpression="\d\d\/\d\d\/\d\d\d\d"
+                ErrorMessage="The data format must be something like: '03/10/2024'"
+                ControlToValidate="txtbEmployeeEntryDate">
+            </asp:RegularExpressionValidator>
 
             <label>Sexo</label>
             <asp:RadioButtonList ID="rblEmployeeGender" runat="server" RepeatDirection="Horizontal">
