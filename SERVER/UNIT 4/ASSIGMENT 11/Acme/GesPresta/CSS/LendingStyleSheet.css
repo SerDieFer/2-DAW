@@ -1,0 +1,76 @@
+﻿#lendingDataDiv {
+    max-width: 75em;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 19% 30% 1% 25% 20%; /* Distribución en porcentaje */
+    grid-template-rows: repeat(5, 2em);
+    gap: 15px;
+}
+
+    #lendingDataDiv label, #lblLendingData label {
+        text-align: left;
+        align-content: center;
+    }
+
+    #lendingDataDiv input,
+    #lendingDataDiv select,
+    #lendingDataDiv textarea {
+        padding: 0.5em;
+        grid-column: span 2; /* Cada campo de entrada ocupa 2 columnas */
+    }
+
+    #lendingDataDiv #LendingsSearchController1_lstLendings {
+        height: 7em;
+    }
+
+#LendingsSearchController1 {
+    grid-column: 1 / -1; /* Ocupa todo el ancho del grid */
+    visibility: hidden; /* Oculto pero mantiene el espacio */
+    height: 7em; /* Establece una altura fija para evitar cambios en el layout */
+    transition: visibility 0.3s ease, opacity 0.3s ease; /* Suaviza la transición de visibilidad */
+    opacity: 0; /* Controla la visibilidad */
+}
+
+    #LendingsSearchController1.visible {
+        visibility: visible; /* Muestra el contenido cuando es visible */
+        opacity: 1; /* Asegura la transición suave */
+    }
+
+#lblFormData {
+    max-width: 800px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    background-color: #66ffff;
+    padding-bottom: 20px;
+}
+
+    #lblFormData h3 {
+        grid-column: 1 / span 2;
+        text-align: center;
+        margin: 10px;
+    }
+
+.lendingDataButtonDiv {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-bottom: 2em;
+    padding-top: 2em;
+    max-width: 75em;
+    margin: 0 auto;
+    gap: 0.5em;
+    text-align: center;
+    height: 2em;
+}
+
+h2 {
+    padding: 0.25em;
+    margin: 0.75em;
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    text-align: center;
+}
