@@ -1,76 +1,120 @@
-﻿#lendingDataDiv {
-    max-width: 75em;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 19% 30% 1% 25% 20%; /* Distribución en porcentaje */
-    grid-template-rows: repeat(5, 2em);
-    gap: 15px;
+﻿/* Encabezado del formulario */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
 }
 
-    #lendingDataDiv label, #lblLendingData label {
+/* Contenedor principal de los datos */
+.lendingContainer {
+    display: flex; /* Estructura horizontal para el formulario y columna extra */
+    max-width: 75em;
+    margin: 0 auto;
+    gap: 20px; /* Espacio entre el formulario y la columna extra */
+    margin-top:25px;
+}
+
+/* Contenedor de datos */
+#lendingDataDiv {
+    display: flex;
+    flex-direction: column; /* Estructura vertical */
+    flex: 1; /* Permitir que el formulario ocupe el espacio restante */
+    gap: 20px;
+}
+
+    /* Estilo para las etiquetas */
+    #lendingDataDiv label {
         text-align: left;
-        align-content: center;
+        width: 200px; /* Ancho fijo para etiquetas */
     }
 
+    /* Estilo para los campos de entrada */
     #lendingDataDiv input,
     #lendingDataDiv select,
-    #lendingDataDiv textarea {
+    #lendingDataDiv button {
         padding: 0.5em;
-        grid-column: span 2; /* Cada campo de entrada ocupa 2 columnas */
+        flex-basis: 250px; /* Ancho base para inputs */
     }
 
-    #lendingDataDiv #LendingsSearchController1_lstLendings {
-        height: 7em;
-    }
-
-#LendingsSearchController1 {
-    grid-column: 1 / -1; /* Ocupa todo el ancho del grid */
-    visibility: hidden; /* Oculto pero mantiene el espacio */
-    height: 7em; /* Establece una altura fija para evitar cambios en el layout */
-    transition: visibility 0.3s ease, opacity 0.3s ease; /* Suaviza la transición de visibilidad */
-    opacity: 0; /* Controla la visibilidad */
+/* Estilo común para cada fila */
+.lendingRow {
+    display: flex;
+    flex-direction: row; /* Estructura horizontal */
+    align-items: center; /* Centrar elementos verticalmente */
 }
 
-    #LendingsSearchController1.visible {
-        visibility: visible; /* Muestra el contenido cuando es visible */
-        opacity: 1; /* Asegura la transición suave */
-    }
-
-#lblFormData {
-    max-width: 800px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
-    background-color: #66ffff;
-    padding-bottom: 20px;
+/* Estilo para los campos de texto y validadores */
+.item2 {
+    flex-grow: 0;
 }
 
-    #lblFormData h3 {
-        grid-column: 1 / span 2;
-        text-align: center;
-        margin: 10px;
+/* Estilo para los validadores */
+.item3, .item4 {
+    margin-left: 20px;
+    flex-grow: 0; /* No crecer */
+    color: red; /* Color rojo para los mensajes de error */
+}
+
+/* Estilos generales de botones */
+button {
+    padding: 10px 20px; /* Relleno para los botones */
+    background-color: #4CAF50; /* Color de fondo */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor */
+}
+
+    button:hover {
+        background-color: #45a049; /* Color más oscuro al pasar el mouse */
     }
+
+/* Estilo para la columna extra */
+#extra {
+    flex: 0 0 250px; /* Ancho fijo para la columna extra */
+    display: flex;
+    flex-direction: column; /* Disposición vertical */
+    gap: 10px; /* Espacio entre los elementos extra */
+}
+
+/* Estilo para el div extra */
+#extra {
+    display: flex; /* Permitir flexbox */
+    flex-direction: column; /* Disposición vertical */
+}
+
+/* Estilo para el div de botones */
+#lendingButtonDiv {
+    display: flex; /* Estructura de flexbox para los botones */
+    flex-direction: column; /* Colocar los botones en una columna */
+    gap: 20px; /* Espacio entre los botones */
+}
+
+#lendingDescriptionButtonsDiv {
+    display: flex;
+    flex-direction: row;
+    gap:20px;
+}
+
+/* Estilo para los botones que ocupan el 100% del ancho */
+.button {
+    width: 100%; /* Hacer que los botones ocupen el 100% del ancho */
+    padding: 0.5em; /* Espaciado interno */
+}
 
 .lendingDataButtonDiv {
-    display: grid;
-    grid-template-columns: 1fr;
-    padding-bottom: 2em;
-    padding-top: 2em;
+    flex-direction: column; /* Estructura vertical */
+    flex: 1; /* Permitir que el formulario ocupe el espacio restante */
+    display: flex; /* Estructura horizontal para el formulario y columna extra */
     max-width: 75em;
     margin: 0 auto;
-    gap: 0.5em;
-    text-align: center;
-    height: 2em;
+    gap: 20px; /* Espacio entre el formulario y la columna extra */
+    margin-top: 40px;
 }
 
-h2 {
-    padding: 0.25em;
-    margin: 0.75em;
-    text-align: center;
-}
-
-ul {
-    list-style-type: none;
-    text-align: center;
+/* Estilo para los botones que ocupan el 100% del ancho */
+.sendButton {
+    width: 100%; /* Hacer que los botones ocupen el 100% del ancho */
+    padding: 0.5em; /* Espaciado interno */
 }

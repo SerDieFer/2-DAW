@@ -60,15 +60,6 @@ namespace GesPresta
         protected global::System.Web.UI.WebControls.RegularExpressionValidator regtxtbLendingCode;
 
         /// <summary>
-        /// Control LendingsSearchController1.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::GesPresta.UserControllers.LendingsSearchController LendingsSearchController1;
-
-        /// <summary>
         /// Control txtbLendingDescription.
         /// </summary>
         /// <remarks>
@@ -85,24 +76,6 @@ namespace GesPresta
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rqdtxtbLendingDescription;
-
-        /// <summary>
-        /// Control btnSelect.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSelect;
-
-        /// <summary>
-        /// Control btnSeeLendings.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSeeLendings;
 
         /// <summary>
         /// Control txtbLendingFixedValue.
@@ -166,6 +139,33 @@ namespace GesPresta
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlLendingType;
+
+        /// <summary>
+        /// Control LendingsSearchController1.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::GesPresta.UserControllers.LendingsSearchController LendingsSearchController1;
+
+        /// <summary>
+        /// Control btnSeeLendings.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSeeLendings;
+
+        /// <summary>
+        /// Control btnSelect.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSelect;
 
         /// <summary>
         /// Control btnSendDataLending.
