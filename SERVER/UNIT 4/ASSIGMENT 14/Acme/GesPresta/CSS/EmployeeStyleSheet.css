@@ -1,0 +1,159 @@
+﻿
+#employeeDataDiv {
+    max-width: 50em;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2em;
+}
+
+    #employeeDataDiv label, #lblFormData label {
+        align-content: center;
+        gap:
+    }
+
+    #employeeDataDiv input,
+    #employeeDataDiv select,
+    #employeeDataDiv textarea {
+        padding: 0.5em;
+        text-align: center;
+    }
+
+#divCalendarData {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+    text-align: left;
+    grid-column: 1 / span 2;
+    align-items: start;
+}
+
+    #divCalendarData div {
+        display: grid;
+        text-align: center;
+    }
+
+    #divCalendarData label {
+        height: 2.5em;
+        background-color: #ccc;
+        border: 1px solid #999;
+        font-weight: bold;
+    }
+
+    #divCalendarData #divEmployeeAntiquity {
+        padding-top: 0em;
+        border-color: #999999;
+        border-width: 1px;
+        border-style: solid;
+        margin: 0px;
+        padding: 0px;
+        gap: 0px;
+        background-color: #CCCCCC;
+    }
+
+    #divCalendarData #employeeAntiquityValues {
+        padding-top: 0em;
+        gap: 0em;
+    }
+
+        #divCalendarData #employeeAntiquityValues label {
+            padding-top: 0em;
+            gap: 0em;
+            height: 2em;
+            border: 0px;
+        }
+
+#lblFormData {
+    max-width: 50em;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2em;
+    background-color: #66ffff;
+    padding-bottom: 2em;
+}
+
+
+    #lblFormData h3 {
+        grid-column: 1 / span 2;
+        text-align: center;
+        margin: 1em;
+    }
+
+#divEmployeeAntiquity {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 1em;
+    grid-column: 1 / span 2;
+}
+
+    #divEmployeeAntiquity label {
+        grid-row: 1;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    #divEmployeeAntiquity #lblAntiquity {
+        background-color: #999999;
+        height: 2.5em;
+    }
+
+    #divEmployeeAntiquity #employeeAntiquityValues {
+        border-top: 0px;
+    }
+
+
+
+
+#employeeAntiquityValues {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+    #employeeAntiquityValues label {
+        grid-row: 1;
+        text-align: center;
+    }
+
+    #employeeAntiquityValues input {
+        grid-row: 2;
+        text-align: center;
+    }
+
+.employeeDataButtonDiv {
+    padding-bottom: 2em;
+    padding-top: 2em;
+    max-width: 50em;
+    margin: 0 auto;
+    display: grid;
+    gap: 0.5em;
+}
+
+    .employeeDataButtonDiv .btnSendDataButton {
+        text-align: center;
+        align-content: center;
+        height: 2.5em;
+    }
+
+    .employeeDataButtonDiv .employeeErrorsDiv {
+        background-color: red;
+        text-align: center;
+        align-content: center;
+        font-weight: 600;
+        display: grid;
+    }
+
+        .employeeDataButtonDiv .employeeErrorsDiv span {
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+            margin-bottom: 0.5em;
+            margin-top: 0.5em;
+        }
+
+h2 {
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-top: 1em;
+    margin-top: 1em;
+    text-align: center;
+}
