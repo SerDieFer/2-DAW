@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CSS\EmployeeStyleSheet2.css" />
     <Content Include="CSS\LendingStyleSheet.css" />
     <Content Include="CSS\EmployeeStyleSheet.css" />
     <Content Include="CSS\HomeStyleSheet.css" />
@@ -82,9 +83,9 @@
     <Content Include="WebForms\LendingsForms\PostBack Method\LendingsDataValues.aspx" />
     <Content Include="WebForms\LendingsForms\Lendings.aspx" />
     <Content Include="Web.config" />
-    <Content Include="WebForms\MasterPageEmployees.aspx" />
-    <Content Include="WebForms\MasterPageHome.aspx" />
-    <Content Include="WebForms\MasterPageLendings.aspx" />
+    <Content Include="WebForms\MasterPagesForms\MasterPageEmployees.aspx" />
+    <Content Include="WebForms\MasterPagesForms\MasterPageHome.aspx" />
+    <Content Include="WebForms\MasterPagesForms\MasterPageLendings.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UserControllers\LendingsSearchController.ascx.cs">
@@ -158,32 +159,32 @@
     <Compile Include="UserControllers\HeaderController.ascx.designer.cs">
       <DependentUpon>HeaderController.ascx</DependentUpon>
     </Compile>
-    <Compile Include="WebForms\MasterPage.Master.cs">
+    <Compile Include="WebForms\MasterPagesForms\MasterPage.Master.cs">
       <DependentUpon>MasterPage.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForms\MasterPage.Master.designer.cs">
+    <Compile Include="WebForms\MasterPagesForms\MasterPage.Master.designer.cs">
       <DependentUpon>MasterPage.Master</DependentUpon>
     </Compile>
-    <Compile Include="WebForms\MasterPageEmployees.aspx.cs">
+    <Compile Include="WebForms\MasterPagesForms\MasterPageEmployees.aspx.cs">
       <DependentUpon>MasterPageEmployees.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForms\MasterPageEmployees.aspx.designer.cs">
+    <Compile Include="WebForms\MasterPagesForms\MasterPageEmployees.aspx.designer.cs">
       <DependentUpon>MasterPageEmployees.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebForms\MasterPageHome.aspx.cs">
+    <Compile Include="WebForms\MasterPagesForms\MasterPageHome.aspx.cs">
       <DependentUpon>MasterPageHome.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForms\MasterPageHome.aspx.designer.cs">
+    <Compile Include="WebForms\MasterPagesForms\MasterPageHome.aspx.designer.cs">
       <DependentUpon>MasterPageHome.aspx</DependentUpon>
     </Compile>
-    <Compile Include="WebForms\MasterPageLendings.aspx.cs">
+    <Compile Include="WebForms\MasterPagesForms\MasterPageLendings.aspx.cs">
       <DependentUpon>MasterPageLendings.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="WebForms\MasterPageLendings.aspx.designer.cs">
+    <Compile Include="WebForms\MasterPagesForms\MasterPageLendings.aspx.designer.cs">
       <DependentUpon>MasterPageLendings.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -195,7 +196,7 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-    <Content Include="WebForms\MasterPage.Master" />
+    <Content Include="WebForms\MasterPagesForms\MasterPage.Master" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>

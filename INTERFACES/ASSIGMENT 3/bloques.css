@@ -1,0 +1,63 @@
+html {
+
+    box-sizing: border-box;
+    
+    }
+    
+*, *:before, *:after {
+
+box-sizing: inherit;
+}
+
+body {
+    width: 100%;
+    margin: 0;
+}
+
+nav {
+    background-color: violet;
+    text-align: center;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 20px;
+}
+
+header {
+    background-color: greenyellow;
+    width: calc(100% - 30%);
+    height: 150px;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 20px;
+    float: left;
+}
+
+aside {
+    background-color: rgb(192, 65, 61);
+    width: calc(100% - 76%);
+    height: 450px;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 20px;
+    display: flex;
+    text-align: center;
+}
+
+section {
+    margin: 20px;
+    float: left;
+    width: calc(100% - 70%);
+    height: 200px;
+    background-color: rgb(195, 104, 218);
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+}
+
+footer {
+    background-color: rgb(228, 228, 63);
+    text-align: center;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 30px 20px 20px 20px;
+}

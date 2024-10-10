@@ -33,13 +33,40 @@ namespace GesPresta.WebForms
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// Control HeaderController1.
+        /// Control linkButtonHome.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::GesPresta.UserFormController HeaderController1;
+        protected global::System.Web.UI.WebControls.LinkButton linkButtonHome;
+
+        /// <summary>
+        /// Control linkButtonEmployees.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton linkButtonEmployees;
+
+        /// <summary>
+        /// Control linkButtonLendings.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton linkButtonLendings;
+
+        /// <summary>
+        /// Control labelSubTitleHeader.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label labelSubTitleHeader;
 
         /// <summary>
         /// Control ContentPlaceHolder1.

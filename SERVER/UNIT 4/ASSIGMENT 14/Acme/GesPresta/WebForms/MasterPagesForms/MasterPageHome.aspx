@@ -1,8 +1,8 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/WebForms/MasterPage.Master" AutoEventWireup="true" CodeBehind="MasterPageHome.aspx.cs" Inherits="GesPresta.WebForms.MasterPageDefault" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/WebForms/MasterPagesForms/MasterPage.Master" AutoEventWireup="true" CodeBehind="MasterPageHome.aspx.cs" Inherits="GesPresta.WebForms.MasterPageDefault" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <title>INICIO</title>
-    <link href="../CSS/HomeStyleSheet.css" rel="stylesheet" />
+    <link href="../../CSS/HomeStyleSheet.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
      <div id="homeDiv">

@@ -1,0 +1,40 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="MasterPage.master.cs" Inherits="GesPresta.WebForms.MasterPage" %>
+<%@ Register src="../../UserControllers/HeaderController.ascx" tagname="HeaderController" tagprefix="uc1" %>
+
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <%--Esto no me gusta, prefiero añadir abajo antes del ContentPlaceHolder un controlador del Header--%>
+    <link href="~/CSS/HeaderStyleSheet.css" rel="stylesheet" />
+
+</head>
+<body>
+ <form id="form1" runat="server">
+        <div>
+            <%--Aqui el controlador, con su estilo ya definido dentro--%>
+            <%--<uc1:HeaderController ID="HeaderController1" runat="server" />--%>
+             <div id="headerDiv">
+                <asp:LinkButton ID="linkButtonHome" runat="server" CssClass="homeBtn" CausesValidation="false" PostBackUrl="~/WebForms/MasterPagesForms/MasterPageHome.aspx">Inicio</asp:LinkButton>
+                <asp:LinkButton ID="linkButtonEmployees" runat="server" CssClass="employeesBtn" CausesValidation="false" PostBackUrl="~/WebForms/MasterPagesForms/MasterPageEmployees.aspx">Empleados</asp:LinkButton>
+                <asp:LinkButton ID="linkButtonLendings" runat="server" CssClass="lendingsBtn" CausesValidation="false" PostBackUrl="~/WebForms/MasterPagesForms/MasterPageLendings.aspx">Prestaciones</asp:LinkButton>
+                <br />
+                <h1>ACME INNOVACIÓN, S. FIG.</h1>
+                <asp:Label ID="labelSubTitleHeader" runat="server" CssClass="labelSubtitleHeader">Gestión de Prestaciones Sociales</asp:Label>
+                <hr />
+            </div>
+
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+
+
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>

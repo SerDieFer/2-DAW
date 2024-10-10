@@ -1,10 +1,10 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/WebForms/MasterPage.Master" AutoEventWireup="true" CodeBehind="MasterPageLendings.aspx.cs" Inherits="GesPresta.WebForms.MasterPageLendings" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/WebForms/MasterPagesForms/MasterPage.Master" AutoEventWireup="true" CodeBehind="MasterPageLendings.aspx.cs" Inherits="GesPresta.WebForms.MasterPageLendings" %>
 
 <%@ Register Src="~/UserControllers/LendingsSearchController.ascx" TagName="LendingsSearchController" TagPrefix="uc2" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <title>PRESTACIONES</title>
-    <link href="../CSS/LendingStyleSheet.css" rel="stylesheet" />
+    <link href="../../CSS/LendingStyleSheet.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
  <h2>DATOS DE LAS PRESTACIONES</h2>
@@ -79,7 +79,7 @@
 
          <!-- Fila 4 - Porcentaje del Importe -->
          <div id="lendingLendPercentageDiv" class="lendingRow">
-             <label class="item1">Porcentaje del Importe</label>
+             <label class="item1">Porcentaje del Importe (%)</label>
              <asp:TextBox ID="txtbLendingPercentage" runat="server" CssClass="item2"></asp:TextBox>
              <asp:RequiredFieldValidator
                  ForeColor="red"
@@ -134,5 +134,5 @@
      <asp:Button ID="btnSendDataLending" runat="server" Text="Enviar" CssClass="sendButton" />
  </div>
 
- <asp:ValidationSummary ID="lendinbgValidationSummary" runat="server" ForeColor="red" Display="list" />
+ <asp:ValidationSummary ID="lendinbgValidationSummary" runat="server" ForeColor="red" Display="list" CssClass="validation" />
 </asp:Content>
