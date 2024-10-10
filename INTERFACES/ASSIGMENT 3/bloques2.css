@@ -1,0 +1,72 @@
+html {
+box-sizing: border-box;
+}
+    
+*, *:before, *:after {
+box-sizing: inherit;
+}
+
+* {
+    margin: 3px;
+    padding-block: 3px;
+    border-radius: 10px;
+}
+
+body {
+    height: 500px;
+}
+
+header {
+    background-color: rgb(230, 67, 38);
+    height: 25%;
+}
+
+main {
+    background-color: rgb(106, 90, 255);
+    display: flex;
+    flex-direction: column;
+    float: left;
+    width: calc(100% - 40%);
+    height: 100%;
+}
+
+article {
+    background-color: rgb(29, 238, 109);
+}
+
+article:nth-child(1) {
+    height: calc(100% - 30%);
+}
+
+article:nth-child(2) {
+    height: calc(100% - 60%);
+}
+
+footer:nth-child(3) {
+    height: calc(100% - 90%);
+}
+
+section{
+    background-color: rgb(171, 247, 120);
+    /* no se hacer el calculo de altura */
+}
+
+section:nth-child(3) {
+    background-color: white;
+    display: flex;
+}
+
+nav {
+    background-color: rgb(217, 219, 89);
+}
+
+aside {
+    background-color: rgb(40, 212, 255);
+    height: calc(100% - 10%);
+}
+
+footer {
+    background-color: rgb(234, 156, 245); 
+}
+
+
