@@ -1,26 +1,161 @@
-﻿
-#employeeDataDiv {
-    max-width: 50em;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 2em;
+﻿/* Encabezado del formulario */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem; /* Use rem for better responsiveness */
+    color: #333;
 }
 
-    #employeeDataDiv label, #lblFormData label {
-        align-content: center;
+/* Contenedor principal de los datos */
+.employeeContainer {
+    display: flex; /* Estructura horizontal para el formulario y columna extra */
+    /*! flex-wrap: wrap; */ /* Permitir que los elementos se envuelvan en pantallas más pequeñas */
+    max-width: 75em;
+    margin: 0 auto;
+    gap: 20px; /* Espacio entre el formulario y la columna extra */
+    margin-top: 25px;
+}
+
+/* Div de datos del empleado */
+#employeeDataDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 75vw;
+    max-width: 75vw;
+    margin: 20px auto;
+}
+
+#lblFormData label {
+    text-align: left;
+    width: auto; /* Ancho automático para etiquetas */
+}
+
+/* Estilo común para campos de entrada */
+#employeeDataDiv input,
+#employeeDataDiv select,
+#employeeDataDiv textarea {
+    padding: 0.5em; /* Aumenta el padding para mejorar la usabilidad */
+}
+
+/* Estilo de filas */
+.employeeRow {
+    display: flex;
+    flex-direction: row; /* Estructura horizontal */
+    align-items: center; /* Centrar elementos verticalmente */
+    gap: 20px;
+    /*! width: 75px; */
+}
+
+    /* Estilo de cada elemento dentro de la fila */
+    .employeeRow > :first-child {
+        flex: 0 0 350px; /* Ancho flexible, que ocupe un 30% del espacio */
     }
 
-    #employeeDataDiv input,
-    #employeeDataDiv select,
-    #employeeDataDiv textarea {
-        padding: 0.5em;
+    /* el asterisco */
+    .employeeRow :nth-child(3) {
+        flex: 0 0 0px /* Ancho flexible, que ocupe un 30% del espacio */
+    }
+
+    .employeeRow > input {
+        flex: 0 0 250px;
+    }
+
+    .employeeRow > span {
+        flex: 0 0 350px;
+    }
+
+    .employeeRow > td {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .employeeRow > select {
+        flex: 0 0 270px;
+    }
+
+.employeeRowVarious {
+    display: flex;
+    flex-direction: row; /* Estructura horizontal */
+    align-items: center; /* Centrar elementos verticalmente */
+    gap: 20px;
+}
+
+    .employeeRowVarious :first-child {
+        flex: 0 0 350px /* Ancho flexible, que ocupe un 30% del espacio */
+    }
+
+    /* el asterisco */
+    .employeeRowVarious :nth-child(3) {
+        flex: 0 0 0px /* Ancho flexible, que ocupe un 30% del espacio */
+    }
+
+    .employeeRowVarious > input {
+        flex: 0 0 250px;
+    }
+
+    .employeeRowVarious > span {
+        flex: 0 0 250px;
+    }
+
+.employeeDataButtonDiv {
+    display: flex;
+    flex-direction: column;
+    width: 75vw; /* Mantén este tamaño para pantallas grandes */
+    margin: 0px auto;
+}
+
+/* Estilo del botón de enviar */
+.sendButton {
+    width: 100%; /* Hacer que los botones ocupen el 100% del ancho */
+    padding: 0.5em; /* Espaciado interno  */
+}
+
+/* Estilo para el contenedor de validación */
+.validation {
+    display: flex;
+    background-color: white;
+}
+
+/* Contenedor de errores */
+div[id*='validationItems'] {
+    background-color: red;
+    max-width: 75em;
+    margin: 40px auto; /* Unificación de márgenes */
+    display: flex;
+    flex-direction: column;
+    padding: 0.5em;
+    text-align: center;
+}
+
+    div[id*='validationItems'] * {
+        align-content: center;
         text-align: center;
     }
 
+#employeValidationSummary {
+    justify-content: center;
+    display: flex;
+}
+
+
+/* PARTE CALENDARIO  */
+
+/* Estilo para la columna extra */
+#extra {
+    /*! flex: 0 0 100%; */ /* Permitir que la columna extra crezca y llene el espacio */
+    /*! display: flex; */
+    /*! flex-direction: column; */ /* Disposición vertical */
+    /*! gap: 10px; */ /* Espacio entre los elementos extra */
+    display: flex;
+    flex-direction: column;
+    width: 50vw;
+}
+
+/* Estilos de calendario */
 #divCalendarData {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajusta automáticamente las columnas */
     gap: 2em;
     text-align: left;
     grid-column: 1 / span 2;
@@ -39,51 +174,13 @@
         font-weight: bold;
     }
 
-    #divCalendarData #divEmployeeAntiquity {
-        padding-top: 0em;
-        border-color: #999999;
-        border-width: 1px;
-        border-style: solid;
-        margin: 0px;
-        padding: 0px;
-        gap: 0px;
-        background-color: #CCCCCC;
-    }
-
-    #divCalendarData #employeeAntiquityValues {
-        padding-top: 0em;
-        gap: 0em;
-    }
-
-        #divCalendarData #employeeAntiquityValues label {
-            padding-top: 0em;
-            gap: 0em;
-            height: 2em;
-            border: 0px;
-        }
-
-#lblFormData {
-    max-width: 50em;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 2em;
-    background-color: #66ffff;
-    padding-bottom: 2em;
-}
-
-
-    #lblFormData h3 {
-        grid-column: 1 / span 2;
-        text-align: center;
-        margin: 1em;
-    }
-
+/* Antigüedad del empleado */
 #divEmployeeAntiquity {
-    display: grid;
-    grid-template-rows: auto auto auto;
-    gap: 1em;
-    grid-column: 1 / span 2;
+    padding-top: 0em;
+    border: 1px solid #999;
+    margin: 0px;
+    background-color: #CCCCCC;
+    width: 100%;
 }
 
     #divEmployeeAntiquity label {
@@ -92,67 +189,16 @@
         text-align: center;
     }
 
-    #divEmployeeAntiquity #lblAntiquity {
-        background-color: #999999;
-        height: 2.5em;
-    }
-
-    #divEmployeeAntiquity #employeeAntiquityValues {
-        border-top: 0px;
-    }
-
-
-
-
-#employeeAntiquityValues {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+/* Estilo de botones */
+button {
+    padding: 10px 20px; /* Relleno para los botones */
+    background-color: #4CAF50; /* Color de fondo */
+    color: white; /* Color del texto */
+    border: none; /* Sin borde */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor */
 }
 
-    #employeeAntiquityValues label {
-        grid-row: 1;
-        text-align: center;
+    button:hover {
+        background-color: #45a049; /* Color más oscuro al pasar el mouse */
     }
-
-    #employeeAntiquityValues input {
-        grid-row: 2;
-        text-align: center;
-    }
-
-.employeeDataButtonDiv {
-    padding-bottom: 2em;
-    padding-top: 2em;
-    max-width: 50em;
-    margin: 0 auto;
-    display: grid;
-    gap: 0.5em;
-}
-
-    .employeeDataButtonDiv .btnSendDataButton {
-        text-align: center;
-        align-content: center;
-        height: 2.5em;
-    }
-
-    .employeeDataButtonDiv .employeeErrorsDiv {
-        background-color: red;
-        text-align: center;
-        align-content: center;
-        font-weight: 600;
-        display: grid;
-    }
-
-        .employeeDataButtonDiv .employeeErrorsDiv span {
-            padding-top: 0.5em;
-            padding-bottom: 0.5em;
-            margin-bottom: 0.5em;
-            margin-top: 0.5em;
-        }
-
-h2 {
-    padding-bottom: 1em;
-    margin-bottom: 1em;
-    padding-top: 1em;
-    margin-top: 1em;
-    text-align: center;
-}

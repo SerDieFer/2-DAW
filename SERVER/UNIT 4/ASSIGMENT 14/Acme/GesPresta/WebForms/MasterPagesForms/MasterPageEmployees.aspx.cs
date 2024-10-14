@@ -183,6 +183,7 @@ namespace GesPresta.WebForms
             {
                 lblError1.Text = "ERROR: La fecha de ingreso no puede ser menor que la fecha de nacimiento.";
                 lblError1.Visible = true;
+                validationItems.Visible = true;
                 errorFound = true;
             }
 
@@ -191,6 +192,7 @@ namespace GesPresta.WebForms
             {
                 lblError2.Text = "ERROR: La fecha de ingreso no puede ser mayor que la fecha actual.";
                 lblError2.Visible = true;
+                validationItems.Visible = true;
                 errorFound = true;
                 ResetAntiquityValues();
             }
@@ -200,6 +202,7 @@ namespace GesPresta.WebForms
             {
                 lblError3.Text = "ERROR: La fecha de nacimiento no puede ser mayor que la fecha actual.";
                 lblError3.Visible = true;
+                validationItems.Visible = true;
                 errorFound = true;
 
             }
@@ -322,6 +325,7 @@ namespace GesPresta.WebForms
             lblError3.Visible = false;
             lblError4.Visible = false;
             lblError5.Visible = false;
+            validationItems.Visible = false;
         }
     }
 }

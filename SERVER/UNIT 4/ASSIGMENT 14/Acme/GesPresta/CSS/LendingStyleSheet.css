@@ -78,11 +78,6 @@ button {
     gap: 10px; /* Espacio entre los elementos extra */
 }
 
-/* Estilo para el div extra */
-#extra {
-    display: flex; /* Permitir flexbox */
-    flex-direction: column; /* Disposición vertical */
-}
 
 /* Estilo para el div de botones */
 #lendingButtonDiv {
