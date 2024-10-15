@@ -8,8 +8,7 @@ h2 {
 
 /* Contenedor principal de los datos */
 .employeeContainer {
-    display: flex; /* Estructura horizontal para el formulario y columna extra */
-    /*! flex-wrap: wrap; */ /* Permitir que los elementos se envuelvan en pantallas más pequeñas */
+    display: flex;
     max-width: 75em;
     margin: 0 auto;
     gap: 20px; /* Espacio entre el formulario y la columna extra */
@@ -20,9 +19,9 @@ h2 {
 #employeeDataDiv {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    width: 75vw;
-    max-width: 75vw;
+    gap: 38px;
+    width: 55em;
+    max-width: 55em;
     margin: 20px auto;
 }
 
@@ -82,12 +81,12 @@ h2 {
 }
 
     .employeeRowVarious :first-child {
-        flex: 0 0 350px /* Ancho flexible, que ocupe un 30% del espacio */
+        flex: 0 0 350px;
     }
 
     /* el asterisco */
     .employeeRowVarious :nth-child(3) {
-        flex: 0 0 0px /* Ancho flexible, que ocupe un 30% del espacio */
+        flex: 0 0 0px;
     }
 
     .employeeRowVarious > input {
@@ -101,8 +100,8 @@ h2 {
 .employeeDataButtonDiv {
     display: flex;
     flex-direction: column;
-    width: 75vw; /* Mantén este tamaño para pantallas grandes */
-    margin: 0px auto;
+    width: 75em;
+    margin: 20px auto;
 }
 
 /* Estilo del botón de enviar */
@@ -121,7 +120,7 @@ h2 {
 div[id*='validationItems'] {
     background-color: red;
     max-width: 75em;
-    margin: 40px auto; /* Unificación de márgenes */
+    margin: 20px auto; /* Unificación de márgenes */
     display: flex;
     flex-direction: column;
     padding: 0.5em;
@@ -138,57 +137,6 @@ div[id*='validationItems'] {
     display: flex;
 }
 
-
-/* PARTE CALENDARIO  */
-
-/* Estilo para la columna extra */
-#extra {
-    /*! flex: 0 0 100%; */ /* Permitir que la columna extra crezca y llene el espacio */
-    /*! display: flex; */
-    /*! flex-direction: column; */ /* Disposición vertical */
-    /*! gap: 10px; */ /* Espacio entre los elementos extra */
-    display: flex;
-    flex-direction: column;
-    width: 50vw;
-}
-
-/* Estilos de calendario */
-#divCalendarData {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Ajusta automáticamente las columnas */
-    gap: 2em;
-    text-align: left;
-    grid-column: 1 / span 2;
-    align-items: start;
-}
-
-    #divCalendarData div {
-        display: grid;
-        text-align: center;
-    }
-
-    #divCalendarData label {
-        height: 2.5em;
-        background-color: #ccc;
-        border: 1px solid #999;
-        font-weight: bold;
-    }
-
-/* Antigüedad del empleado */
-#divEmployeeAntiquity {
-    padding-top: 0em;
-    border: 1px solid #999;
-    margin: 0px;
-    background-color: #CCCCCC;
-    width: 100%;
-}
-
-    #divEmployeeAntiquity label {
-        grid-row: 1;
-        font-weight: bold;
-        text-align: center;
-    }
-
 /* Estilo de botones */
 button {
     padding: 10px 20px; /* Relleno para los botones */
@@ -202,3 +150,58 @@ button {
     button:hover {
         background-color: #45a049; /* Color más oscuro al pasar el mouse */
     }
+
+/* PARTE CALENDARIO  */
+
+/* Estilo para la columna extra */
+#extra {
+    margin: 20px auto;
+    width: 25em;
+}
+
+#employeeAntiquityValues {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilos de calendario */
+#divCalendarData {
+    display: flex;
+    gap: 20px;
+    max-width: 25em;
+}
+
+/* Antigüedad del empleado */
+div[id*='divEmployeeAntiquity'] {
+    margin: 20px 0px;
+    width: 100%;
+}
+
+
+#divCalendarData #divBirthCalendar,
+#divCalendarData #divEntryCalendar {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    width: 350px;
+}
+
+#divCalendarData label,
+div[id*='divEmployeeAntiquity'] label {
+    background-color: #ccc;
+    border: 1px solid #999;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    padding: 5px;
+    margin: inherit;
+}
+
+input[id*='txtbEmployeeBirthDate'],
+input[id*='txtbEmployeeEntryDate'],
+input[id*='txtbEmployeeYearsAntiquity'],
+input[id*='txtbEmployeeMonthsAntiquity'],
+input[id*='txtbEmployeeDaysAntiquity'] {
+    text-align: center;
+}
+

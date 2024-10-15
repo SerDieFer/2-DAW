@@ -159,13 +159,13 @@ namespace GesPresta
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rqdtxtbEmployeePhones;
 
         /// <summary>
-        /// Control txtbEmployeeBirthDate.
+        /// Control txtbEmployeeBirthMasterDate.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtbEmployeeBirthDate;
+        protected global::System.Web.UI.WebControls.TextBox txtbEmployeeBirthMasterDate;
 
         /// <summary>
         /// Control rqdtxtbEmployeeBirthDate.
@@ -195,13 +195,13 @@ namespace GesPresta
         protected global::System.Web.UI.WebControls.RegularExpressionValidator regtxtbEmployeeBirthDate;
 
         /// <summary>
-        /// Control txtbEmployeeEntryDate.
+        /// Control txtbEmployeeEntryMasterDate.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtbEmployeeEntryDate;
+        protected global::System.Web.UI.WebControls.TextBox txtbEmployeeEntryMasterDate;
 
         /// <summary>
         /// Control rqdtxtbEmployeeEntryDate.

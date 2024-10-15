@@ -72,7 +72,9 @@
 
             <!-- Columna 2 -->
             <div id="extra">
+
                 <div id="divCalendarData">
+
                     <div id="divBirthCalendar">
                         <label>Fecha de Nacimiento</label>
                         <asp:TextBox ID="txtbEmployeeBirthDate" runat="server" AutoPostBack="True" OnTextChanged="txtbEmployeeBirthDate_TextChanged"></asp:TextBox>
@@ -105,7 +107,9 @@
                         </asp:Calendar>
                     </div>
 
-                    <div id="divEmployeeAntiquity" runat="server" visible="false">
+                </div>
+
+                                    <div id="divEmployeeAntiquity" runat="server" visible="false">
                         <label id="lblAntiquity">Antiguedad</label>
                         <div id="employeeAntiquityValues">
                             <label>Años</label>
@@ -116,8 +120,6 @@
                             <asp:TextBox ID="txtbEmployeeDaysAntiquity" runat="server" AutoPostBack="True" OnTextChanged="txtbEmployeeDaysAntiquity_TextChanged"></asp:TextBox>
                         </div>
                     </div>
-
-                </div>
 
             </div>
     </div>

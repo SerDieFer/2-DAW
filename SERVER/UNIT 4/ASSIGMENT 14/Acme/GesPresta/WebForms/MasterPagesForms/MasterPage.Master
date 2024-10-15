@@ -8,11 +8,8 @@
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
-    <asp:ContentPlaceHolder ID="head" runat="server">
-    </asp:ContentPlaceHolder>
-
-    <%--Esto no me gusta, prefiero añadir abajo antes del ContentPlaceHolder un controlador del Header--%>
     <link href="~/CSS/HeaderStyleSheet.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server"> </asp:ContentPlaceHolder>
 
 </head>
 <body>

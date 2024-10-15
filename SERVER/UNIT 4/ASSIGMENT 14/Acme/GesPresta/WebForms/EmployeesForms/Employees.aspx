@@ -12,7 +12,15 @@
 <form id="formEmployee" runat="server">
     <uc1:HeaderController ID="HeaderController1" runat="server" />
     <h2>DATOS DE LOS EMPLEADOS</h2>
-    <div id="employeeDataDiv">
+    <div id="employeeDataDiv" style="
+                                display: flex;
+                                flex-direction: column;
+                                gap: 20px;
+                                width: 75em;
+                                max-width: 75em;
+                                margin: 20px auto;
+                              ">
+
         <div class="employeeRow">
             <label for="txtbEmployeeCode">Código Empleado</label>
             <asp:TextBox ID="txtbEmployeeCode" runat="server"></asp:TextBox>
@@ -29,7 +37,7 @@
                 runat="server" 
                 ForeColor="green"
                 ValidationExpression="\w\d{5}"
-                ErrorMessage="El formato de codigo debe ser algo como: 'A12345' - '_54321'"
+                ErrorMessage="El formato de codigo debe ser algo como: 'A12345'"
                 ControlToValidate="txtbEmployeeCode">
             </asp:RegularExpressionValidator>
         </div>
@@ -108,24 +116,24 @@
         </div>
 
         <div class="employeeRowVarious">
-            <label for="txtbEmployeeBirthDate">Fecha de Nacimiento</label>
-            <asp:TextBox ID="txtbEmployeeBirthDate" runat="server"></asp:TextBox>
+            <label for="txtbEmployeeBirthMasterDate">Fecha de Nacimiento</label>
+            <asp:TextBox ID="txtbEmployeeBirthMasterDate" runat="server"></asp:TextBox>
             <asp:RequiredFieldValidator 
                 ForeColor="red"
                 ID="rqdtxtbEmployeeBirthDate"
                 runat="server"
                 Text="*"
                 ErrorMessage="Se requiere la fecha de nacimiento del empleado"
-                ControlToValidate="txtbEmployeeBirthDate">
+                ControlToValidate="txtbEmployeeBirthMasterDate">
             </asp:RequiredFieldValidator>
             <asp:CompareValidator
                 Type="Date"
                 ForeColor="red"
                 ID="cmpttxtbEmployeeBirthDate" 
                 runat="server"
-                ErrorMessage="The employee's birth date must be before the entry date of the employee"
-                ControlToValidate="txtbEmployeeBirthDate"
-                ControlToCompare="txtbEmployeeEntryDate"
+                ErrorMessage="La fecha de nacimiento debe ser anterior a la fecha de ingreso."
+                ControlToValidate="txtbEmployeeBirthMasterDate"
+                ControlToCompare="txtbEmployeeEntryMasterDate"
                 Operator="LessThan">
             </asp:CompareValidator>
             <asp:RegularExpressionValidator 
@@ -133,29 +141,29 @@
                 runat="server"
                 ForeColor="green"
                 ValidationExpression="\d\d\/\d\d\/\d\d\d\d"
-                ErrorMessage="The data format must be something like: '03/10/2024'"
-                ControlToValidate="txtbEmployeeBirthDate">
+                ErrorMessage="El formato de la fecha debe ser algo como: '03/10/2024'"
+                ControlToValidate="txtbEmployeeBirthMasterDate">
             </asp:RegularExpressionValidator>
         </div>
 
         <div class="employeeRow">
-            <label for="txtbEmployeeEntryDate">Fecha de Ingreso</label>
-            <asp:TextBox ID="txtbEmployeeEntryDate" runat="server"></asp:TextBox>
+            <label for="txtbEmployeeEntryMasterDate">Fecha de Ingreso</label>
+            <asp:TextBox ID="txtbEmployeeEntryMasterDate" runat="server"></asp:TextBox>
             <asp:RequiredFieldValidator
                 ForeColor="red"
                 ID="rqdtxtbEmployeeEntryDate" 
                 runat="server"
                 Text="*"
-                ErrorMessage="The employee entry date is required" 
-                ControlToValidate="txtbEmployeeEntryDate">
+                ErrorMessage="Se requiere la fecha de entrada del empleado" 
+                ControlToValidate="txtbEmployeeEntryMasterDate">
             </asp:RequiredFieldValidator>
             <asp:RegularExpressionValidator 
                 ID="regtxtbEmployeeEntryDate" 
                 runat="server"
                 ForeColor="green"
                 ValidationExpression="\d\d\/\d\d\/\d\d\d\d"
-                ErrorMessage="The data format must be something like: '03/10/2024'"
-                ControlToValidate="txtbEmployeeEntryDate">
+                ErrorMessage="El formato de la fecha debe ser algo como: '03/10/2024'"
+                ControlToValidate="txtbEmployeeEntryMasterDate">
             </asp:RegularExpressionValidator>
         </div>
 
