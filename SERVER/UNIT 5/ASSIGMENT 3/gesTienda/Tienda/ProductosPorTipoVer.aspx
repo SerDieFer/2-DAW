@@ -33,7 +33,7 @@
     <div class="contenidotitulo">Productos</div> 
     <br /> 
 
-    <asp:SqlDataSource ID="SqlDataSource2" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>" SelectCommand="SELECT * FROM [PRODUCTO] WHERE ([IdTipo] = @IdTipo)">
+    <asp:SqlDataSource ID="SqlDataSource2" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>" SelectCommand="SELECT [IdProducto], [PrePro], [DesPro], [IdUnidad], [DesTip] FROM [ProductosDet] WHERE ([IdTipo] = @IdTipo)">
         <SelectParameters>
             <asp:ControlParameter ControlID="grdTipos" Name="IdTipo" PropertyName="SelectedValue" Type="String" />
         </SelectParameters>
@@ -42,12 +42,13 @@
         <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
         <Columns>
             <asp:BoundField DataField="IdProducto" HeaderText="Id Producto" ReadOnly="True" SortExpression="IdProducto" />
-            <asp:BoundField DataField="DesPro" HeaderText="Descripción" SortExpression="DesPro" />
+            <asp:BoundField DataField="DesPro" HeaderText="Descripción" SortExpression="DesPro" >
+            </asp:BoundField>
             <asp:BoundField DataField="PrePro" HeaderText="Precio" SortExpression="PrePro" DataFormatString="{0:n2}" >
             <ItemStyle HorizontalAlign="Right" />
             </asp:BoundField>
             <asp:BoundField DataField="IdUnidad" HeaderText="Unidad" SortExpression="IdUnidad" />
-            <asp:BoundField DataField="IdTipo" HeaderText="Tipo" SortExpression="IdTipo" />
+            <asp:BoundField DataField="DesTip" HeaderText="Tipo" SortExpression="DesTip" />
         </Columns>
         <EditRowStyle BackColor="#999999" />
         <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
