@@ -1,0 +1,98 @@
+body {
+  width: 100vw;
+  margin: 0px;
+  padding: 0px;
+}
+
+article {
+  /* Con esto centramos tanto verticalmente como horizontalmente */
+  /* Aunque no es necesario, simplemente era una prueba */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: calc(100% - 60px);
+}
+
+section {
+  padding: 10px;
+}
+
+button {
+  border-width: 0px;
+  border-radius: 5px;
+  padding: 15px;
+  font-weight: 500;
+  font-size: 1.5em;
+  margin: 0px 10px;
+}
+
+/* Fila 1 */
+section:nth-child(1) button:nth-child(1) {
+  /* Estilo de Botón 1 */
+  background-color: #e2c15c;
+  color: white;
+}
+
+section:nth-child(1) button:nth-child(2) {
+  /* Estilo de Botón 2 */
+  /* Bordes distintos para añadir efecto profundidad*/
+  border: 2px solid #e2c15c;
+  border-bottom: 1px solid #e2c15c;
+  border-right: 1px solid #e2c15c;
+  background-color: white;
+  color: #e2c15c;
+}
+
+section:nth-child(1) button:nth-child(3) {
+  /* Estilo de Botón 3 */
+  background-color: white;
+  color: #e2c15c;
+}
+
+/* Fila 2 */
+section:nth-child(2) button:nth-child(1) {
+  /* Estilo de Botón 1 */
+  background-color: #efb810;
+  color: white;
+}
+
+section:nth-child(2) button:nth-child(2) {
+  /* Estilo de Botón 2 */
+  /* Bordes distintos para añadir efecto profundidad*/
+  border: 2px solid #efb810;
+  border-bottom: 1px solid #efb810;
+  border-right: 1px solid #efb810;
+  background-color: white;
+  color: #efb810;
+}
+
+section:nth-child(2) button:nth-child(3) {
+  /* Estilo de Botón 3 */
+  background-color: white;
+  color: #efb810;
+}
+
+/* Fila 3 */
+section:nth-child(3) button:nth-child(1) {
+  /* Estilo de Botón 1 */
+  background-color: #ad8a1f;
+  color: white;
+}
+
+section:nth-child(3) button:nth-child(2) {
+  /* Estilo de Botón 2 */
+  /* Bordes distintos para añadir efecto profundidad*/
+  border: 2px solid #ad8a1f;
+  border-bottom: 1px solid #ad8a1f;
+  border-right: 1px solid #ad8a1f;
+  background-color: white;
+  color: #ad8a1f;
+}
+
+section:nth-child(3) button:nth-child(3) {
+  /* Estilo de Botón 3 */
+  background-color: white;
+  color: #ad8a1f;
+}

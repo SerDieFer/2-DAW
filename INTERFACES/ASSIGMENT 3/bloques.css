@@ -1,61 +1,60 @@
 html {
+  box-sizing: border-box;
+}
 
-    box-sizing: border-box;
-    
-    }
-    
-*, *:before, *:after {
-box-sizing: inherit;
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 * {
-    margin: 3px;
-    padding-block: 3px;
-    border-radius: 10px;
+  margin: 3px;
+  padding-block: 3px;
+  border-radius: 10px;
 }
 
 main {
-    display: flex;
-    height: 300px;
+  display: flex;
+  height: 300px;
 }
 
 nav {
-    background-color: violet;
-    text-align: center;
-    padding: 6px;
+  background-color: violet;
+  text-align: center;
+  padding: 6px;
 }
 
-article{
-    width: 70%;
+article {
+  width: 70%;
 }
 
 header {
-    background-color: greenyellow;
-    height: calc(100% - 70%);
-    padding: 12px;
-    text-align: left;
+  background-color: greenyellow;
+  height: calc(100% - 70%);
+  padding: 12px;
+  text-align: left;
 }
 
 section {
-    float: left;
-    width: calc(50% - 16px);
-    height: calc(100% - 30% - 12px);
-    background-color: rgb(195, 104, 218);
-    margin-left: 6px;
-    padding-top: 12px;
-    text-align: center;
+  float: left;
+  width: calc(50% - 16px);
+  height: calc(100% - 30% - 12px);
+  background-color: rgb(195, 104, 218);
+  margin-left: 6px;
+  padding-top: 12px;
+  text-align: center;
 }
 
 aside {
-    background-color: rgb(192, 65, 61);
-    width: calc(30% - 24px);
-    padding-top: 12px;
-    text-align: center;
+  background-color: rgb(192, 65, 61);
+  width: calc(30% - 24px);
+  padding-top: 12px;
+  text-align: center;
 }
 
-
 footer {
-    background-color: rgb(228, 228, 63);
-    text-align: center;
-    padding: 6px;
+  background-color: rgb(228, 228, 63);
+  text-align: center;
+  padding: 6px;
 }

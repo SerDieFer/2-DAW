@@ -1,139 +1,141 @@
 html {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
-*, *:before, *:after {
-    box-sizing: inherit;
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 body {
-    padding: 10px;
-    margin: 10px;
-    height: 800px;
+  padding: 10px;
+  margin: 10px;
+  height: 800px;
 }
 
 header {
-    background-color: #e74c3c;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 5px;
+  background-color: #e74c3c;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 5px;
 
-    /* Altura del header calculada como 15% del contenedor (el body), 
+  /* Altura del header calculada como 15% del contenedor (el body), 
     es decir, el 15% de los 800px de altura del body. */
-    height: calc(15%); /* 15% de la altura del body */
+  height: calc(15%); /* 15% de la altura del body */
 }
 
 main {
-    background-color: #3498db;
-    border-radius: 10px;
-    float: left;
-    padding: 15px 20px;
-    margin: 5px;
+  background-color: #3498db;
+  border-radius: 10px;
+  float: left;
+  padding: 15px 20px;
+  margin: 5px;
 
-    /* Calculamos el ancho de main:
+  /* Calculamos el ancho de main:
     70% del ancho del body menos 60px (esto es la suma de 40px de padding y 20px de margen) 
     para asegurar que todo el contenido principal cabe correctamente. */
-    width: calc(70% - 60px);
+  width: calc(70% - 60px);
 
-    /* Calculamos la altura del main:
+  /* Calculamos la altura del main:
     Queremos que main ocupe el 80% de la altura del body, que es de 800px. 
     Es decir, 80% de 800px. */
-    height: calc(80%);
+  height: calc(80%);
 }
 
 main footer {
-    background-color: #f7b7d3;
-    border-radius: 10px;
-    margin: 5px -5px;
+  background-color: #f7b7d3;
+  border-radius: 10px;
+  margin: 5px -5px;
 
-    /* El ancho del footer dentro de main:
+  /* El ancho del footer dentro de main:
     100% del ancho de su contenedor (main), pero añadimos 10px 
     para compensar el margen negativo (-5px de ambos lados). */
-    width: calc(100% + 10px);
+  width: calc(100% + 10px);
 
-    /* La altura del footer:
+  /* La altura del footer:
     Calculada como el 10% de la altura del body, pero restamos 20px 
     para considerar el padding aplicado (10px arriba y 10px abajo). */
-    height: calc(10% - 20px);
+  height: calc(10% - 20px);
 }
 
 article {
-    background-color: #2ecc71;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px 5px 10px 5px;
+  background-color: #2ecc71;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 5px 10px 5px;
 }
 
 article:nth-child(1) {
-    /* Primer artículo:
+  /* Primer artículo:
        Calculamos su altura como 80% del contenedor main, 
        menos un 27.5% para adaptarse al contenido y márgenes */
-    height: calc(80% - 27.5%);
+  height: calc(80% - 27.5%);
 }
 
 article:nth-child(2) {
-    /* Segundo artículo:
+  /* Segundo artículo:
        Calculamos su altura como 80% de main, pero restamos un 52.5% 
        para ajustarlo al espacio disponible, respetando márgenes. */
-    height: calc(80% - 52.5%);
+  height: calc(80% - 52.5%);
 }
 
 section {
-    background-color: #a2f7a6;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px;
+  background-color: #a2f7a6;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
 
-    /* La altura de cada sección es el 25% del artículo, mas 7.5px */
-    height: calc(25% + 7.5px);
+  /* La altura de cada sección es el 25% del artículo, mas 7.5px */
+  height: calc(25% + 7.5px);
 }
 
 nav {
-    background-color: #f1c40f;
-    border-radius: 10px;
-    float: right;
-    padding: 10px;
-    margin: 5px;
+  background-color: #f1c40f;
+  border-radius: 10px;
+  float: right;
+  padding: 10px;
+  margin: 5px;
 
-    /* Ancho de la barra de navegación:
+  /* Ancho de la barra de navegación:
     30% del ancho del body más 40px (esto incluye los 20px de padding en ambos lados). */
-    width: calc(30% + 40px);
+  width: calc(30% + 40px);
 
-    /* Altura de la barra de navegación:
+  /* Altura de la barra de navegación:
     Calculada como el 80% de la altura del body, menos 75% 
     (esto ajusta el tamaño para que ocupe el espacio correcto dentro del layout). */
-    height: calc(80% - 75%);
+  height: calc(80% - 75%);
 }
 
 aside {
-    background-color: #1abc9c;
-    border-radius: 10px;
-    float: right;
-    padding: 10px;
-    margin: 5px;
+  background-color: #1abc9c;
+  border-radius: 10px;
+  float: right;
+  padding: 10px;
+  margin: 5px;
 
-    /* Ancho del aside:
+  /* Ancho del aside:
     Similar al nav, 30% del ancho del body más 40px para incluir el padding. */
-    width: calc(30% + 40px);
+  width: calc(30% + 40px);
 
-    /* Altura del aside:
+  /* Altura del aside:
     Calculada como el 75% del contenedor (main), menos un pequeño ajuste de 10px 
     para el margen, garantizando que encaje correctamente. */
-    height: calc(75% - 10px);
+  height: calc(75% - 10px);
 }
 
 footer {
-    background-color: #d291f7;
-    border-radius: 10px;
-    float: left;
-    padding: 10px;
-    margin: 5px;
+  background-color: #d291f7;
+  border-radius: 10px;
+  float: left;
+  padding: 10px;
+  margin: 5px;
 
-    /* Altura del footer de la página:
+  /* Altura del footer de la página:
     15% de la altura del body, menos 20px para ajustar el padding del contenido. */
-    height: calc(15% - 20px);
+  height: calc(15% - 20px);
 
-    /* Ancho del footer:
+  /* Ancho del footer:
     100% del ancho del body, menos 10px de padding */
-    width: calc(100% - 10px);
+  width: calc(100% - 10px);
 }
