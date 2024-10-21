@@ -26,7 +26,7 @@
         OnSelectedIndexChanged="grdClientes_SelectedIndexChanged" 
         HorizontalAlign="Center" 
         CssClass="gridview-row"
-        Width="566.4px">
+        Width="600px">
 
         <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
         <Columns>

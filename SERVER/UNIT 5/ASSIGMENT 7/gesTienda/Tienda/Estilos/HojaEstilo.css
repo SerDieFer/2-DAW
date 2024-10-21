@@ -83,12 +83,12 @@ body {
 }
 
 .errorSection {
-    border:2px solid black;
+    border: 2px solid black;
 }
 
 
 .mensajes {
-    width: calc(100vw - 70.75vw);
+    width: calc(100vw - 68.75vw);
     display: flex;
     text-align: center;
     margin: 0 auto;
@@ -96,7 +96,7 @@ body {
 }
 
 #total {
-    width: calc(100vw - 70.75vw);
+    width: calc(100vw - 68.75vw);
     display: flex;
     text-align: unset;
     margin: 10px auto;
@@ -106,32 +106,34 @@ body {
     margin: -12.5px auto;
 }
 
-#resultados span {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
-    align-items: center;
-}
+    #resultados span {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+    }
 
-#resultados h4 {
-    font-size:18px;
-    margin:15px;
-}
+    #resultados h4 {
+        font-size: 18px;
+        margin: 15px;
+    }
 
 .gridview-row .gridview-selected-row {
     font-weight: normal;
+    width: calc(100vw - 68.75vw);
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    width: calc(100vw - 70.75vw);
+    width: calc(100vw - 68.75vw);
     max-width: 88vw;
     margin: 0 auto;
     align-items: center;
     text-align: center;
 }
+
 .grid-header {
     background: #336699;
     color: white;
@@ -143,3 +145,45 @@ body {
     text-align: center;
     padding: 5px;
 }
+
+#contenedor {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 20px;
+    max-width: 95%;
+    /*! height:100%; */
+}
+
+#valoresProductos {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: calc(40%);
+    justify-content: space-between;
+}
+
+#botonesValoresProducto {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    flex-direction: row;
+}
+
+    #botonesValoresProducto input {
+        padding: 0.4em;
+        width: 100%;
+    }
+
+
+#gridTable {
+    width: calc(60%);
+    display: flex;
+    flex-direction: column;
+}
+
+
+    #gridTable table {
+        width: calc(100%);
+        justify-content: space-between;
+    }
