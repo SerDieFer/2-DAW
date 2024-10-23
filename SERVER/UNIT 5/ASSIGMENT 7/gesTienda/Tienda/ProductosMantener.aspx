@@ -36,29 +36,29 @@
 
     <div id="contenedor">
         <div id="gridTable">
-        <asp:GridView ID="grdProductos" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" AllowPaging="True" CellPadding="4" DataKeyNames="IdProducto" ForeColor="#333333" GridLines="None" HorizontalAlign="Center" OnSelectedIndexChanged="grdProductos_SelectedIndexChanged">
-            <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
-            <Columns>
-                <asp:CommandField ButtonType="Button" ShowSelectButton="True" />
-                <asp:BoundField DataField="IdProducto" HeaderText="Id Producto" ReadOnly="True" SortExpression="IdProducto" />
-                <asp:BoundField DataField="DesPro" HeaderText="Descripción" SortExpression="DesPro" />
-                <asp:BoundField DataField="PrePro" DataFormatString="{0:c}" HeaderText="Precio" SortExpression="PrePro">
-                <ItemStyle HorizontalAlign="Right" />
-                </asp:BoundField>
-            </Columns>
-            <EditRowStyle BackColor="#999999" />
-            <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
-            <PagerSettings FirstPageText="Primera" LastPageText="Última" Mode="NextPreviousFirstLast" NextPageText="Siguiente" PreviousPageText="Anterior" />
-            <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
-            <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
-            <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
-            <SortedAscendingCellStyle BackColor="#E9E7E2" />
-            <SortedAscendingHeaderStyle BackColor="#506C8C" />
-            <SortedDescendingCellStyle BackColor="#FFFDF8" />
-            <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
-        </asp:GridView>
-        <br /> 
+            <asp:GridView ID="grdProductos" runat="server" AutoGenerateColumns="False" DataSourceID="SqlDataSource1" AllowPaging="True" CellPadding="4" DataKeyNames="IdProducto" ForeColor="#333333" GridLines="None" HorizontalAlign="Center" OnSelectedIndexChanged="grdProductos_SelectedIndexChanged">
+                <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                <Columns>
+                    <asp:CommandField ButtonType="Button" ShowSelectButton="True" />
+                    <asp:BoundField DataField="IdProducto" HeaderText="Id Producto" ReadOnly="True" SortExpression="IdProducto" />
+                    <asp:BoundField DataField="DesPro" HeaderText="Descripción" SortExpression="DesPro" />
+                    <asp:BoundField DataField="PrePro" DataFormatString="{0:c}" HeaderText="Precio" SortExpression="PrePro">
+                    <ItemStyle HorizontalAlign="Right" />
+                    </asp:BoundField>
+                </Columns>
+                <EditRowStyle BackColor="#999999" />
+                <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" HorizontalAlign="Center" />
+                <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" HorizontalAlign="Center" />
+                <PagerSettings FirstPageText="Primera" LastPageText="Última" Mode="NextPreviousFirstLast" NextPageText="Siguiente" PreviousPageText="Anterior" />
+                <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+                <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                <SortedAscendingCellStyle BackColor="#E9E7E2" />
+                <SortedAscendingHeaderStyle BackColor="#506C8C" />
+                <SortedDescendingCellStyle BackColor="#FFFDF8" />
+                <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
+            </asp:GridView>
+            <br /> 
         </div>
 
         <div id="valoresProductos">
@@ -87,15 +87,12 @@
                 <asp:Button ID="btnCancelar" runat="server" Text="Cancelar" Visible="false" OnClick="btnCancelar_Click"/>
             </div>
         </div>
-
     </div>
 
-    <asp:Label ID="lblMensajes" ForeColor="red" runat="server"></asp:Label> 
-
     <div id="resultados"> 
+        <asp:Label ID="lblMensajes" ForeColor="red" runat="server"></asp:Label> 
         <asp:Label ID="lblResultado" runat="server"></asp:Label> 
         <br />     
     </div>
-
 
 </asp:Content>

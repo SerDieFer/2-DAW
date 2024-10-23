@@ -103,7 +103,8 @@ body {
 }
 
 #resultados {
-    margin: -12.5px auto;
+    display: flex;
+    height: 100px;
 }
 
     #resultados span {
@@ -112,6 +113,7 @@ body {
         justify-content: center;
         align-content: center;
         align-items: center;
+        font-weight:800;
     }
 
     #resultados h4 {
@@ -163,6 +165,11 @@ body {
     justify-content: space-between;
 }
 
+    #valoresProductos input,
+    #valoresProductos select {
+        padding: 0.4em;
+    }
+
 #botonesValoresProducto {
     display: flex;
     gap: 5px;
@@ -187,3 +194,16 @@ body {
         width: calc(100%);
         justify-content: space-between;
     }
+
+    #gridTable table tr:last-child *{
+        width: 0px;
+    }
+
+        #gridTable table tr:first-child * {
+            width: 0px;
+            text-align:initial;
+        }
+
+        #gridTable table tr:first-child th:last-child {
+            text-align: right;
+        }

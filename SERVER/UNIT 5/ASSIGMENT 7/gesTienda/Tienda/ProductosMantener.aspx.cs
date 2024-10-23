@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -18,51 +19,54 @@ namespace Tienda
         }
 
         // MÉTODO PARA CONFIGURAR LA VISIBILIDAD DE LOS BOTONES
-        private void FnConfigureButtonsVisibility(bool cancelarVisible, bool borrarVisible, 
-                                                  bool eliminarVisible, bool nuevoVisible, 
-                                                  bool editarVisible, bool insertarVisible, 
-                                                  bool modificarVisible)
+        private void FnConfigureButtonsVisibility(bool? all = null, bool cancelar = false, 
+                                                  bool eliminar = false, bool nuevo = false, 
+                                                  bool editar = false, bool insertar = false, 
+                                                  bool modificar = false, bool borrar = false)
         {
-            btnCancelar.Visible = cancelarVisible;
-            btnBorrar.Visible = borrarVisible;
-            btnEliminar.Visible = eliminarVisible;
-            btnNuevo.Visible = nuevoVisible;
-            btnEditar.Visible = editarVisible;
-            btnInsertar.Visible = insertarVisible;
-            btnModificar.Visible = modificarVisible;
+            if (all == null)
+            {
+                btnCancelar.Visible = cancelar;
+                btnBorrar.Visible = borrar;
+                btnEliminar.Visible = eliminar;
+                btnNuevo.Visible = nuevo;
+                btnEditar.Visible = editar;
+                btnInsertar.Visible = insertar;
+                btnModificar.Visible = modificar;
+            }
+            else
+            {
+                btnCancelar.Visible = (bool)all;
+                btnBorrar.Visible = (bool)all;
+                btnEliminar.Visible = (bool)all;
+                btnNuevo.Visible = (bool)all;
+                btnEditar.Visible = (bool)all;
+                btnInsertar.Visible = (bool)all;
+                btnModificar.Visible = (bool)all;
+            }
         }
 
         // MÉTODO PARA CONFIGURAR LA VISIBILIDAD DE LOS TEXTBOXES/DDL(INPUTS)
-        private void FnConfigureInputStatus(bool? enabledID = null, bool? enabledDesc = null,
-                                            bool? enabledPre = null, bool? enabledTipo = null,
-                                            bool? enabledUnidad = null, bool? enabledAll = null)
+        private void FnConfigureInputStatus(bool? all = null, bool id = false, 
+                                            bool pre = false, bool tipo = false,
+                                            bool unidad = false, bool desc = false)
         {
-            // SI ENABLEDALL TIENE UN VALOR, ESE VALOR SE APLICARÁ A TODOS LOS INPUTS
-            if (enabledAll.HasValue)
+            if (all == null)
             {
-                txtbIdProducto.Enabled = enabledAll.Value;
-                txtbDescProducto.Enabled = enabledAll.Value;
-                txtbPreProducto.Enabled = enabledAll.Value;
-                ddlTipoProducto.Enabled = enabledAll.Value;
-                ddlUnidadProducto.Enabled = enabledAll.Value;
-                return;
+                txtbIdProducto.Enabled = id;
+                txtbDescProducto.Enabled = desc;
+                txtbPreProducto.Enabled = pre;
+                ddlTipoProducto.Enabled = tipo;
+                ddlUnidadProducto.Enabled = unidad;
             }
-
-            // DE LO CONTRARIO, SE APLICAN LOS VALORES INDIVIDUALES SI ESTÁN DEFINIDOS
-            if (enabledID.HasValue)
-                txtbIdProducto.Enabled = enabledID.Value;
-
-            if (enabledDesc.HasValue)
-                txtbDescProducto.Enabled = enabledDesc.Value;
-
-            if (enabledPre.HasValue)
-                txtbPreProducto.Enabled = enabledPre.Value;
-
-            if (enabledTipo.HasValue)
-                ddlTipoProducto.Enabled = enabledTipo.Value;
-
-            if (enabledUnidad.HasValue)
-                ddlUnidadProducto.Enabled = enabledUnidad.Value;
+            else
+            {
+                txtbIdProducto.Enabled = (bool)all;
+                txtbDescProducto.Enabled = (bool)all;
+                txtbPreProducto.Enabled = (bool)all;
+                ddlTipoProducto.Enabled = (bool)all;
+                ddlUnidadProducto.Enabled = (bool)all;
+            }
         }
 
         // MÉTODO PARA DEJAR LOS INPUTS DE TIPO TXTBOX CON VALORES POR DEFAULT VACÍOS
@@ -84,7 +88,7 @@ namespace Tienda
             lblMensajes.Text = "";
 
             // DESACTIVAMOS LA EDICIÓN DE TODOS LOS INPUTS
-            FnConfigureInputStatus(enabledAll:false);
+            FnConfigureInputStatus(all: false);
 
             // SELECCIONAMOS EL ID RELACIONADO A LA FILA SELECCIONADA
             string StrIdProducto = grdProductos.SelectedRow.Cells[1].Text;
@@ -111,43 +115,42 @@ namespace Tienda
                     conexion.Open();
 
                     // CREAMOS UN COMANDO (SCRIPT A EJECUTAR) PARA ESTA CONEXIÓN
-                    SqlCommand comando = new SqlCommand(StrComandoSql, conexion);
-
-                    // AGREGAMOS EL PARÁMETRO
-                    comando.Parameters.AddWithValue("@IdProducto", StrIdProducto);
-
-                    // INICIAMOS LA LECTURA CON EL READER
-                    SqlDataReader reader = comando.ExecuteReader();
-
-                    // SI EL READER ENCUENTRA FILAS
-                    if (reader.HasRows)
+                    using (SqlCommand comando = new SqlCommand(StrComandoSql, conexion))
                     {
-                        // PROCEDE A LEER CELDA POR CELDA
-                        reader.Read();
 
-                        // ASIGNAMOS LOS VALORES A CADA TIPO
-                        txtbIdProducto.Text = reader["IdProducto"].ToString();
-                        txtbDescProducto.Text = reader["DesPro"].ToString();
-                        txtbPreProducto.Text = string.Format("{0:c}", reader.GetDecimal(2));
-                        ddlUnidadProducto.SelectedItem.Selected = false;
-                        ddlUnidadProducto.SelectedItem.Text = reader["IdUnidad"].ToString();
-                        ddlTipoProducto.SelectedItem.Selected = false;
-                        ddlTipoProducto.SelectedItem.Text = reader["DesTip"].ToString();
+                        // AGREGAMOS EL PARÁMETRO
+                        comando.Parameters.AddWithValue("@IdProducto", StrIdProducto);
+
+                        // INICIAMOS LA LECTURA CON EL READER
+                        SqlDataReader reader = comando.ExecuteReader();
+
+                        // SI EL READER ENCUENTRA FILAS
+                        if (reader.HasRows)
+                        {
+                            // PROCEDE A LEER CELDA POR CELDA
+                            reader.Read();
+
+                            // ASIGNAMOS LOS VALORES A CADA TIPO
+                            txtbIdProducto.Text = reader["IdProducto"].ToString();
+                            txtbDescProducto.Text = reader["DesPro"].ToString();
+                            txtbPreProducto.Text = string.Format("{0:c}", reader.GetDecimal(2));
+                            ddlUnidadProducto.SelectedItem.Selected = false;
+                            ddlUnidadProducto.SelectedItem.Text = reader["IdUnidad"].ToString();
+                            ddlTipoProducto.SelectedItem.Selected = false;
+                            ddlTipoProducto.SelectedItem.Text = reader["DesTip"].ToString();
+                        }
+                        else
+                        {
+                            // LA LECTURA HA SIDO ERRONEA Y SIN RESULTADOS, POR LO QUE SE REFLEJA EN LOS MENSAJES
+                            lblMensajes.Text = "No existen registros resultantes de la consulta";
+                        }
+
+                        // SE CIERRA EL LECTOR
+                        reader.Close();
+
+                        // PERMITIMOS VER LOS BOTONES DE NUEVO, EDITAR Y ELIMINAR, EL RESTO LOS OCULTAMOS
+                        FnConfigureButtonsVisibility(eliminar: true, nuevo: true, editar: true);
                     }
-                    else
-                    {
-                        // LA LECTURA HA SIDO ERRONEA Y SIN RESULTADOS, POR LO QUE SE REFLEJA EN LOS MENSAJES
-                        lblMensajes.Text = "No existen registros resultantes de la consulta";
-                    }
-
-                    // SE CIERRA EL LECTOR
-                    reader.Close();
-
-                    // PERMITIMOS VER LOS BOTONES DE NUEVO, EDITAR Y ELIMINAR, EL RESTO LOS OCULTAMOS
-                    FnConfigureButtonsVisibility(cancelarVisible: false, borrarVisible: false,
-                                                 eliminarVisible: true, nuevoVisible: true,
-                                                 editarVisible: true, insertarVisible: false,
-                                                 modificarVisible: false);
                 }
                 catch (SqlException ex)
                 {
@@ -170,10 +173,7 @@ namespace Tienda
             lblMensajes.Text = "";
 
             // PERMITIMOS VER SOLO EL BOTÓN DE NUEVO, EL RESTO LOS OCULTAMOS
-            FnConfigureButtonsVisibility(cancelarVisible: false, borrarVisible: false,
-                                         eliminarVisible: false, nuevoVisible: true,
-                                         editarVisible: false, insertarVisible: false,
-                                         modificarVisible: false);
+            FnConfigureButtonsVisibility(nuevo: true);
 
             // DEJAMOS LOS TEXTOS Y VALORES DE ESTOS INPUTS COMO DEFAULT Y VACÍOS
             FnResetInputsTextAndValues();
@@ -182,7 +182,7 @@ namespace Tienda
             grdProductos.SelectedIndex = -1;
 
             // DEJAMOS COMO NO EDITABLE TODOS LOS INPUT
-            FnConfigureInputStatus(enabledAll: false);
+            FnConfigureInputStatus();
 
         }
 
@@ -203,10 +203,7 @@ namespace Tienda
             lblMensajes.Text = "";
 
             // VISIBILIDAD DE LOS BOTONES DESACTIVADA, A EXCEPCION DE CANCELAR E INSERTAR
-            FnConfigureButtonsVisibility(cancelarVisible: true, borrarVisible: false,
-                                         eliminarVisible: false, nuevoVisible: false,
-                                         editarVisible: false, modificarVisible: false,
-                                         insertarVisible: true);
+            FnConfigureButtonsVisibility(cancelar: true, insertar: true);
 
             // RESET DEL TEXTO DE LOS INPUTS
             FnResetInputsTextAndValues();
@@ -215,20 +212,28 @@ namespace Tienda
             grdProductos.SelectedIndex = -1;
 
             // PERMITE EDITAR TODOS LOS INPUTS PARA AÑADIR UN NUEVO ELEMENTO
-            FnConfigureInputStatus(enabledAll:true);
+            FnConfigureInputStatus(true);
 
             // INICIA SELECCIONANDO EL ID
             txtbIdProducto.Focus();
         }
 
-        // TODO ESTO PARA FIXEAR LAS COMAS Y PUNTOS!!!!!!!!!!!
-        protected string FnComaPorPunto(decimal Numero)
+        // FUNCION QUE CONVIERTE UN VALOR DECIMAL A UNA CADENA STRING DETERMINADA
+        // CAMBIA COMA POR PUNTO
+        protected string FnCommaForPoint(decimal num)
         {
-            string StrNumero = Convert.ToString(Numero);
+            string StrNumero = Convert.ToString(num);
             string stNumeroConPunto = String.Format("{0}", StrNumero.Replace(',', '.'));
-            return (stNumeroConPunto)
+            return (stNumeroConPunto);
         }
 
+        // FUNCION QUE CONVIERTE UN VALOR STRING A OTRA CADENA STRING DETERMINADA
+        // CAMBIA PUNTO POR COMA
+        protected string FnPointForComma(string num)
+        {
+            string stNumeroConComa = String.Format("{0}", num.Replace('.', ','));
+            return (stNumeroConComa);
+        }
 
         // MÉTODO CRUD DE CREACIÓN, CON SQL PARAMETERS PARA EVITAR SQL-INJECTION
         private void FnInsertar()
@@ -245,12 +250,8 @@ namespace Tienda
             strIdUnidad = ddlUnidadProducto.SelectedItem.Text;
             strIdTipo = ddlTipoProducto.SelectedItem.Value;
 
-            // CONVERTIMOS Y LUEGO VERIFICAMOS QUE EL PRECIO SEA UN DECIMAL
-            if (!decimal.TryParse(txtbPreProducto.Text.Replace(',', '.'), out dcPrecio))
-            {
-                lblMensajes.Text = "Formato de precio inválido. Por favor, usa un número válido.";
-                return;
-            }
+            //// CONVERTIMOS EL TEXTO EN UN FORMATO DETERMINADO Y LUEGO CONVERTIMOS ESTE PARA QUE EL PRECIO SEA UN DECIMAL
+            dcPrecio = Convert.ToDecimal(FnPointForComma(txtbPreProducto.Text));
 
             // ASIGNAMOS LA CADENA DE CONEXIÓN A USAR A POSTERIORI
             string StrCadenaConexion = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
@@ -275,9 +276,11 @@ namespace Tienda
                         // AGREGAR LOS PARÁMETROS AL COMANDO PARA EVITAR INYECCIÓN SQL
                         comando.Parameters.AddWithValue("@IdProducto", strIdProducto);
                         comando.Parameters.AddWithValue("@Descripcion", strDescripcion);
-                        comando.Parameters.AddWithValue("@Precio", FnComaPorPunto(dcPrecio));
                         comando.Parameters.AddWithValue("@IdUnidad", strIdUnidad);
                         comando.Parameters.AddWithValue("@IdTipo", strIdTipo);
+
+                        // CON LA FUNCION FNCOMAPUNTO, HACEMOS LA RE-CONVERSION CONCRETA DEL DECIMAL PARA INTRODUCIRLO A SQL COMO STRING
+                        comando.Parameters.AddWithValue("@Precio", FnCommaForPoint(dcPrecio));
 
                         // EJECUTAMOS EL PROCESO
                         int inRegistrosAfectados = comando.ExecuteNonQuery();
@@ -294,10 +297,7 @@ namespace Tienda
                             lblMensajes.Text = "Error al insertar el registro";
 
                             // VISIBILIDAD DE LOS BOTONES DESACTIVADA, A EXCEPCION DE NUEVO
-                            FnConfigureButtonsVisibility(cancelarVisible: true, borrarVisible: false,
-                                                         eliminarVisible: false, nuevoVisible: true,
-                                                         editarVisible: false, modificarVisible: false,
-                                                         insertarVisible: true);
+                            FnConfigureButtonsVisibility(nuevo: true);
                         }
                     }
                 }
@@ -319,7 +319,14 @@ namespace Tienda
             grdProductos.SelectedIndex = -1;
 
             // NO PERMITIMOS EDITAR NINGÚN INPUT
-            FnConfigureInputStatus(enabledAll: false);
+            FnConfigureInputStatus(all: false);
+
+            // DESACTIVAMOS TODOS LOS INPUTS Y LOS RESETEAMOS
+            FnConfigureInputStatus(all: false);
+            FnResetInputsTextAndValues();
+
+            // VISIBILIDAD DE LOS BOTONES DESACTIVADA, A EXCEPCION DE NUEVO
+            FnConfigureButtonsVisibility(nuevo:true);
         }
 
         // CLICK DE INSERTADO QUE EJECUTARÁ LA ACCIÓN DE INSERTAR
@@ -339,17 +346,21 @@ namespace Tienda
             lblMensajes.Text = "";
 
             // PERMITIMOS VER LOS BOTONES DE MODIFICADO Y CANCELADO, EL RESTO LOS OCULTAMOS
-            FnConfigureButtonsVisibility(cancelarVisible: true, borrarVisible: false,
-                                         eliminarVisible: false, nuevoVisible: false,
-                                         editarVisible: false, insertarVisible: false,
-                                         modificarVisible: true);
+            FnConfigureButtonsVisibility(modificar: true, cancelar: true);
 
             // PERMITIMOS USAR TODOS LOS INPUTS MENOS EL DE ID.
-            FnConfigureInputStatus(enabledID: false, enabledDesc: true,
-                                   enabledPre: true, enabledTipo: true,
-                                   enabledUnidad: true);
+            FnConfigureInputStatus(pre:true, tipo:true, unidad:true, desc:true);
 
         }
+
+        // QUITA SÍMBOLO DE EURO
+        protected string FnNoCurrencySymbol(string num)
+        {
+            string stNumEuro = String.Format("{0}", num.Replace("€", ""));
+            stNumEuro = stNumEuro.Trim();
+            return stNumEuro;
+        }
+
 
         // MÉTODO CRUD DE MODIFICADO(UPDATE), CON SQL PARAMETERS PARA EVITAR SQL-INJECTION
         private void FnModificar()
@@ -364,17 +375,16 @@ namespace Tienda
             string strIdTipo = ddlTipoProducto.SelectedItem.Value;
 
             // CREAMOS UN STRING DEL TEXTO EN ESTE INPUT Y ELIMINAMOS POSIBLES VALORES NO NECESARIOS
-            string precioTexto = txtbPreProducto.Text.Trim();
+            string precioTexto = FnNoCurrencySymbol(txtbPreProducto.Text);
+            decimal dcPrecio;
 
-            // EN CASO DE QUE EL USUARIO HAY INTRODUCIDO YA EL VALOR DEL EURO
-            if (precioTexto.EndsWith("€"))
+            if(!decimal.TryParse(FnPointForComma(precioTexto), out decimal preComprobado))
             {
-                // DECIDIMOS BORRARLE ESTE, PARA HACER LA CONVERSIÓN A DECIMAL SIN PROBLEMA POR ESTE ELEMENTO STRING
-                precioTexto = precioTexto.Remove(precioTexto.Length - 1);
+                lblMensajes.Text = "ERROR - Usar solamente formato numérico (1,5)";
+                return;
             }
 
-            // RESULTADO DE ESTE PROCESO YA CONVERTIDO A DECIMAL
-            decimal dcPrecio = Convert.ToDecimal(precioTexto);
+            dcPrecio = preComprobado;
 
             // ASIGNAMOS LA CADENA DE CONEXIÓN A USAR A POSTERIORI
             string StrCadenaConexion = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
@@ -396,41 +406,41 @@ namespace Tienda
                     conexion.Open();
 
                     // CREAMOS UN COMANDO (SCRIPT A EJECUTAR) PARA ESTA CONEXIÓN
-                    SqlCommand comando = new SqlCommand(StrComandoSql, conexion);
+                    using (SqlCommand comando = new SqlCommand(StrComandoSql, conexion))
+                    { 
 
-                    // AGREGAMOS LOS PARÁMETROS PARA EVITAR INYECCIÓN SQL
-                    comando.Parameters.AddWithValue("@Descripcion", strDescripcion);
-                    comando.Parameters.AddWithValue("@Precio", dcPrecio);
-                    comando.Parameters.AddWithValue("@IdUnidad", strIdUnidad);
-                    comando.Parameters.AddWithValue("@IdTipo", strIdTipo);
-                    comando.Parameters.AddWithValue("@IdProducto", strIdProducto);
+                        // AGREGAMOS LOS PARÁMETROS PARA EVITAR INYECCIÓN SQL
+                        comando.Parameters.AddWithValue("@Descripcion", strDescripcion);
+                        comando.Parameters.AddWithValue("@Precio", dcPrecio);
+                        comando.Parameters.AddWithValue("@IdUnidad", strIdUnidad);
+                        comando.Parameters.AddWithValue("@IdTipo", strIdTipo);
+                        comando.Parameters.AddWithValue("@IdProducto", strIdProducto);
 
-                    // EJECUTAMOS EL PROCESO
-                    int registrosAfectados = comando.ExecuteNonQuery();
+                        // EJECUTAMOS EL PROCESO
+                        int registrosAfectados = comando.ExecuteNonQuery();
 
-                    // SI SOLO AFECTA A UN REGISTRO
-                    if (registrosAfectados == 1)
-                    {
-                        // EL REGISTRO HA SIDO EXITOSO, POR LO QUE SE REFLEJA EN LOS MENSAJES
-                        lblMensajes.Text = "Registro actualizado correctamente";
+                        // SI SOLO AFECTA A UN REGISTRO
+                        if (registrosAfectados == 1)
+                        {
+                            // EL REGISTRO HA SIDO EXITOSO, POR LO QUE SE REFLEJA EN LOS MENSAJES
+                            lblMensajes.Text = "Registro actualizado correctamente";
+                        }
+                        else
+                        {
+                            // EL REGISTRO HA SIDO ERRONEO, POR LO QUE SE REFLEJA EN LOS MENSAJES
+                            lblMensajes.Text = "Error al actualizar el registro";
+                        }
+
+                        // PERMITIMOS VER EL BOTON DE NUEVO, EL RESTO LOS OCULTAMOS
+                        FnConfigureButtonsVisibility(nuevo:true);
+
+                        // DESACTIVAMOS TODOS LOS INPUTS Y LOS RESETEAMOS
+                        FnConfigureInputStatus(all: false);
+                        FnResetInputsTextAndValues();
+
+                        // ACTUALIZAMOS LOS DATOS DE LA TABLA
+                        grdProductos.DataBind();
                     }
-                    else
-                    {
-                        // EL REGISTRO HA SIDO ERRONEO, POR LO QUE SE REFLEJA EN LOS MENSAJES
-                        lblMensajes.Text = "Error al actualizar el registro";
-                    }
-
-                    // PERMITIMOS VER EL BOTON DE NUEVO, EL RESTO LOS OCULTAMOS
-                    FnConfigureButtonsVisibility(cancelarVisible: false, borrarVisible: false,
-                                                 eliminarVisible: false, nuevoVisible: true,
-                                                 editarVisible: false, insertarVisible: false,
-                                                 modificarVisible: false);
-
-                    // DESACTIVAMOS TODOS LOS INPUTS
-                    FnConfigureInputStatus(enabledAll: false);
-
-                    // ACTUALIZAMOS LOS DATOS DE LA TABLA
-                    grdProductos.DataBind();
                 }
                 catch (SqlException ex)
                 {
@@ -458,12 +468,8 @@ namespace Tienda
             lblMensajes.Text = "";
 
             // PERMITIMOS VER LOS BOTONES DE BORRADO Y CANCELADO, EL RESTO LOS OCULTAMOS
-            FnConfigureButtonsVisibility(cancelarVisible: true, borrarVisible: true,
-                                         eliminarVisible: false, nuevoVisible: false,
-                                         editarVisible: false, insertarVisible: false,
-                                         modificarVisible: false);
+            FnConfigureButtonsVisibility(borrar: true, cancelar: true);
         }
-
 
         // MÉTODO CRUD DE BORRADO, CON SQL PARAMETERS PARA EVITAR SQL-INJECTION
         private void FnBorrar()
@@ -486,28 +492,29 @@ namespace Tienda
                     conexion.Open();
 
                     // CREAMOS UN COMANDO (SCRIPT A EJECUTAR) PARA ESTA CONEXIÓN
-                    SqlCommand comando = new SqlCommand(StrComandoSql, conexion);
+                    using (SqlCommand comando = new SqlCommand(StrComandoSql, conexion))
+                    { 
+                        // AGREGAR LOS PARÁMETROS PARA EVITAR INYECCIÓN SQL
+                        comando.Parameters.AddWithValue("@IdProducto", strIdProducto);
 
-                    // AGREGAR LOS PARÁMETROS PARA EVITAR INYECCIÓN SQL
-                    comando.Parameters.AddWithValue("@IdProducto", strIdProducto);
+                        // EJECUTAMOS EL PROCESO
+                        int registrosAfectados = comando.ExecuteNonQuery();
 
-                    // EJECUTAMOS EL PROCESO
-                    int registrosAfectados = comando.ExecuteNonQuery();
+                        // SI SOLO AFECTA A UN REGISTRO
+                        if (registrosAfectados == 1)
+                        {
+                            // ESTO EJECUTARÍA EL CÓDIGO DENTRO DE LA FUNCION CANCELAr,
+                            // PARA UNA VEZ ACTUALIZADOS LOS DATOS DEJAR DATOS RESETEADOS UNA VEZ BORRADO
+                            FnCancelar();
 
-                    // SI SOLO AFECTA A UN REGISTRO
-                    if (registrosAfectados == 1)
-                    {
-                        // ESTO EJECUTARÍA EL CÓDIGO DENTRO DE LA FUNCION CANCELAr,
-                        // PARA UNA VEZ ACTUALIZADOS LOS DATOS DEJAR DATOS RESETEADOS UNA VEZ BORRADO
-                        FnCancelar();
-
-                        // EL BORRADO HA SIDO CORRECTO, POR LO QUE SE REFLEJA EN LOS MENSAJES
-                        lblMensajes.Text = "Borrado actualizado correctamente";
-                    }
-                    else
-                    {
-                        // EL BORRADO HA SIDO ERRONEO, POR LO QUE SE REFLEJA EN LOS MENSAJES
-                        lblMensajes.Text = "No se encontró el registro o no se pudo borrar.";
+                            // EL BORRADO HA SIDO CORRECTO, POR LO QUE SE REFLEJA EN LOS MENSAJES
+                            lblMensajes.Text = "Borrado actualizado correctamente";
+                        }
+                        else
+                        {
+                            // EL BORRADO HA SIDO ERRONEO, POR LO QUE SE REFLEJA EN LOS MENSAJES
+                            lblMensajes.Text = "No se encontró el registro o no se pudo borrar.";
+                        }
                     }
                 }
                 catch (SqlException ex)
