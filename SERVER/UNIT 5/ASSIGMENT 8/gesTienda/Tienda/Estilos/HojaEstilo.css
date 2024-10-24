@@ -1,0 +1,223 @@
+﻿html {
+    box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+body {
+    width: 100vw;
+    padding: 0px;
+    margin: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+#cabecera {
+    width: 100vw;
+    padding: 0px;
+}
+
+#cabecera1 {
+    width: 100vw;
+    padding: 0px;
+    background-color: #000000;
+    text-align: right;
+    color: #ffffff;
+}
+
+#cabecera2 {
+    width: 100vw;
+    padding: 0px;
+    background-color: #006699;
+    color: #ffffff;
+    font-size: large;
+    font-weight: bold;
+}
+
+#cabecera3 {
+    width: 100vw;
+    padding-top: 5px;
+    padding-bottom: 8px;
+    text-align: right;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+#cuerpo {
+    width: 100vw;
+    padding: 0px;
+}
+
+#cuerpoLogin {
+    width: 100vw;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#menu {
+    float: left;
+    width: 12vw;
+    padding: 8px;
+    padding-bottom: 5px;
+    border-style: groove;
+    border-width: thin;
+    border-color: blue;
+    /* height: 500px; */
+}
+
+#contenido {
+    float: right;
+    width: 84vw;
+    padding-bottom: 5px;
+}
+
+#pie {
+    clear: both;
+    width: 100%;
+    padding: 0px;
+    text-align: center;
+}
+
+.contenidotitulo {
+    font-size: x-large;
+    font-weight: bold;
+    text-align: center;
+}
+
+.verticalMitad {
+}
+
+.errorSection {
+    border: 2px solid black;
+}
+
+
+.mensajes {
+    width: calc(100vw - 68.75vw);
+    display: flex;
+    text-align: center;
+    margin: 0 auto;
+    justify-content: center;
+}
+
+#total {
+    width: calc(100vw - 68.75vw);
+    display: flex;
+    text-align: unset;
+    margin: 10px auto;
+}
+
+#resultados {
+    display: flex;
+    height: 100px;
+}
+
+    #resultados span {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+        font-weight:800;
+    }
+
+    #resultados h4 {
+        font-size: 18px;
+        margin: 15px;
+    }
+
+.gridview-row .gridview-selected-row {
+    font-weight: normal;
+    width: calc(100vw - 68.75vw);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    width: calc(100vw - 68.75vw);
+    max-width: 88vw;
+    margin: 0 auto;
+    align-items: center;
+    text-align: center;
+}
+
+.grid-header {
+    background: #336699;
+    color: white;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.grid-cell {
+    text-align: center;
+    padding: 5px;
+}
+
+#contenedor {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 20px;
+    max-width: 95%;
+    /*! height:100%; */
+}
+
+#valoresProductos {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: calc(40%);
+    justify-content: space-between;
+}
+
+    #valoresProductos input,
+    #valoresProductos select {
+        padding: 0.4em;
+    }
+
+#botonesValoresProducto {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    flex-direction: row;
+}
+
+    #botonesValoresProducto input {
+        padding: 0.4em;
+        width: 100%;
+    }
+
+
+#gridTable {
+    width: calc(60%);
+    display: flex;
+    flex-direction: column;
+}
+
+
+    #gridTable table {
+        width: calc(100%);
+        justify-content: space-between;
+    }
+
+    #gridTable table tr:last-child *{
+        width: 0px;
+    }
+
+        #gridTable table tr:first-child * {
+            width: 0px;
+            text-align:initial;
+        }
+
+        #gridTable table tr:first-child th:last-child {
+            text-align: right;
+        }
