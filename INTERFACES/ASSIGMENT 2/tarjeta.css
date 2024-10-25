@@ -8,8 +8,8 @@ html {
   box-sizing: inherit;
 
   font-weight: bolder;
-  color:#FEFEFE;
-  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+  color: #fefefe;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 
 body {
@@ -28,12 +28,12 @@ main {
   overflow: clip;
 
   /* APLICAMOS BORDE A TODO EL ELEMENTO MAIN */
-  border: 0.35em solid #FEFEFE;
+  border: 0.35em solid #fefefe;
   border-radius: 2em;
 }
 
 header {
-  background-color:#09090B;
+  background-color: #09090b;
   height: calc(100% - 80%);
   padding: 0.5em 0.5em;
 
@@ -43,32 +43,29 @@ header {
 section {
   display: flex;
   height: calc(100% - 40%);
-  border-top: 0.25em solid #FEFEFE;
-  border-bottom: 0.25em solid #FEFEFE;
+  border-top: 0.25em solid #fefefe;
+  border-bottom: 0.25em solid #fefefe;
 
   article {
-    background-color: #18181B;
+    background-color: #18181b;
     width: calc(100% - 40%);
     padding: 1em 2em;
   }
 
   aside {
     width: calc(100% - 60%);
-  }
 
-  aside * {
-    margin: 0px;
-    padding: 0px;
-    width: 100%;
-    height: 100%;
-  }
-  aside figure img {
-    object-fit: contain;
+    * {
+      margin: 0px;
+      padding: 0px;
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 
 footer {
-  background-color: #09090B;
+  background-color: #09090b;
   height: calc(100% - 80%);
   padding: 2em 2.5em;
 }
