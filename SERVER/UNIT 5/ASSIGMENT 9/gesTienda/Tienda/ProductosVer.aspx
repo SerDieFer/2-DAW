@@ -3,15 +3,15 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="InfoContenido" runat="server">
-
-    <div class="contenidotitulo">Productos</div>
-    <br /> 
-    <div> 
-    <asp:Label ID="lblResultado" runat="server"></asp:Label> 
+    <div id="contenido3">
+        <div class="contenidotitulo">Productos</div>
+            <br /> 
+            <div style="width: 94.5vw;"> 
+            <asp:Label ID="lblResultado" runat="server"></asp:Label> 
+        </div>
+        <br /> 
+        <asp:Label ID="lblMensajes" ForeColor="red" runat="server"></asp:Label> 
+        <br /> 
+        <br /> 
     </div>
-    <br /> 
-    <asp:Label ID="lblMensajes" ForeColor="red" runat="server"></asp:Label> 
-    <br /> 
-    <br /> 
-
 </asp:Content>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -16,6 +18,16 @@ namespace Tienda
             // Lógica en el Page_Load si es necesario
         }
 
+        // HASHEO DE CONTRASEÑAS
+        private string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return Convert.ToBase64String(bytes);
+            }
+        }
+
         private void FnRegistroUsuario()
         {
             ErrorMessage.Text = "";
@@ -27,7 +39,7 @@ namespace Tienda
                 string strIdCliente, strNomCli, strDirCli, strPobCli, strCpoCli, strTelCli, strCorCli;
 
                 strLogin = Email.Text;
-                strPassword = Password.Text;
+                strPassword = HashPassword(Password.Text);
                 strRol = "U";
 
                 // CARGA FECHA Y HORA DEL SISTEMA 
@@ -111,7 +123,34 @@ namespace Tienda
 
         protected void RegisterButton_Click(object sender, EventArgs e)
         {
-            FnRegistroUsuario();
+            // Verificar si la página es válida
+            if (!Page.IsValid)
+            {
+                // Crear una lista para almacenar mensajes de error
+                List<string> errorMessages = new List<string>();
+
+                if (!EmailRequired.IsValid)
+                    errorMessages.Add(EmailRequired.ErrorMessage);
+                if (!emailRegex.IsValid)
+                    errorMessages.Add(emailRegex.ErrorMessage);
+                if (!passwordRegex.IsValid)
+                    errorMessages.Add(passwordRegex.ErrorMessage);
+                if (!PasswordRequired.IsValid)
+                    errorMessages.Add(PasswordRequired.ErrorMessage);
+                if (!PasswordCompare.IsValid)
+                    errorMessages.Add(PasswordCompare.ErrorMessage);
+
+                // Mostrar los mensajes en el control Literal
+                ErrorMessage.Text = string.Join("<br/>", errorMessages);
+                ErrorPanel.Style["display"] = "flex"; // Hacer visible el panel si hay errores
+            }
+            else
+            {
+                // Lógica para el registro de usuario
+                // Aquí puedes llamar a tu método para registrar al usuario
+                FnRegistroUsuario();
+                ErrorPanel.Style["display"] = "none"; // Ocultar el panel si la operación es exitosa
+            }
         }
     }
 }

@@ -3,7 +3,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server"></asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="InfoContenido" runat="server">
-
+    <div id="contenido2">
     <%-- DATOS TABLA PRODUCTOS --%>
     <asp:SqlDataSource 
         ID="SqlDataSource1" 
@@ -90,10 +90,10 @@
         </div>
     </div>
 
-    <div id="resultados"> 
-        <asp:Label ID="lblMensajes" ForeColor="red" runat="server"></asp:Label> 
+    <div id="resultadosMantener"> 
+        <asp:Label ID="lblMensajes" CssClass="mensajesResultado" ForeColor="red" runat="server"></asp:Label> 
         <asp:Label ID="lblResultado" runat="server"></asp:Label> 
         <br />     
     </div>
-
+        </div>
 </asp:Content>

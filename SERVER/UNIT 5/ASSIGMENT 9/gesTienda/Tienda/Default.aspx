@@ -25,53 +25,44 @@
             </div>
             <div id="cuerpoLogin">
                 <h1>GesTienda</h1>
-                <br />
                 <asp:Login ID="Login1" runat="server" OnAuthenticate="Login1_Authenticate">
                     <LayoutTemplate>
-                        <table cellpadding="1" cellspacing="0" style="border-collapse: collapse;">
-                            <tr>
-                                <td>
-                                    <table cellpadding="0" class="auto-style1">
-                                        <tr>
-                                            <td align="center" colspan="2"><h3>Iniciar sesión</h3></td>
-                                        </tr>
-                                        <tr>
-                                            <td align="left" class="auto-style2">
-                                                <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName"><b>Nombre de usuario:</b></asp:Label>
-                                            </td>
-                                            <td class="auto-style2" align="right">
-                                                <asp:RequiredFieldValidator ID="UserNameRequired" runat="server" ControlToValidate="UserName" ErrorMessage="El nombre de usuario es obligatorio." ToolTip="El nombre de usuario es obligatorio." ValidationGroup="Login1">*</asp:RequiredFieldValidator>
-                                                <asp:TextBox ID="UserName" runat="server"></asp:TextBox>
-                                            </td>
-                                        </tr>
-                                        <br />
-                                        <tr>
-                                            <td align="left">
-                                                <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password"><b>Contraseña:</b></asp:Label>
-                                            </td>
-                                            <td align="right">
-                                                <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="Password" ErrorMessage="La contraseña es obligatoria." ToolTip="La contraseña es obligatoria." ValidationGroup="Login1">*</asp:RequiredFieldValidator>
-                                                <asp:TextBox ID="Password" runat="server" TextMode="Password"></asp:TextBox>
-                                            </td>
-                                        </tr>
-                                        <br />
-                                        <tr>
-                                            <td class="specialRegistry" align="center" colspan="2" style="color: Red; height: 2em">
-                                                <asp:Literal ID="FailureText" runat="server" EnableViewState="False"></asp:Literal>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td align="center" colspan="2" class="specialRegistry">
-                                                <asp:Button ID="LoginButton" runat="server" CommandName="Login" Text="Inicio de sesión" ValidationGroup="Login1" Width="100%" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
+                            <table cellpadding="0" class="auto-style1">
+                                <tr>
+                                    <td align="center" colspan="2"><h3>Iniciar sesión</h3></td>
+                                </tr>
+                                <tr>
+                                    <td align="left" class="auto-style2">
+                                        <asp:Label ID="UserNameLabel" runat="server" AssociatedControlID="UserName"><b>Nombre de usuario:</b></asp:Label>
+                                    </td>
+                                    <td class="auto-style2" align="right">
+                                        <asp:RequiredFieldValidator ID="UserNameRequired" runat="server" ControlToValidate="UserName" ErrorMessage="El nombre de usuario es obligatorio." ToolTip="El nombre de usuario es obligatorio." ValidationGroup="Login1">*</asp:RequiredFieldValidator>
+                                        <asp:TextBox ID="UserName" runat="server"></asp:TextBox>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left">
+                                        <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password"><b>Contraseña:</b></asp:Label>
+                                    </td>
+                                    <td align="right">
+                                        <asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="Password" ErrorMessage="La contraseña es obligatoria." ToolTip="La contraseña es obligatoria." ValidationGroup="Login1">*</asp:RequiredFieldValidator>
+                                        <asp:TextBox ID="Password" runat="server" TextMode="Password"></asp:TextBox>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="specialRegistry" align="center" colspan="2" style="color: Red; height: 2em">
+                                        <asp:Literal ID="FailureText" runat="server" EnableViewState="False"></asp:Literal>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" colspan="2" class="specialRegistry">
+                                        <asp:Button ID="LoginButton" runat="server" CommandName="Login" Text="INICIAR SESIÓN" ValidationGroup="Login1" Width="100%" Height="2em" />
+                                    </td>
+                                </tr>
+                            </table>
                     </LayoutTemplate>
                 </asp:Login>
-                <asp:LinkButton PostBackUrl="~/Registrarse.aspx" runat="server">Registrarse</asp:LinkButton>
+                    <asp:LinkButton PostBackUrl="~/Registrarse.aspx" runat="server" >Registrarse</asp:LinkButton>
             </div>
             <div id="pie">
                 <br />

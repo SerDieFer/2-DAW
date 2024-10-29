@@ -9,9 +9,9 @@
 }
 
 body {
-    width: 100vw;
+    width: 98vw;
     padding: 0px;
-    margin: 0px;
+    margin: auto;
     font-family: Arial, Helvetica, sans-serif;
     font-size: small;
     background-color: #FFFFFF;
@@ -19,12 +19,12 @@ body {
 }
 
 #cabecera {
-    width: 100vw;
+    width: 98vw;
     padding: 0px;
 }
 
 #cabecera1 {
-    width: 100vw;
+    width: 98vw;
     padding: 0px;
     background-color: #000000;
     text-align: right;
@@ -32,7 +32,7 @@ body {
 }
 
 #cabecera2 {
-    width: 100vw;
+    width: 98vw;
     padding: 0px;
     background-color: #006699;
     color: #ffffff;
@@ -41,7 +41,7 @@ body {
 }
 
 #cabecera3 {
-    width: 100vw;
+    width: 98vw;
     padding-top: 5px;
     padding-bottom: 8px;
     text-align: right;
@@ -50,9 +50,29 @@ body {
 }
 
 #cuerpo {
-    width: 100vw;
+    width: 98vw;
     padding: 0px;
 }
+
+a {
+    margin-top: 20px;
+}
+
+h1 {
+    text-align:center;
+}
+
+.welcome {
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+}
+
+    .welcome h1 {
+        text-align:unset;
+        padding: 0px;
+        margin: 0px;
+    }
 
 .auto-style1 td:not(.specialRegistry) {
     height: 2.5em;
@@ -65,27 +85,38 @@ body {
 
     .registroUsuarioTabla td:not(.specialRegistry) {
         height: 2.5em;
+        width: 98vw;
     }
 
-.registroUsuarioTabla label {
-    font-weight:600;
-}
+    .registroUsuarioTabla .filaEspecial td span {
+        width: 98vw;
+        display:flex;
+        flex-direction:column;
+    }
+
+    .registroUsuarioTabla tbody * {
+        gap: 0.5em;
+    }
+
+    .registroUsuarioTabla label {
+        font-weight: 600;
+    }
 
 .registroTdRight {
     width: 75%;
 }
 
-.registroTdRight input {
-    width: 100%;
-}
+    .registroTdRight input {
+        width: 100%;
+    }
 
 .registroTdLeft {
     width: 25%;
-    padding-right:2em;
+    padding-right: 2em;
 }
 
 #cuerpoLogin {
-    width: 100vw;
+    width: 98vw;
     padding: 0px;
     display: flex;
     flex-direction: column;
@@ -94,7 +125,7 @@ body {
 }
 
 #cuerpoRegistro {
-    width: 100vw;
+    width: 98vw;
     padding: 0px;
     display: flex;
     flex-direction: column;
@@ -114,14 +145,25 @@ body {
 }
 
 #contenido {
-    float: right;
-    width: 84vw;
+    width: 86vw;
     padding-bottom: 5px;
+}
+
+#contenido2 {
+    width: 98vw;
+    padding-bottom: 5px;
+}
+
+#contenido3 {
+    width: 74vw;
+    padding-bottom: 5px;
+    float: right;
+    padding-left: 20px;
 }
 
 #pie {
     clear: both;
-    width: 100%;
+    width: 98vw;
     padding: 0px;
     text-align: center;
 }
@@ -149,30 +191,42 @@ body {
 }
 
 #total {
-    width: calc(100vw - 68.75vw);
     display: flex;
-    text-align: unset;
-    margin: 10px auto;
+    text-align: left;
+    justify-content: center;
+    align-items: inherit;
+    align-self: normal;
 }
 
 #resultados {
-    display: flex;
-    height: 100px;
+    border: none 0px;
+    /*    display: flex;
+    height: 100px;*/
 }
 
-    #resultados span {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-content: center;
-        align-items: center;
-        font-weight:800;
-    }
+#resultadosMantener {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-content: normal;
+    align-items: normal;
+    font-weight: 800;
+    padding-left: 20px;
+}
 
-    #resultados h4 {
-        font-size: 18px;
-        margin: 15px;
-    }
+#resultados span {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    /*font-weight:800;*/
+}
+
+#resultados h4 {
+    font-size: 18px;
+    margin: 15px;
+}
 
 .gridview-row .gridview-selected-row {
     font-weight: normal;
@@ -206,7 +260,8 @@ body {
     justify-content: center;
     flex-direction: row;
     gap: 20px;
-    max-width: 95%;
+    max-width: 98vw;
+    padding: 0px 0px 0px 20px;
     /*! height:100%; */
 }
 
@@ -248,15 +303,56 @@ body {
         justify-content: space-between;
     }
 
-    #gridTable table tr:last-child *{
-        width: 0px;
-    }
+        #gridTable table tr:last-child * {
+            width: 0px;
+        }
 
         #gridTable table tr:first-child * {
             width: 0px;
-            text-align:initial;
+            text-align: initial;
         }
 
         #gridTable table tr:first-child th:last-child {
             text-align: right;
         }
+
+/* General table styling */
+.table-pedidos-cliente {
+    width: 600px;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+    border: none 0px;
+}
+
+/* Header row styling */
+.table-pedidos-cliente-header {
+    background-color: #5D7B9D;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+}
+
+    .table-pedidos-cliente-header th {
+        padding: 8px;
+        border: none 0px;
+    }
+
+/* Data row styling */
+.table-pedidos-cliente-datos tr td {
+    padding: 8px;
+    text-align: center;
+    border: none 0px;
+    background: #F7F6F3;
+}
+
+/* Data row styling */
+.table-pedidos-cliente-datos * {
+    border: none 0px;
+    text-align: center;
+}
+
+/* Alternating row colors */
+.table-pedidos-cliente-datos tr:nth-child(2n) td {
+    background: #F7F6F3;
+    border: none 0px;
+}

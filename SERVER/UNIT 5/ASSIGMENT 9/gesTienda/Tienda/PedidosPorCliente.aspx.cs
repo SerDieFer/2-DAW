@@ -46,22 +46,26 @@ namespace Tienda
                         lblResultado.Visible = true;
                         lblTotal.Visible = true;
                         StrResultado = "<h4>Detalle de pedidos</h4>";
-                        StrResultado += "<div class='grid-container'>";
-                        StrResultado += "<div class='grid-header'>Núm.Pedido</div>";
-                        StrResultado += "<div class='grid-header'>Fecha</div>";
-                        StrResultado += "<div class='grid-header'>Servido</div>";
-                        StrResultado += "<div class='grid-header'>Cobrado</div>";
-                        StrResultado += "<div class='grid-header'>Total</div>";
+                        StrResultado += "<table border='1' cellspacing='0' cellpadding='4' class='table-pedidos-cliente'>";
+                        StrResultado += "<tr class='table-pedidos-cliente-header'>" +
+                                            "<th>Núm. Pedido</th>" +
+                                            "<th>Fecha</th>" +
+                                            "<th>Servido</th>" +
+                                            "<th>Cobrado</th>" +
+                                            "<th>Total</th>" +
+                                        "</tr>";
                         while (reader.Read())
                         {
-                            StrResultado += "<div class='grid-cell'>" + reader.GetValue(0) + "</div>";
-                            StrResultado += "<div class='grid-cell'>" + string.Format("{0:d}", reader.GetValue(1)) + "</div>";
-                            StrResultado += "<div class='grid-cell'>" + (reader.GetBoolean(2) ? "Sí" : "No") + "</div>";
-                            StrResultado += "<div class='grid-cell'>" + (reader.GetBoolean(3) ? "Sí" : "No") + "</div>";
-                            StrResultado += "<div class='grid-cell'>" + string.Format("{0:c}", reader.GetValue(4)) + "</div>";
+                            StrResultado += "<tr class='table-pedidos-cliente-datos'>";
+                                StrResultado += "<td>" + reader.GetValue(0) + "</td>";
+                                StrResultado += "<td>" + string.Format("{0:d}", reader.GetValue(1)) + "</td>";
+                                StrResultado += "<td>" + (reader.GetBoolean(2) ? "Sí" : "No") + "</td>";
+                                StrResultado += "<td>" + (reader.GetBoolean(3) ? "Sí" : "No") + "</td>";
+                                StrResultado += "<td>" + string.Format("{0:c}", reader.GetValue(4)) + "</td>";
+                            StrResultado += "</tr>";
                             InNumeroFilas++;
                         }
-                        StrResultado += "</div>";
+                        StrResultado += "</table>";
 
                         lblResultado.Text = StrResultado;
                         reader.Close();

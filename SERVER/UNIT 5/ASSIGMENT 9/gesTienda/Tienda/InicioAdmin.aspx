@@ -3,6 +3,8 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="InfoContenido" runat="server">
+        <div class="welcome">
     <h1>Inicio de Administrador</h1>
     <p>Esta es la página de inicio de los administradores. Bienvenido al Panel de Administración la Aplicación Web GesTienda.</p>
+            </div>
 </asp:Content>
