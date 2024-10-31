@@ -15,20 +15,22 @@ body {
 
 /* Estilos para el nav */
 nav {
-    background-color: #09090b;
-    border-radius: 1em;
-
+    display: flex;
     height: 6em;
     margin: 2em;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
     padding: 0 2em;
 
+    background-color: #09090b;
+    border-radius: 1em;
+    
     /* Sombreado del nav */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    /* Alinea verticalmente el contenido del enlace al centro */
+    align-items: center;
+        
+    /* El contenido se distribuye de manera uniforme dentro del contenedor */
+    justify-content: space-between;
 }
 
 /* Estilos para la imagen del logo */
@@ -40,31 +42,45 @@ nav {
 .navList {
     height: 100%;
     display: flex;
+    
+    /* Quita el estilo de la lista */
     list-style: none;
 }
 
 /* Estilo para la primera lista de items */
 .navList:nth-of-type(1) {
+    /* El margen derecho se establece en automático, 
+    lo que empuja la lista lo más a la izquierda posible 
+    dentro de su contenedor flexible */
     margin-right: auto;
 }
 
 /* Estilos para cada item de la lista */
 .navItem {
     display: flex;
+
+    /* Alinea verticalmente el contenido del enlace al centro */
     align-items: center;
+    
 }
 
 /* Estilos para los enlaces de cada item */
 .navItem a {
-    text-decoration: none;
     color: white;
 
-    height: 100%;
-    padding: 0 1em;
-
+    /* Elimina el subrayado del texto del enlace */
+    text-decoration: none;
+    
     display: flex;
+    height: 100%;
+    width: 100%;
+    padding: 0 1em;
+    
+    /* Alinea verticalmente el contenido del enlace al centro */
     align-items: center;
     
+    /* Centra horizontalmente el contenido del enlace */
+    justify-content: center; 
 }
 
 /* Estilos para los enlaces cuando se hace hover */
@@ -78,10 +94,48 @@ nav {
                 transform 0.3s ease;
 
     /* Transformacion de la escala de los enlaces */
-    transform: scale(1.1);
+    transform: scale(1.05);
 
     /* Sombra del enlace*/
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
+@media (max-width: 800px) {
+    /* Estilos para el nav */
+    nav {
+        height: 100%;
+        padding: 1em;
+        flex-direction: column;
+    }
 
+    /* Estilos para la imagen del logo */
+    .festlandLogo {
+        width:60%;
+    }
+
+    /* Estilos para la lista de items del nav */
+    .navList {
+        width: 100%;
+        margin: auto;
+        flex-direction: column;
+    }
+
+    /* Estilo para la lista de items */
+    .navItem {
+        width: 100%;
+        margin-bottom: 1.5em;
+
+        /* Centra horizontalmente el item */
+        justify-content: center;
+    }
+
+    /* Estilos para los enlaces de cada item */
+    .navItem a {
+        padding: 1.25em 0em;
+    }
+
+    /* Estilos para los enlaces cuando se hace hover */
+    .navItem a:hover {
+        transform: scale(1.09);
+    }
+}
