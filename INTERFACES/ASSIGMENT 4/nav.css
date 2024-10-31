@@ -55,15 +55,6 @@ nav {
     margin-right: auto;
 }
 
-/* Estilos para cada item de la lista */
-.navItem {
-    display: flex;
-
-    /* Alinea verticalmente el contenido del enlace al centro */
-    align-items: center;
-    
-}
-
 /* Estilos para los enlaces de cada item */
 .navItem a {
     color: white;
@@ -136,6 +127,6 @@ nav {
 
     /* Estilos para los enlaces cuando se hace hover */
     .navItem a:hover {
-        transform: scale(1.09);
+        transform: scale(1.07);
     }
 }
