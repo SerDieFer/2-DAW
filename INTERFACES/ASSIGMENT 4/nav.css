@@ -1,0 +1,87 @@
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos para el body */
+body {
+    font-family: fantasy;
+    background-color: #f5f5f5;
+}
+
+/* Estilos para el nav */
+nav {
+    background-color: #09090b;
+    border-radius: 1em;
+
+    height: 6em;
+    margin: 2em;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 2em;
+
+    /* Sombreado del nav */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para la imagen del logo */
+.festlandLogo {
+    height: 80%;
+}
+
+/* Estilos para la lista de items del nav */
+.navList {
+    height: 100%;
+    display: flex;
+    list-style: none;
+}
+
+/* Estilo para la primera lista de items */
+.navList:nth-of-type(1) {
+    margin-right: auto;
+}
+
+/* Estilos para cada item de la lista */
+.navItem {
+    display: flex;
+    align-items: center;
+}
+
+/* Estilos para los enlaces de cada item */
+.navItem a {
+    text-decoration: none;
+    color: white;
+
+    height: 100%;
+    padding: 0 1em;
+
+    display: flex;
+    align-items: center;
+    
+}
+
+/* Estilos para los enlaces cuando se hace hover */
+.navItem a:hover {
+    color: #09090b;
+    background-color: #fff;
+    
+    /* Transición de estos elementos */
+    transition: color 0.3s ease, 
+                background-color 0.3s ease, 
+                transform 0.3s ease;
+
+    /* Transformacion de la escala de los enlaces */
+    transform: scale(1.1);
+
+    /* Sombra del enlace*/
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+
