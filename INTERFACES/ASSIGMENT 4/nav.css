@@ -123,7 +123,7 @@ nav {
     /* Estilo para la lista de items */
     .navItem {
         width: 100%;
-        margin-bottom: 1.5em;
+        margin-bottom: 1em;
 
         /* Centra horizontalmente el item */
         justify-content: center;
