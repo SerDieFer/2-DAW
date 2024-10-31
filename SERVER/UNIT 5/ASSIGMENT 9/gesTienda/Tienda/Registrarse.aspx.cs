@@ -16,15 +16,9 @@ namespace Tienda
         protected void Page_Load(object sender, EventArgs e)
         {
             // Lógica en el Page_Load si es necesario
-        }
-
-        // HASHEO DE CONTRASEÑAS
-        private string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
+            if (ErrorMessage.Text == "Usuario registrado correctamente")
             {
-                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(bytes);
+                ErrorMessage.Text = string.Empty;
             }
         }
 
@@ -39,7 +33,7 @@ namespace Tienda
                 string strIdCliente, strNomCli, strDirCli, strPobCli, strCpoCli, strTelCli, strCorCli;
 
                 strLogin = Email.Text;
-                strPassword = HashPassword(Password.Text);
+                strPassword = Password.Text;
                 strRol = "U";
 
                 // CARGA FECHA Y HORA DEL SISTEMA 
@@ -103,6 +97,10 @@ namespace Tienda
                         {
                             // REVERTIR TRANSACCIÓN EN CASO DE ERROR
                             tran.Rollback();
+
+                            Password.Text = string.Empty;
+                            ConfirmPassword.Text = string.Empty;
+
                             string StrError = "<p>Se han producido errores durante el registro</p>";
                             StrError += "<div>Código: " + ex.Number + "</div>";
                             StrError += "<div>Descripción: " + ex.Message + "</div>";
@@ -131,10 +129,12 @@ namespace Tienda
 
                 if (!EmailRequired.IsValid)
                     errorMessages.Add(EmailRequired.ErrorMessage);
-                if (!emailRegex.IsValid)
-                    errorMessages.Add(emailRegex.ErrorMessage);
-                if (!passwordRegex.IsValid)
-                    errorMessages.Add(passwordRegex.ErrorMessage);
+                if (!NifRequired.IsValid)
+                    errorMessages.Add(NifRequired.ErrorMessage);
+                //if (!emailRegex.IsValid)
+                //    errorMessages.Add(emailRegex.ErrorMessage);
+                //if (!passwordRegex.IsValid)
+                //    errorMessages.Add(passwordRegex.ErrorMessage);
                 if (!PasswordRequired.IsValid)
                     errorMessages.Add(PasswordRequired.ErrorMessage);
                 if (!PasswordCompare.IsValid)
@@ -142,14 +142,12 @@ namespace Tienda
 
                 // Mostrar los mensajes en el control Literal
                 ErrorMessage.Text = string.Join("<br/>", errorMessages);
-                ErrorPanel.Style["display"] = "flex"; // Hacer visible el panel si hay errores
             }
             else
             {
                 // Lógica para el registro de usuario
                 // Aquí puedes llamar a tu método para registrar al usuario
                 FnRegistroUsuario();
-                ErrorPanel.Style["display"] = "none"; // Ocultar el panel si la operación es exitosa
             }
         }
     }

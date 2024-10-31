@@ -74,6 +74,14 @@ h1 {
         margin: 0px;
     }
 
+.errorPanel, .filaEspecial {
+    color: Red;
+/*    width: 98vw;*/
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
 .auto-style1 td:not(.specialRegistry) {
     height: 2.5em;
 }

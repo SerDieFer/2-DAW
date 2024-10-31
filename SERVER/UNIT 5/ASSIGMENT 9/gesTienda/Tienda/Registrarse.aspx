@@ -41,6 +41,14 @@
                     </tr>
                     <tr>
                         <td align="left" class="registroTdLeft">
+                            <asp:Label ID="NifLabel" runat="server" AssociatedControlID="Nif"><b>NIF/NIE/CIF:</b></asp:Label>
+                        </td>
+                        <td align="left" class="registroTdRight">
+                            <asp:TextBox ID="Nif" runat="server" placeholder="Introduce tu NIF/NIE/CIF"></asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" class="registroTdLeft">
                             <asp:Label ID="PasswordLabel" runat="server" AssociatedControlID="Password"><b>Contraseña:</b></asp:Label>
                         </td>
                         <td align="left" class="registroTdRight">
@@ -53,14 +61,6 @@
                         </td>
                         <td align="left" class="registroTdRight">
                             <asp:TextBox ID="ConfirmPassword" runat="server" TextMode="Password" placeholder="Confirma tu contraseña"></asp:TextBox>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" class="registroTdLeft">
-                            <asp:Label ID="NifLabel" runat="server" AssociatedControlID="Nif"><b>NIF/NIE/CIF:</b></asp:Label>
-                        </td>
-                        <td align="left" class="registroTdRight">
-                            <asp:TextBox ID="Nif" runat="server" placeholder="Introduce tu NIF/NIE/CIF"></asp:TextBox>
                         </td>
                     </tr>
                     <tr>
@@ -105,18 +105,15 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="specialRegistry" align="center" colspan="2" style="height:4em">
+                        <td class="specialRegistry" align="center" colspan="2" style="height: 4em">
                             <asp:Button ID="RegisterButton" runat="server" CommandName="Registry" Text="INSERTAR" Width="100%" Height="2em" OnClick="RegisterButton_Click" ValidationGroup="validar" />
                         </td>
                     </tr>
                 </table>
-            </div>
 
-            <div class="filaEspecial">
-                <div class="specialRegistry" style="color: Red;">
+                <div class="filaEspecial" style="color: red">
 
-                <%--DE MOMENTO NO LOS PONEMOS OBLIGATORIOS
-                  <asp:RequiredFieldValidator ID="NifRequired" runat="server" ControlToValidate="Nif" ErrorMessage="El NIF/NIE/CIF es obligatorio." ToolTip="El NIF/NIE/CIF es obligatorio." ValidationGroup="validar"></asp:RequiredFieldValidator>
+                    <%--DE MOMENTO NO LOS PONEMOS OBLIGATORIOS           
                   <asp:RequiredFieldValidator ID="NombreRazonSocialRequired" runat="server" ControlToValidate="NombreRazonSocial" ErrorMessage="El nombre/razón social es obligatorio." ToolTip="El nombre/razón social es obligatorio." ValidationGroup="validar"></asp:RequiredFieldValidator>
                   <asp:RequiredFieldValidator ID="DireccionRequired" runat="server" ControlToValidate="Direccion" ErrorMessage="La dirección es obligatoria." ToolTip="La dirección es obligatoria." ValidationGroup="validar"></asp:RequiredFieldValidator>
                   <asp:RequiredFieldValidator ID="PoblacionRequired" runat="server" ControlToValidate="Poblacion" ErrorMessage="La población es obligatoria." ToolTip="La población es obligatoria." ValidationGroup="validar"></asp:RequiredFieldValidator>
@@ -133,7 +130,7 @@
                         Display="Dynamic"
                         Style="display: none;"></asp:RequiredFieldValidator>
 
-                    <asp:RegularExpressionValidator
+                    <%--<asp:RegularExpressionValidator
                         EnableViewState="False"
                         ID="emailRegex"
                         runat="server"
@@ -142,9 +139,16 @@
                         ErrorMessage="El formato del correo electrónico es incorrecto."
                         ValidationGroup="validar"
                         Display="Dynamic"
-                        Style="display: none;"></asp:RegularExpressionValidator>
+                        Style="display: none;"></asp:RegularExpressionValidator>--%>
 
-                    <asp:RegularExpressionValidator
+                    <asp:RequiredFieldValidator
+                        ID="NifRequired" runat="server"
+                        ControlToValidate="Nif"
+                        ErrorMessage="El NIF/NIE/CIF es obligatorio."
+                        ToolTip="El NIF/NIE/CIF es obligatorio."
+                        ValidationGroup="validar"></asp:RequiredFieldValidator>
+
+                    <%--<asp:RegularExpressionValidator
                         EnableViewState="False"
                         ID="passwordRegex"
                         runat="server"
@@ -153,7 +157,7 @@
                         ErrorMessage="La contraseña debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial."
                         ValidationGroup="validar"
                         Display="Dynamic"
-                        Style="display: none;"></asp:RegularExpressionValidator>
+                        Style="display: none;"></asp:RegularExpressionValidator>--%>
 
                     <asp:RequiredFieldValidator
                         EnableViewState="False"
@@ -184,13 +188,12 @@
                     ToolTip="Confirmar contraseña es obligatorio."
                     ValidationGroup="validar"></asp:RequiredFieldValidator>--%>
 
-                    <asp:Panel ID="ErrorPanel" runat="server" Style="display: none;">
-                        <asp:Literal ID="ErrorMessage" runat="server" EnableViewState="False"></asp:Literal>
+                    <asp:Panel ID="ErrorPanel" runat="server" CssClass="errorPanel">
+                        <asp:Literal ID="ErrorMessage" runat="server" EnableViewState="True"></asp:Literal>
+                        <asp:LinkButton PostBackUrl="~/Default.aspx" runat="server">Inicio de sesión</asp:LinkButton>
                     </asp:Panel>
                 </div>
             </div>
-
-             <asp:LinkButton PostBackUrl="~/Default.aspx" runat="server">Inicio de sesión</asp:LinkButton>
 
             <div id="pie">
                 <br />
