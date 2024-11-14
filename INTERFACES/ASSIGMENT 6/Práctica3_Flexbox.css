@@ -3,12 +3,17 @@
   margin: 0;
 }
 
+/* Estilos para el body */
 body {
   color: white;
+  padding: 2em;
 }
 
-.ulLista {
+/* Estilos generales para la lista y sus elementos */
+.sectionLista {
   list-style: none;
+  padding: 0px;
+  margin: 0px;
 
   a {
     list-style: none;
@@ -17,73 +22,204 @@ body {
   }
 }
 
+/* Estilos para el header */
+header {
+
+/* Estilos para la lista del header */
+  .sectionLista {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 1em;
+    padding: 1em 0em;
+
+    * {
+      font-weight: bold;
+      color: #09090b;
+      transition: all 0.5s ease;
+
+      &:hover {
+        transform: scale(1.15);
+      }
+    }
+  }
+}
+
+/* Estilos para el main */
 main {
   background-color: #09090b;
   height: 90vh;
-}
+  width: 90vw;
+  padding: 2em 2em;
 
-nav,
-footer {
-  display: flex;
-  align-items: center;
-}
+  /* Estilos para el nav del main */
+  nav {
+    display: flex;
+    height: 10%;
 
-nav {
-  height: 10%;
-}
-
-nav .ulLista {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-nav #logo {
-  width: 20%;
-}
-
-nav button {
-  padding: 10px;
-}
-
-.contenidoPrincipal {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: center;
-  height: calc(100% - 10%);
-
-  article {
-    width: 100%;
-    margin: 25% 0%;
-
-    #inputArticle {
-      width: 100%;
+    /* Estilos para la primera lista del nav */
+    .sectionLista:nth-of-type(1) {
       display: flex;
-      justify-content: center;
+      align-items: center;
+      gap: 2.5em;
+      
+      /* Estilos para la imagen del logo */
+      img {
+        width: 25%;
+        cursor: pointer;
+        transition: all 0.5s ease;
+        
+        &:hover {
+          transform: scale(1.15);
+        }
+      }
+      
+      /* Estilos para el resto de elemnentos */
+      *:not(img) {
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.5s ease;
+        
+        &:hover {
+          transform: scale(1.25);
+          box-shadow: 0px 0px 10px #09090b;
+        }
+      }
+    }
+    
+    /* Estilos para la segunda lista del nav */
+    .sectionLista:nth-of-type(2) {
+      display: flex;
+      align-items: center;
+      gap: 1.5em;
+      
+      /* Estilos generales para los botones de esta lista */
+      button {
+        padding: 0.5em 2.5em;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.5s ease;
+        
+        &:hover {
+          transform: scale(1.15);
+          box-shadow: 0px 0px 10px #09090b;
+        }
+      }
+      
+      /* Estilos para el botón de Registro */
+      #botonRegistro {
+        color: #09090b;
+        background-color: #fff;
+        border: 1.5px solid #fff;
+      }
+      
+      /* Estilos para el botón de Inicio */
+      #botonInicio {
+        color: #fff;
+        background-color: #09090b;
+        border: 1.5px solid #fff;
+      }
 
-      * {
-        padding: 1rem;
+    }
+  }
+
+  /* Estilos para el contenido principal del main */
+  .contenidoPrincipal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80%;
+    text-align: center;
+
+    /* Estilos generales para todos los elementos dentro de este contenidoPrincipal */
+    * {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 50%;
+      gap: 2.5em;
+
+      /* Estilos para el parrafo y el h1 */
+      p,
+      h1 {
+        width: 100%;
+      }
+
+      /* Estilos para la section de el contenido */
+      #inputArticle {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        gap: 0.15em;
+
+        * {
+          padding: 0.75em 1em;
+        }
+
+        /* Estilos para el input*/
+        #inputSuscripcion {
+          border: 1px solid #fff;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        /* Estilos para el botón*/
+        #botonSuscripcion {
+          font-weight: bold;
+          color: #09090b;
+          background-color: #fff;
+          border: 1px solid #fff;
+          transition: all 0.5s ease;
+
+          &:hover {
+            cursor: pointer;
+            color: #fff;
+            background-color: #09090b;
+            border: 1px solid #fff;
+            box-shadow: 0px 0px 10px #09090b;
+            transform: translateX(-1.5em) scale(1.05);
+          }
+        }
       }
     }
   }
 
+  /* Estilos para el footer del main */
   footer {
-    height: calc(100% - 90%);
-  }
-
-  footer .ulLista {
     display: flex;
-    justify-content: space-between;
-  }
+    flex-direction: row;
+    height: 10%;
 
-  footer .ulLista li:nth-child(1) {
-    width: 75%;
-  }
+    /* Estilos para la lista del footer */
+    .sectionLista {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-  footer .ulLista img {
-    width: 25%;
-    filter: invert(100%);
+      /* Estilos para el parrafo de la lista */
+      p {
+        width: 20%;
+        text-align: end;
+      }
+
+      /* Estilos para las imagenes de la lista */
+      img {
+        width: 3%;
+        filter: invert(100%);
+        cursor: pointer;
+        transition: all 0.5s ease;
+
+        &:hover {
+          transform: scale(1.25);
+        }
+      }
+    }
   }
 }
+
+
