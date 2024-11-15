@@ -2,16 +2,8 @@
 
 let listaOrdenadores = [];
 
-function CrearOrdernador(
-  marca,
-  modelo,
-  ram,
-  disco,
-  pulgadas,
-  fecha,
-  ...accesorios
-) {
-  // PROPIEDADES
+function CrearOrdernador(marca, modelo, ram, disco, pulgadas, fecha, ...accesorios) {
+
   if (isNaN(marca)) this.marca = marca;
   else this.marca = undefined;
 
@@ -27,19 +19,15 @@ function CrearOrdernador(
   if (!isNaN(pulgadas)) this.pulgadas = pulgadas;
   else this.pulgadas = 15.6;
 
-  // this.fecha = isNaN(Date.parse(fecha)) ? Date.now() : Date.parse(fecha);
-
-  // Convertir fecha a un formato legible (YYYY-MM-DD) o usar la fecha actual
   if (isNaN(Date.parse(fecha))) {
-    this.fecha = new Date().toISOString().split("T")[0]; // Formato YYYY-MM-DD
+    this.fecha = new Date().toISOString().split("T")[0];
   } else {
-    this.fecha = new Date(fecha).toISOString().split("T")[0]; // Formato YYYY-MM-DD
+    this.fecha = new Date(fecha).toISOString().split("T")[0];
   }
 
   if (accesorios.length > 0) this.accesorios = accesorios;
   else this.accesorios = [];
 
-  // MÉTODOS
   this.mostrarOrdenador = function () {
     let listaAccesorios = this.accesorios.forEach((accesorios) => {
       listaAccesorios += `- ${accesorios}\n`;
@@ -86,7 +74,6 @@ function CrearOrdernador(
   };
 }
 
-// CREACIÓN DE ORDENADORES
 let ordenador1 = new CrearOrdernador(
   "lenovo",
   "legion",
@@ -131,35 +118,30 @@ let ordenador4 = new CrearOrdernador(
   "teclado"
 );
 
-// FUNCIÓN QUE ME PERMITE AÑADIR MÚLTIPLES ORDENADORES
 function anyadirOrdenadores(...objetoOrdenador) {
   objetoOrdenador.forEach((ordenador) => listaOrdenadores.push(ordenador));
 }
-// LOS AÑADIMOS
+
 anyadirOrdenadores(ordenador1, ordenador2, ordenador3, ordenador4);
 
-// FUNCIÓN QUE NOS MUESTRE TODOS LOS ORDENADORES EN LA LISTA DE ORDENADORES
 function mostrarOrdenadores() {
   return listaOrdenadores;
 }
 
-// LOS MOSTRAMOS
 console.log(mostrarOrdenadores(listaOrdenadores));
 
-// FUNCIÓN QUE AGRUPA LOS ORDENADORES DE LA LISTA POR FECHA ####REDO
 function agruparOrdenadores(listaQueAgrupar) {
-  return listaQueAgrupar.reduce((nuevoObjeto, ordenador) => {
-
-    let fecha = ordenador.fechaAlta;
-    if (!nuevoObjeto[fecha]) {
-      nuevoObjeto[fecha] = 1;
+  return listaQueAgrupar.reduce((accumulator, ordenador) => {
+    let fecha = ordenador.fecha;
+    // Si la fecha ya existe en el acumulador, incrementamos su valor
+    if (accumulator[fecha]) {
+      accumulator[fecha]++;
     } else {
-      if (!nuevoObjeto.includes(fecha))
-      nuevoObjeto[fecha] += 1;
+      // Si no existe, la inicializamos con el valor 1
+      accumulator[fecha] = 1;
     }
-    return nuevoObjeto;
+    return accumulator;
   }, {});
 }
 
-// MOSTRAMOS EL NUEVO OBJETO CON TODAS LAS FECHAS ALMACENADAS
-console.log(agruparOrdenadores(listaOrdenadores));
+let ordenadoresAgrupadosPorFecha5 = console.log(agruparOrdenadores(listaOrdenadores));
