@@ -3,13 +3,13 @@
   margin: 0%;
 }
 
-/* Estilos para el body */
+/* ESTILOS PARA EL BODY */
 body {
   color: white;
   padding:2em 2em;
 }
 
-/* Estilos generales para la lista y sus elementos */
+/* ESTILOS GENERALES PARA LA LISTA Y SUS ELEMENTOS */
 .sectionLista {
   list-style: none;
 
@@ -20,11 +20,11 @@ body {
   }
 }
 
-/* Estilos para el header */
+/* ESTILOS PARA EL HEADER */
 header {
   padding: 0.5em 0em;
 
-/* Estilos para la lista del header */
+/* ESTILOS PARA LA LISTA DEL HEADER */
   .sectionLista {
     display: flex;
     flex-direction: row;
@@ -43,30 +43,30 @@ header {
   }
 }
 
-/* Estilos para el main */
+/* ESTILOS PARA EL MAIN */
 main {
   background-color: #09090b;
   height: 87.5dvh;
   padding: 2em 2em;
 
-  /* Estilos para el nav del main */
+  /* ESTILOS PARA EL NAV DEL MAIN */
   nav {
     display: flex;
     height: 10%;
 
-    /* Estilos para la imagen del logo */
-    img {
-      cursor: pointer;
+    /* ESTILOS PARA LA IMAGEN DEL LOGO */
+    a img {
+      max-width: 200px;
       margin-right: 2em;
     }
 
-    /* Estilos para la primera lista del nav */
+    /* ESTILOS PARA LA PRIMERA LISTA DEL NAV */
     .sectionLista:nth-of-type(1) {
       display: flex;
       align-items: center;
       gap: 2.5em;
       
-      /* Estilos para el resto de elemnentos */
+      /* ESTILOS PARA EL RESTO DE ELEMNENTOS */
       * {
         cursor: pointer;
         border-radius: 5px;
@@ -81,14 +81,14 @@ main {
 
     }
     
-    /* Estilos para la segunda lista del nav */
+    /* ESTILOS PARA LA SEGUNDA LISTA DEL NAV */
     .sectionLista:nth-of-type(2) {
       display: flex;
       align-items: center;
       gap: 1.5em;
       margin-left: auto;
       
-      /* Estilos generales para los botones de esta lista */
+      /* ESTILOS GENERALES PARA LOS BOTONES DE ESTA LISTA */
       button {
         padding: 0.5em 2.5em;
         border-radius: 5px;
@@ -101,14 +101,14 @@ main {
         }
       }
       
-      /* Estilos para el botón de Registro */
+      /* ESTILOS PARA EL BOTÓN DE REGISTRO */
       #botonRegistro {
         color: #09090b;
         background-color: #fff;
         border: 1.5px solid #fff;
       }
       
-      /* Estilos para el botón de Inicio */
+      /* ESTILOS PARA EL BOTÓN DE INICIO */
       #botonInicio {
         color: #fff;
         background-color: #09090b;
@@ -118,7 +118,7 @@ main {
     }
   }
 
-  /* Estilos para el contenido principal del main */
+  /* ESTILOS PARA EL CONTENIDO PRINCIPAL DEL MAIN */
   .contenidoPrincipal {
     display: flex;
     flex-direction: column;
@@ -127,7 +127,7 @@ main {
     height: 80%;
     text-align: center;
 
-    /* Estilos generales para todos los elementos dentro de este contenidoPrincipal */
+    /* ESTILOS GENERALES PARA TODOS LOS ELEMENTOS DENTRO DE ESTE CONTENIDOPRINCIPAL */
     * {
       display: flex;
       flex-direction: column;
@@ -136,14 +136,14 @@ main {
       width: 50%;
       gap: 2em;
 
-      /* Estilos para el parrafo y el h1 */
+      /* ESTILOS PARA EL PARRAFO Y EL H1 */
       p,
       h1 {
         width: 100%;
         word-wrap: break-word;
       }
 
-      /* Estilos para la section de el contenido */
+      /* ESTILOS PARA LA SECTION DE EL CONTENIDO */
       #inputArticle {
         display: flex;
         flex-direction: row;
@@ -154,7 +154,7 @@ main {
           padding: 0.75em 1em;
         }
 
-        /* Estilos para el input*/
+        /* ESTILOS PARA EL INPUT*/
         #inputSuscripcion {
           border: 1px solid #fff;
 
@@ -163,7 +163,7 @@ main {
           }
         }
 
-        /* Estilos para el botón*/
+        /* ESTILOS PARA EL BOTÓN*/
         #botonSuscripcion {
           font-weight: bold;
           color: #09090b;
@@ -184,26 +184,26 @@ main {
     }
   }
 
-  /* Estilos para el footer del main */
+  /* ESTILOS PARA EL FOOTER DEL MAIN */
   footer {
     display: flex;
     flex-direction: row;
 
-    /* Estilos para la lista del footer */
+    /* ESTILOS PARA LA LISTA DEL FOOTER */
     .sectionLista {
       width: 100%;
       display: flex;
       justify-content: space-evenly;
       align-items: center;
 
-      /* Estilos para el parrafo de la lista */
+      /* ESTILOS PARA EL PARRAFO DE LA LISTA */
       p {
         width: 15%;
         word-wrap: break-word;
         text-align: center;
       }
 
-      /* Estilos para las imagenes de la lista */
+      /* ESTILOS PARA LAS IMAGENES DE LA LISTA */
       img {
         min-width:40px;
         min-height:40px;
@@ -265,14 +265,14 @@ main {
     }
 
     footer {
-      /* Ajuste de la sección del footer */
+      /* AJUSTE DE LA SECCIÓN DEL FOOTER */
       .sectionLista {
         flex-direction: row;
         width: 100%;
         gap: 1em;
       }
     
-      /* Ajuste de imágenes */
+      /* AJUSTE DE IMÁGENES */
       img {
         min-width:40px;
         min-height:40px;
