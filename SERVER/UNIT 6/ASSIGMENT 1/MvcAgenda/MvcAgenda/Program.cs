@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MvcAgenda.Data;
-using System.IO;  // Asegúrate de importar System.IO para trabajar con rutas de archivos
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,13 +16,24 @@ if (string.IsNullOrEmpty(userProfile))
     userProfile = Directory.GetCurrentDirectory();  // Usamos el directorio actual del proyecto
 }
 
-// Construir la ruta completa usando "Desktop" como base
-string dbFolderPath = Path.Combine(userProfile, "2-DAW", "SERVER", "DBMIGRATIONS"); // Ruta donde deseas almacenar la BD
+// Definir la ruta a la base de datos dependiendo de la estructura de carpetas
+string dbFolderPath;
 
-// Verificar si la ruta de la base de datos es válida
-if (string.IsNullOrEmpty(dbFolderPath))
+// Verificar si la carpeta "2-DAW" existe en el escritorio
+if (Directory.Exists(Path.Combine(userProfile, "2-DAW")))
 {
-    throw new InvalidOperationException("La ruta para la base de datos es inválida.");
+    dbFolderPath = Path.Combine(userProfile, "2-DAW", "SERVER", "DBMIGRATIONS");
+}
+
+// Verificar si la carpeta "DAW" existe en el escritorio y contiene "2-DAW"
+else if (Directory.Exists(Path.Combine(userProfile, "DAW")))
+{
+    // Elegir "2-DAW", ajustar si se necesita otra carpeta
+    dbFolderPath = Path.Combine(userProfile, "DAW", "2-DAW", "SERVER", "DBMIGRATIONS");
+}
+else
+{
+    throw new DirectoryNotFoundException("No se encontró la carpeta '2-DAW' ni 'DAW' en el escritorio.");
 }
 
 // Asegurarse de que la carpeta exista, si no, crearla
