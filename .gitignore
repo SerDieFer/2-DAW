@@ -400,3 +400,6 @@ FodyWeavers.xsd
 # Remote Repositories Carpets
 /CLIENT/GITHUB CLASSROOM
 /INTERFACES/GITHUB CLASSROOM
+
+#DB Migrations for Visual Studio .NET MVC 
+/SERVER/DBMIGRATIONS

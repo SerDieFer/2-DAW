@@ -21,7 +21,7 @@ namespace MvcAgenda.Data
 
         // ---------------------------------------------------------------------------- //
 
-        // MÉTODO QUE CONFIGURA EL MODELO DE LA BASE DE DATOS CUANDO SE CREA
+        // MÉTODO OVERRIDE QUE CONFIGURA EL MODELO DE LA BASE DE DATOS CUANDO SE CREA
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
             // DESACTIVAR ELIMINACIÓN EN CASCADA Y ASIGNAR UN COMPORTAMIENTO RESTRICTIVO PARA LAS RELACIONES
