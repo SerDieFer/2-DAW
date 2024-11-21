@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<meta charset="UTF-8">
+	<title>Unidad 3 - Ponte a Prueba</title>
+	<style>
+	 #rejilla {
+	     width: 50vw;
+	     height: 50vh;
+	     margin: auto;
+	     display: grid;
+	     grid-template-columns: 1fr 1fr 1fr 1fr;
+	     gap: 1em;
+	     justify-content: stretch;
+	 }
+
+	 .celda {
+		cursor: pointer;
+	     padding: 1em;
+	     background-color: #c2d9ed;
+	     display: flex;
+	     align-items: center;
+	     justify-content: center;
+	 }
+
+	 .activa {
+	     background-color: #6ea8db;
+	 }
+	</style>
+    </head>
+    <body>
+	<div id="rejilla">
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda activa">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	    <div class="celda">celda</div>
+	</div>
+    </body>
+
+    <script>
+	
+	function colorAleatorio() {
+    let x = Math.floor(Math.random() * 256);
+    let y = Math.floor(Math.random() * 256);
+    let z = Math.floor(Math.random() * 256);
+    let bgColor = "rgb(" + x + "," + y + "," + z + ")";
+		return(bgColor);
+	}
+
+		function ManejaBoton(){
+			this.handleEvent = function(event)
+			{
+				document.body.style.backgroundColor=colorAleatorio();				
+			}
+		}
+
+     rejilla.onclick=function(event)
+	 {
+		//let celdas = rejilla.getElementsByTagName('div');
+		if (event.target.id != 'rejilla' && event.target.id != 'boton'){
+		event.target.classList.toggle('activa');
+		}
+		
+		 }
+
+	//añade un botón tras la rejilla que cambie el color de fondo de la página
+
+	 let boton = document.createElement('button');
+	 boton.id = 'boton';
+	 boton.textContent = "Color Fondo";	
+	 let objManejaBoton = new ManejaBoton();
+	 boton.addEventListener('click', objManejaBoton);
+	 rejilla.append(boton);
+
+    </script>
+</html>
