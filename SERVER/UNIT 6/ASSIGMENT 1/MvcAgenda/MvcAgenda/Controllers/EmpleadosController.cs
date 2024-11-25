@@ -57,7 +57,7 @@ namespace MvcAgenda.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,FechaNacimiento,DepartamentoId")] Empleado empleado)
+        public async Task<IActionResult> Create([Bind("Id,Nombre,FechaNacimiento,Teléfono,Email,DepartamentoId")] Empleado empleado)
         {
             if (ModelState.IsValid)
             {
@@ -91,7 +91,7 @@ namespace MvcAgenda.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,FechaNacimiento,DepartamentoId")] Empleado empleado)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,FechaNacimiento,Teléfono,Email,DepartamentoId")] Empleado empleado)
         {
             if (id != empleado.Id)
             {

@@ -68,7 +68,7 @@ var app = builder.Build();
 // Configuración del pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
-    app.UseMigrationsEndPoint();
+    app.UseMigrationsEndPoint();    
 }
 else
 {

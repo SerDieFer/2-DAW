@@ -23,7 +23,25 @@ namespace MvcAgenda.Models
         [DataType(DataType.Date)]
 
             // PROPIEDAD QUE ALMACENA LA FECHA DE NACIMIENTO DEL EMPLEADO
-            public DateTime FechaNacimiento { get; set; }
+            public DateTime? FechaNacimiento { get; set; }
+
+        // ---------------------------------------------------------------------------- //
+
+        // ESPECIFICA EL NOMBRE PARA EL TELÉFONO EN LA INTERFAZ
+        [Display(Name = "Teléfono")]
+
+            // PROPIEDAD QUE ALMACENA EL TELÉFONO DEL EMPLEADO
+            public string? Teléfono { get; set; }
+
+        // ---------------------------------------------------------------------------- //
+
+        // ESPECIFICA EL NOMBRE PARA EL EMAIL EN LA INTERFAZ
+        [Display(Name = "Correo electrónico")]
+        // VALIDACIÓN QUE COMPRUEBA EL FORMATO DE CORREO, Y ESPECIFICA SU MENSAJE DE ERROR
+        [EmailAddress(ErrorMessage = "Dirección de correo electrónico invalida")]
+
+            // PROPIEDAD QUE ALMACENA EL EMAIL DEL EMPLEADO
+            public string? Email { get; set; }
 
         // ---------------------------------------------------------------------------- //
 
