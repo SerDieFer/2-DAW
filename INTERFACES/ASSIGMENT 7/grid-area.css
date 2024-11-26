@@ -1,0 +1,87 @@
+main{
+    padding: 2em;
+    border: 1em solid #07425E;
+    border-radius: 3em;
+}
+
+.container {  
+    display: grid;
+    gap: 1em;
+    height: 50vh;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-areas:
+    "f1_c1-2 f1_c1-2 f1_c3 f1_c4 f1-2_c5"
+    "f2-3_c1 f2_c2 f2-3_c3-4 f2-3_c3-4 f1-2_c5"
+    "f2-3_c1 f3-4_c2 f2-3_c3-4 f2-3_c3-4 f3_c5"
+    "f4_c1 f3-4_c2 f4_c3 f4_c4-5 f4_c4-5";
+
+    * {
+        border-radius: 1em;
+    }
+}
+
+.f1_c1-2 { 
+    grid-area: f1_c1-2; 
+    background-color: #009E5D;
+}
+
+.f1_c3 { 
+    grid-area: f1_c3; 
+    background-color: #009E9A;
+}
+
+.f1_c4 { 
+    grid-area: f1_c4;
+    background-color: #0080B8;
+}
+
+.f2-3_c1 { 
+    grid-area: f2-3_c1;
+    background-color: #71B34D;
+
+    grid-row: 2 / 5;
+    z-index: 1;
+}
+
+.f2_c2 { 
+    grid-area: f2_c2;
+    background-color: #41AC6E;
+}
+
+.f2-3_c3-4 { 
+    grid-area: f2-3_c3-4;
+    background-color: #907F95;
+}
+
+.f3_c5 { 
+    grid-area: f3_c5;
+    background-color: #A763A2;
+}
+
+
+.f4_c1 { 
+    grid-area: f4_c1;
+    background-color: #F4B158;
+    /* display: none; */
+}
+
+.f3-4_c2 { 
+    grid-area: f3-4_c2;
+    background-color:#D49B5D;
+}
+
+.f4_c3 { 
+    grid-area: f4_c3;
+    background-color: #EB8176;
+}
+
+.f4_c4-5 { 
+    grid-area: f4_c4-5;
+    background-color: #E7769F;
+}
+
+.f1-2_c5 { 
+    grid-area: f1-2_c5;
+    background-color: #3E55A0;
+}
