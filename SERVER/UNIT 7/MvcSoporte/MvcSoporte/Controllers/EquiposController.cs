@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using MvcSoporte.Models;
 
 namespace MvcSoporte.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class EquiposController : Controller
     {
         private readonly MvcSoporteContexto _context;
@@ -36,7 +38,12 @@ namespace MvcSoporte.Controllers
 
             var equipo = await _context.Equipos
                 .Include(e => e.Localizacion)
+                .Include(e => e.Avisos)
+                .ThenInclude(a => a.Empleado)
+                .Include(e => e.Avisos)
+                .ThenInclude(b => b.TipoAveria)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (equipo == null)
             {
                 return NotFound();

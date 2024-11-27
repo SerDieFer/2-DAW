@@ -1,34 +1,35 @@
-﻿@model IEnumerable<MvcSoporte.Models.Empleado>
+﻿@* @model IEnumerable<MvcSoporte.Models.Empleado> *@ 
+@model PaginatedList<MvcSoporte.Models.Empleado> 
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Empleados</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Crear nuevo empleado</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nombre)
+                @* @Html.DisplayNameFor(model => model.Nombre) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @* @Html.DisplayNameFor(model => model.Email) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Telefono)
+                @* @Html.DisplayNameFor(model => model.Telefono) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaNacimiento)
+                @* @Html.DisplayNameFor(model => model.FechaNacimiento) *@
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
@@ -48,6 +49,22 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+
+@* Poner botones de página Siguiente y Anterior *@ 
+@{ 
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : ""; 
+    var nextDisabled = !Model.HasNextPage ? "disabled" : ""; 
+} 
+
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" 
+   class="btn btn-outline-secondary @prevDisabled"> 
+    Anterior 
+</a> 
+
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" 
+   class="btn btn-outline-secondary @nextDisabled"> 
+    Siguiente
+</a>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using MvcSoporte.Models;
 
 namespace MvcSoporte.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class AvisosController : Controller
     {
         private readonly MvcSoporteContexto _context;
@@ -20,10 +22,45 @@ namespace MvcSoporte.Controllers
         }
 
         // GET: Avisos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string strCadenaDeBusqueda, int? intTipoAveriaId, string busquedaActual, int? tipoDeAveriaIdActual, int? pageNumber)
         {
-            var mvcSoporteContexto = _context.Avisos.Include(a => a.Empleado).Include(a => a.Equipo).Include(a => a.TipoAveria);
-            return View(await mvcSoporteContexto.ToListAsync());
+            pageNumber = (strCadenaDeBusqueda != null) ? 1 : pageNumber;
+            strCadenaDeBusqueda ??= busquedaActual;
+
+            ViewData["BusquedaActual"] = strCadenaDeBusqueda;
+
+            // CARGAR TODOS LOS TIPOS DE AVERÍA PARA EL FILTRO
+            var tiposAveria = _context.TipoAverias.ToList();
+            ViewBag.TipoAveriaId = new SelectList(tiposAveria, "Id", "Descripcion", intTipoAveriaId);
+
+            // CARGAR LOS AVISOS
+            var avisos = _context.Avisos.AsQueryable();
+
+            // ORDENAR LOS AVISOS POR FECHAAVISO DE FORMA DESCENDENTE
+            avisos = avisos.OrderByDescending(s => s.FechaAviso);
+
+            // FILTRAR POR NOMBRE DE EMPLEADO, HACIENDO LA BÚSQUEDA INSENSIBLE A MAYÚSCULAS/MINÚSCULAS
+            if (!String.IsNullOrEmpty(strCadenaDeBusqueda))
+            {
+                // USAMOS TOLOWER() PARA CONVERTIR AMBOS LADOS DE LA COMPARACIÓN A MINÚSCULAS
+                avisos = avisos.Where(s => s.Empleado.Nombre.ToLower().Contains(strCadenaDeBusqueda.ToLower()));
+            }
+
+            // FILTRAR POR TIPO DE AVERÍA SI ES NECESARIO
+            if (intTipoAveriaId != null)
+            {
+                avisos = avisos.Where(x => x.TipoAveriaId == intTipoAveriaId);
+            }
+
+            // INCLUIR LAS RELACIONES NECESARIAS
+            avisos = avisos.Include(a => a.Empleado)
+                           .Include(a => a.Equipo)
+                           .Include(a => a.TipoAveria);
+
+
+            int pageSize = 3;
+            return View(await PaginatedList<Aviso>.CreateAsync(avisos.AsNoTracking(), pageNumber ?? 1, pageSize));
+            // return View(await avisos.AsNoTracking().ToListAsync()); 
         }
 
         // GET: Avisos/Details/5

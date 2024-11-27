@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Detalles</h1>
 
 <div>
     <h4>Equipo</h4>
@@ -72,7 +72,62 @@
         </dd>
     </dl>
 </div>
+
+@* Se añade código para presentar los avisos del equipo seleccionado *@ 
+@{
+    var contador = 0;
+}
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <h4>Avisos recibidos del equipo</h4>
+    <table class="table border-bottom">
+        <tr>
+            <th>Descripción</th>
+            <th>Fecha Aviso</th>
+            <th>Fecha Cierre</th>
+            <th>Empleado</th>
+            <th>Tipo de avería</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.Avisos)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaAviso)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaCierre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Empleado.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TipoAveria.Descripcion)
+                </td>
+                <td>
+                    <div class="d-print-none">
+                        <a asp-action="Edit" asp-controller="Avisos"
+                           asp-route-id="@item.Id">Editar</a> |
+                        <a asp-action="Delete" asp-controller="Avisos"
+                           asp-route-id="@item.Id">Eliminar</a>
+                    </div>
+                </td>
+            </tr>
+            contador = contador + 1;
+        }
+    </table>
 </div>
+
+<p class="text-center">Número de avisos: @contador </p>
+
+<div class="d-print-none text-center">
+    <a class="btn btn-primary" href="javascript:window.print()">Imprimir</a>
+</div>
+
+<div class="d-print-none">
+    @* <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |  
+    <a asp-action="Index">Back to List</a> *@ 
+    <a asp-action="Index">Volver</a>
+</div> 
