@@ -1,0 +1,391 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+
+    /* ESTILOS DE BORDE PARA ESTOS ELEMENTOS */
+    p,
+    h1,
+    a:not(header a) {
+        text-shadow: 1px 1px 0 #000, -1px -1px 0 #000,
+            1px -1px 0 #000, -1px 1px 0 #000, 0 0 4px #000;
+    }
+
+}
+
+/* ESTILOS PARA EL BODY */
+body {
+    color: white;
+    padding: 2em 2em;
+    position: relative;
+}
+
+/* APLICACIONES DE OPACIDAD EN LA BACKGROUND IMAGE */
+body::before {
+    content: "";
+    position: absolute;
+    top: 4em;
+    left: 2em;
+    right: 2em;
+    bottom: 2em;
+    background-image: url('../assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.75;
+    z-index: -1;
+    box-sizing: border-box;
+}
+
+/* ESTILOS GENERALES PARA LA LISTA Y SUS ELEMENTOS */
+.sectionLista {
+    list-style: none;
+
+    a {
+        list-style: none;
+        text-decoration: none;
+        color: white;
+    }
+}
+
+/* ESTILOS PARA EL HEADER */
+header {
+    padding: 0.5em 0em;
+
+    /* ESTILOS PARA LA LISTA DEL HEADER */
+    .sectionLista {
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        gap: 1em;
+
+        * {
+            font-weight: bold;
+            color: #09090b;
+            transition: all 0.5s ease;
+
+            &:hover {
+                transform: scale(1.15);
+            }
+        }
+    }
+}
+
+/* ESTILOS PARA EL MAIN */
+main {
+    height: 87.5dvh;
+    padding: 2em 2em;
+
+    /* ESTILOS PARA EL NAV DEL MAIN */
+    nav {
+        display: flex;
+        height: 10%;
+
+        /* ESTILOS PARA LA IMAGEN DEL LOGO */
+        a img {
+            max-width: 200px;
+            margin-right: 2em;
+            cursor: pointer;
+            filter: drop-shadow(1px 1px 0px black) drop-shadow(-1px -1px 0px black) drop-shadow(1px -1px 0px black) drop-shadow(-1px 1px 0px black);
+        }
+
+        /* ESTILOS PARA LA PRIMERA LISTA DEL NAV */
+        .sectionLista:nth-of-type(1) {
+            display: flex;
+            align-items: center;
+            gap: 2.5em;
+
+            /* ESTILOS PARA EL RESTO DE ELEMENTOS */
+            * {
+                cursor: pointer;
+                border-radius: 5px;
+                font-weight: bold;
+                transition: all 0.5s ease;
+
+                &:hover {
+                    transform: scale(1.25);
+                }
+            }
+        }
+
+        /* ESTILOS PARA LA SEGUNDA LISTA DEL NAV */
+        .sectionLista:nth-of-type(2) {
+            display: flex;
+            align-items: center;
+            gap: 1.5em;
+            margin-left: auto;
+
+            /* ESTILOS GENERALES PARA LOS BOTONES DE ESTA LISTA */
+            button {
+                padding: 0.5em 2.5em;
+                border-radius: 5px;
+                font-weight: bold;
+                transition: all 0.5s ease;
+
+                &:hover {
+                    transform: scale(1.15);
+                    box-shadow: 0px 0px 10px #09090b;
+                }
+            }
+
+            /* ESTILOS PARA EL BOTÓN DE REGISTRO */
+            #botonRegistro {
+                color: #09090b;
+                background-color: #fff;
+                border: 1.5px solid #fff;
+            }
+
+            /* ESTILOS PARA EL BOTÓN DE INICIO */
+            #botonInicio {
+                color: #fff;
+                background-color: #09090b;
+                border: 1.5px solid #fff;
+            }
+        }
+    }
+
+    .containerGrid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        height: 75%;
+        grid-template-areas:
+            "f1-2_c1-2 f1-2_c1-2 f1_c3 f1_c4 f1_c5"
+            "f1-2_c1-2 f1-2_c1-2 f2_c3-4 f2_c3-4 f2_c5"
+            "f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c4-5 f3-4_c4-5"
+            "f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c4-5 f3-4_c4-5"
+            "f5_c1 f5_c2 f5_c3 f5_c4 f5_c5";
+
+        > * {
+            margin: 0.5em 0.5em;
+            border-radius: 1em;
+            border: 2px solid white;
+            text-align: center;
+            align-content: center;
+
+            h2,h3,p, button {
+                align-items: center;
+            }
+        }
+
+        .f3-4_c1-2-3,
+        .f5_c2 {
+            margin-right: 0em;
+            border-radius: 1em 0em 0em 1em;
+            border-right: none;
+        }
+
+
+        .f3-4_c4-5,
+        .f5_c3 {
+            margin-left: 0em;
+            border-radius: 0em 1em 1em 0em;
+            border-left: none;
+        }
+    }
+
+    .f1-2_c1-2 {
+        grid-area: f1-2_c1-2;
+        background-color: #09090b;
+    }
+
+    .f1_c3 {
+        grid-area: f1_c3;
+        background-image: url('../assets/gridContainer1.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .f1_c4 {
+        grid-area: f1_c4;
+        background-image: url('../assets/gridContainer3.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .f2_c3-4 {
+        grid-area: f2_c3-4;
+        background-image: url('../assets/gridContainer4.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .f1_c5 {
+        grid-area: f1_c5;
+        background-color: #fff;
+        color: #09090b;
+    }
+
+    .f2_c5 {
+        grid-area: f2_c5;
+        background-image: url('../assets/gridContainer2.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .f5_c1 {
+        grid-area: f5_c1;
+        background-image: url('../assets/gridContainer7.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .f5_c2 {
+        grid-area: f5_c2;
+        background-image: url('../assets/gridContainer8.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .f5_c3 {
+        grid-area: f5_c3;
+        background-color: #09090b;;
+        color: #fff;
+    }
+
+    .f5_c4 {
+        grid-area: f5_c4;
+        background-image: url('../assets/gridContainer10.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .f5_c5 {
+        grid-area: f5_c5;
+        background-image: url('../assets/gridContainer9.png');
+        background-size: cover;
+        background-position: center;
+    }
+
+    .f3-4_c1-2-3 {
+        grid-area: f3-4_c1-2-3;
+        background-image: url('../assets/gridContainer6.png');
+        background-size: cover;
+        background-position: center;
+
+    }
+
+    .f3-4_c4-5 {
+        grid-area: f3-4_c4-5;
+        background-color: #fff;
+        color: #09090b;
+    }
+
+    /* ESTILOS PARA EL FOOTER DEL MAIN */
+    footer {
+        display: flex;
+        margin-top: 1.5em;
+
+        /* ESTILOS PARA EL PARRAFO DE LA LISTA */
+        p {
+            word-wrap: break-word;
+            text-align: center;
+            align-content: center;
+            width: 15%;
+        }
+
+        /* ESTILOS PARA LA LISTA DEL FOOTER */
+        .sectionLista {
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+
+            /* ESTILOS PARA LAS IMAGENES DE LA LISTA */
+            img {
+                min-width: 40px;
+                min-height: 40px;
+                max-width: 70px;
+                max-height: 70px;
+                width: auto;
+                height: auto;
+                cursor: pointer;
+                transition: all 0.5s ease;
+                filter: invert(1);
+
+                &:hover {
+                    transform: scale(1.35);
+                }
+            }
+        }
+    }
+}
+
+/* RESPONSIVE EN TABLETS */
+@media (max-width: 965px) {
+
+    /* AJUSTE DEL MAIN */
+    main {
+        nav {
+            flex-direction: column;
+            align-items: center;
+
+            /* AJUSTE DEL LOGO */
+            #logo {
+                max-width: 400px;
+                width: auto;
+                margin-right: 0em;
+            }
+
+            /* AJUSTE DE LA PRIMERA SECCIÓN DEL NAV */
+            .sectionLista:nth-of-type(1) {
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1.5em;
+            }
+
+            /* AJUSTE DE LA SEGUNDA SECCIÓN DEL NAV */
+            .sectionLista:nth-of-type(2) {
+                justify-content: center;
+                width: 100%;
+            }
+
+        }
+
+        /* Esto para simular columnas en el movil */
+        .containerGrid {
+            display: grid;
+            grid-template-columns: 2fr;
+            grid-template-rows: repeat(11, auto);
+            grid-template-areas:
+            "f1-2_c1-2 f1-2_c1-2 "
+            "f1_c3 f1_c3"
+            "f1_c4 f1_c4"
+            "f2_c3-4 f2_c3-4"
+            "f1_c5 f1_c5"
+            "f2_c5 f2_c5"
+            "f3-4_c1-2-3 f3-4_c4-5"
+            "f5_c1 f5_c1"
+            "f5_c2 f5_c3"
+            "f5_c4 f5_c4"
+            "f5_c5 f5_c5";
+            margin: 11em auto;
+            height: 50%;
+        }
+
+        footer {
+            /* AJUSTE DE LA SECCIÓN DEL FOOTER */
+
+            display: flex;
+            flex-direction: column;
+            margin: -10em auto;
+
+            p {
+                text-align: center;
+                margin-bottom: 1em;
+                width: 100%;
+            }
+
+            .sectionLista {
+                flex-direction: row;
+                gap: 1em;
+                margin: auto;
+                justify-content: center;
+            }
+
+            /* AJUSTE DE IMÁGENES */
+            img {
+                min-width: 40px;
+                min-height: 40px;
+            }
+        }
+    }
+}
