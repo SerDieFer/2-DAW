@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using MvcSoporte.Data;
 using MvcSoporte.Models;
@@ -27,10 +29,10 @@ namespace MvcSoporte.Controllers
             {
                 return RedirectToAction("Create", "MisDatos");
             }
-
             return View();
         }
 
+        //[Authorize(Roles = "Usuario")]
         public IActionResult Privacy()
         {
             return View();
