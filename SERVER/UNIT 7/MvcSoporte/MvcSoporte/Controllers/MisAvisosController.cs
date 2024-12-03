@@ -10,6 +10,7 @@ using MvcSoporte.Models;
 
 namespace MvcSoporte.Controllers
 {
+    // CONTROLADOR DE AVISOS CUSTOMIZADO QUE HEREDA DE LA CLASE CONTROLADOR BÁSICA
     public class MisAvisosController : Controller
     {
         private readonly MvcSoporteContexto _context;
@@ -19,13 +20,16 @@ namespace MvcSoporte.Controllers
             _context = context;
         }
 
+        // ACCIÓN GET QUE OBTIENE LOS AVISOS DE UN EMPLEADO Y DEVUELVE LA VISTA DE ESTOS
         // GET: MisAvisos
         public async Task<IActionResult> Index()
         {
-            // SE SELECCIONA EL EMPLEADO CORRESPONDIENTE AL USUARIO ACTUAL 
+            // SE SELECCIONA EL EMPLEADO CORRESPONDIENTE AL USUARIO ACTUAL, MEDIANTE SU IDENTITY
             var emailUsuario = User.Identity.Name;
             var empleado = await _context.Empleados.Where(e => e.Email == emailUsuario)
                     .FirstOrDefaultAsync();
+
+            // SI EL EMPLEADO NO ES ENCONTRADO, TE DEVUELVE A LA VISTA DE INDEX DEL CONTROLADOR HOME
             if (empleado == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -37,26 +41,32 @@ namespace MvcSoporte.Controllers
                    .OrderByDescending(a => a.FechaAviso)
                    .Include(a => a.Empleado).Include(a => a.Equipo).Include(a => a.TipoAveria);
 
+            // DEVOLVERÁ LA VISTA DE LOS AVISOS ACTUALES DEL EMPLEADO SELECCIONADO UNA VEZ SE HAYA COMPLETADO LA CARGA DE DATOS DE ESTOS
             return View(await misAvisos.ToListAsync());
 
             //var mvcSoporteContexto = _context.Avisos.Include(a => a.Empleado).Include(a => a.Equipo).Include(a => a.TipoAveria);
             //return View(await mvcSoporteContexto.ToListAsync());
         }
 
+
+        // ACCIÓN GET QUE OBTIENE LOS DETALLES DE EL AVISO SELECCIONADO DE UN USUARIO POR SU ID Y DEVUELVE LA VISTA DE ESTE DETALLE
         // GET: MisAvisos/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            // SI EL ID NO EXISTE DE ESA TAREA, DEVUELVE ERROR
             if (id == null)
             {
                 return NotFound();
             }
 
+            // BUSCA EL AVISO CON SU ID CORRESPONDIENTE EN EL CONTEXTO DE DATOS DE AVISOS
             var aviso = await _context.Avisos
                 .Include(a => a.Empleado)
                 .Include(a => a.Equipo)
                 .Include(a => a.TipoAveria)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
+            // SI EL AVISO CUYO ID APORTADO NO SE ENCUENTRA DEVOLVERÁ ERROR
             if (aviso == null)
             {
                 return NotFound();
@@ -68,18 +78,24 @@ namespace MvcSoporte.Controllers
                         .Where(e => e.Email == emailUsuario)
                         .FirstOrDefaultAsync();
 
+            // SI EL EMPLEADO NO SE ENCUENTRA DEVOLVERÁ ERROR
             if (empleado == null)
             {
                 return NotFound();
             }
+
+            // SI EL ID DEL AVISO Y SU EMPLEADO NO COINCIDE CON EL ID DEL EMPLEADO NOS DEVOLVERÁ A LA VISTA INDEX
             if (aviso.EmpleadoId != empleado.Id)
             {
                 return RedirectToAction(nameof(Index));
             }
 
+            // DEVUELVE LA VISTA DEL AVISO SELECCIONADO Y SUS DETALLES
             return View(aviso);
         }
 
+        // ACCIÓN GET PARA LA CREACIÓN DE LA VISTA DEL EQUIPO Y EL TIPO DE AVERÍA SELECCIONADO POR SUS RESPECTIVOS ID
+        // DONDE EL USUARIO LE PASARÁ LOS DATOS
         // GET: MisAvisos/Create
         public IActionResult Create()
         {
@@ -89,6 +105,8 @@ namespace MvcSoporte.Controllers
 
             return View();
         }
+
+        // ACCIÓN POST PARA LA CREACIÓN DE LA VISTA QUE DEVOLVERÁ EL SERVIDOR
 
         // POST: MisAvisos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.

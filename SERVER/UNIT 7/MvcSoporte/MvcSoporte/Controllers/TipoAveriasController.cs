@@ -11,9 +11,13 @@ using MvcSoporte.Models;
 
 namespace MvcSoporte.Controllers
 {
+    // AUTORIZACIÓN DE USO SOLO PARA USUARIOS REGISTRADOS COMO ADMINISTRADORES
     [Authorize(Roles = "Administrador")]
+
+    // CLASE CONTROLADORA DE TIPO DE AVERIAS, CUYO PADRE ES LA CLASE CONTROLADORA BÁSICA DE LA APP
     public class TipoAveriasController : Controller
     {
+
         private readonly MvcSoporteContexto _context;
 
         public TipoAveriasController(MvcSoporteContexto context)

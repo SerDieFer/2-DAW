@@ -9,6 +9,8 @@ namespace MvcSoporte.Controllers
 {
     // AUTORIZACIÓN DE USO SOLO PARA USUARIOS REGISTRADOS COMO ADMINISTRADORES
     [Authorize(Roles = "Administrador")]
+
+    // CLASE CONTROLADORA DE USUARIOS, CUYO PADRE ES LA CLASE CONTROLADORA BÁSICA DE LA APP
     public class UsuariosController : Controller
     {
         // PASAMOS COMO PROPIEDADES DE CONTROLADOR DE USUARIOS EL CONTEXTO DE LA BD QUE MANEJA
@@ -18,11 +20,14 @@ namespace MvcSoporte.Controllers
         // AQUI HACE USO DE UNA API DE MANEJO DE USUARIOS, DONDE LE PASARÁ LA IDENTIDAD ACTUAL DEL USUARIO
         private readonly UserManager<IdentityUser> _userManager;
 
+        // CONSTRUCTOR DEL CONTROLADOR DE USUARIO AL PASARLE POR PARÁMETROS EL CONTEXTO DE LA APP DE BS Y EL MANAGER DE USUARIOS
         public UsuariosController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
+
+        // ACCIÓN INDEX DE ESTE CONTROLADOR
         public IActionResult Index()
         {
             var usuarios = from user in _context.Users
@@ -38,12 +43,15 @@ namespace MvcSoporte.Controllers
             return View(usuarios.ToList());
         }
 
+        // ACCIÓN GET PARA CREAR ESTE CONTROLADOR DE USUARIO
         // GET: Usuarios/Create 
         public IActionResult Create()
         {
             return View();
         }
 
+
+        // ACCIÓN POST PARA CREAR ESTE CONTROLADOR DE USUARIO
         // POST: Usuarios/Create 
         [HttpPost]
         [ValidateAntiForgeryToken]
