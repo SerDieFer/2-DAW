@@ -1,0 +1,26 @@
+/* Importacion de archivos CSS */
+@import url('./components/root.css');
+@import url('./components/header/header.css');
+@import url('./components/nav/nav.css');
+@import url('./components/footer/footer.css');
+@import url('./components/main/main.css');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+body {
+    font-family: var(--font-family);
+    color: var(--secondary-color);
+    background: var(--primary-color);
+}
+
+p:not(.f3-4_c4-5 > *), h1, a:not(header a) {
+    text-shadow: 1px 1px 4px var(--primary-color), 
+                -1px -1px 4px var(--primary-color);
+}
+
+

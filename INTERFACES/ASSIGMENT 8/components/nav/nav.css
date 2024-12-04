@@ -1,0 +1,78 @@
+nav {
+    position: sticky;
+    bottom: 0;
+    top: 4.75%;
+    z-index: 100;
+
+    background: var(--primary-color);
+    box-shadow: 0px 4px 10px var(--shadow-color);
+
+    padding: 0.75em 2em;
+
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    flex-wrap: wrap;
+
+    a img {
+        max-width: 225px;
+        transition: transform 0.5s ease;
+        margin-right: 1em;
+    }
+
+    a img:hover {
+        transform: scale(1.1);
+    }
+
+    .sectionLista:nth-of-type(1) {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1em;
+        a {
+            padding: 0.5em 1.5em;
+            color: var(--secondary-color);
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        a:hover {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            text-shadow: none;
+            transform: scale(1.1);
+        }
+    }
+
+    .sectionLista:nth-of-type(2) {
+        display: flex;
+        flex-wrap: wrap;
+
+        margin: 1em 0em;
+        gap: 1.5em;
+        margin-left: auto;
+
+        button {
+            padding: 0.5em 2em;
+            color: var(--secondary-color);
+            border-radius: 5px;
+            border: none;
+            background: var(--primary-color);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        #botonRegistro {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        #botonInicio {
+            border: 1px solid var(--secondary-color);
+        }
+    }
+}
