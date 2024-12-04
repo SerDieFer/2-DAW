@@ -7,72 +7,123 @@ nav {
     background: var(--primary-color);
     box-shadow: 0px 4px 10px var(--shadow-color);
 
-    padding: 0.75em 2em;
+    padding: 1em 2em;
+    gap: 1em;
 
     display: flex;
     align-items: center;
-    font-weight: bold;
+    justify-content: space-between;
     flex-wrap: wrap;
 
-    a img {
-        max-width: 225px;
-        transition: transform 0.5s ease;
-        margin-right: 1em;
+    * {
+        font-weight: bold;
     }
 
-    a img:hover {
+    /* ----- LINKS NAV -----*/
+
+    a{
+        padding: 0.5em 1.5em;
+        border-radius: 5px;
+        color: var(--secondary-color);
+        transition: background 0.3s ease, transform 0.3s ease;
+    
+        img {
+            max-width: 210px;
+            transition: transform 0.5s ease;
+        }
+    }
+    
+    a:not(#aHome):hover {
+        background: var(--secondary-color);
+        color: var(--primary-color);
+        text-shadow: none;
+        transform: scale(1.1);
+    
+        img {
+            transform: scale(1.1);
+        }
+    }
+
+    /* ----- BOTONES NAV -----*/
+
+    button {
+        padding: 0.5em 2em;
+        
+        color: var(--secondary-color);
+
+        background: var(--primary-color);
+
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+        transition: transform 0.3s ease;
+    }
+
+    button:hover {
         transform: scale(1.1);
     }
+
+    #botonRegistro {
+        background: var(--secondary-color);
+        color: var(--primary-color);
+    }
+
+    #botonInicio {
+        border: 1px solid var(--secondary-color);
+    }
+
+    /* ----- SECCIONES NAV -----*/
 
     .sectionLista:nth-of-type(1) {
         display: flex;
         flex-wrap: wrap;
         gap: 1em;
-        a {
-            padding: 0.5em 1.5em;
-            color: var(--secondary-color);
-            border-radius: 5px;
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        a:hover {
-            background: var(--secondary-color);
-            color: var(--primary-color);
-            text-shadow: none;
-            transform: scale(1.1);
-        }
     }
 
     .sectionLista:nth-of-type(2) {
         display: flex;
         flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 2em;
 
-        margin: 1em 0em;
-        gap: 1.5em;
         margin-left: auto;
+    }
+}
 
-        button {
-            padding: 0.5em 2em;
-            color: var(--secondary-color);
-            border-radius: 5px;
-            border: none;
-            background: var(--primary-color);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            font-weight: bold;
+/* PARA TABLETS */
+@media screen and (max-width: 850px) {
+    nav {
+        flex-direction: column;
+        text-align: center;
+
+        a img {
+            max-width: 400px;
+            transition: transform 0.5s ease;
+            margin-bottom: -2em;
         }
 
-        button:hover {
-            transform: scale(1.1);
-        }
+        .sectionLista {
+            width: 100%;
 
-        #botonRegistro {
-            background: var(--secondary-color);
-            color: var(--primary-color);
-        }
+            &:nth-of-type(1) {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
 
-        #botonInicio {
-            border: 1px solid var(--secondary-color);
+                gap: 1em 3em;
+            }
+
+            &:nth-of-type(2) {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+
+                gap: 1em 3em;
+                margin-bottom: 1em;
+            }
+
+            button {
+                height: 3em;
+            }
         }
     }
 }

@@ -4,21 +4,25 @@ footer {
     z-index: 100;
     
     background: var(--primary-color);
-    box-shadow: 0px -4px 10px var(--shadow-color);
+    box-shadow: 0px -6px 15px var(--shadow-color);
 
     padding: 2.5em;
     gap: 1.5em;
 
     display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
 
     .sectionLista {
         display: flex;
+        flex-wrap: wrap;
         width: 100%;
         justify-content: space-around;
+        gap: 2em;
 
         img {
-            width: 50px;
+            width: 3em;
             
             filter: invert();
             transition: transform 0.3s ease, filter 0.3s ease;
@@ -28,4 +32,13 @@ footer {
             transform: scale(1.2);
         }
     }
+}
+
+
+
+
+.sectionLista img:hover {
+    transform: scale(1.15); /* Suaviza la escala para que no sea tan drástica */
+    filter: invert(100%); /* Hace que la imagen sea completamente invertida */
+    opacity: 0.8; /* Reduce ligeramente la opacidad para un efecto más sutil */
 }

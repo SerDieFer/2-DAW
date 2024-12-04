@@ -106,7 +106,9 @@ namespace MvcSoporte.Controllers
             return View();
         }
 
-        // ACCIÓN POST PARA LA CREACIÓN DE LA VISTA QUE DEVOLVERÁ EL SERVIDOR
+        // ACCIÓN POST PARA LA CREACIÓN DE LA VISTA QUE DEVOLVERÁ EL SERVIDOR LOS DATOS DEL CLIENTE,
+        // POSTERIORMENTE SERÁ COMPROBADO PARA FINALMENTE SI ES CORRECTO, REALIZAR LAS CONSULTAS DEMANDADAS
+        // CREANDO EN EL MODELO DE DATOS EL AVISO COMPROBADO Y DEVOLVIENDO AL FINAL LA VISTA CORRESPONDIENTE DEL AVISO
 
         // POST: MisAvisos/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -122,20 +124,30 @@ namespace MvcSoporte.Controllers
                  .Where(e => e.Email == emailUsuario)
                  .FirstOrDefaultAsync();
 
+            // SI ESTE NO ES NULO, SE LIGARÁ EL AVISO CON EL ID DEL EMPLEADO
             if (empleado != null)
             {
                 aviso.EmpleadoId = empleado.Id;
             }
 
+            // SI FINALMENTE EL ESTADO DEL MODELO ES VÁLIDO, SE AÑADIRÁ EL AVISO AL CONTEXTO,
+            // APLICANDO LOS CAMBIOS A LA BD DE ESTE
             if (ModelState.IsValid)
             {
                 _context.Add(aviso);
                 await _context.SaveChangesAsync();
+
+                // REDIRIGE AL INDEX DE MIS AVISOS
                 return RedirectToAction(nameof(Index));
             }
+
+            // GUARDA EN EL VIEW DATA LOS ELEMENTOS DE DATOS DE ESTE AVISO, PARA PASARSELO A LA CORRESPONDIENTE VISTA
+
             // ViewData["EmpleadoId"] = new SelectList(_context.Empleados, "Id", "Nombre", aviso.EmpleadoId);
             ViewData["EquipoId"] = new SelectList(_context.Equipos, "Id", "CodigoEquipo", aviso.EquipoId);
             ViewData["TipoAveriaId"] = new SelectList(_context.TipoAverias, "Id", "Descripcion", aviso.TipoAveriaId);
+
+            // FINALMENTE DEVUELVE LA VISTA
             return View(aviso);
         }
 
