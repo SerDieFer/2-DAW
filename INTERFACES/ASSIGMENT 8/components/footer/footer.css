@@ -6,8 +6,8 @@ footer {
     background: var(--primary-color);
     box-shadow: 0px -6px 15px var(--shadow-color);
 
-    padding: 2.5em;
-    gap: 1.5em;
+    padding: 2.5em 8em;
+    gap: 2em;
 
     display: flex;
     flex-direction: column;
@@ -18,7 +18,7 @@ footer {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
-        justify-content: space-around;
+        justify-content: space-between;
         gap: 2em;
 
         img {
@@ -29,16 +29,33 @@ footer {
         }
 
         img:hover {
-            transform: scale(1.2);
+            transform: scale(1.15);
         }
     }
 }
 
+/* PARA TABLETS */
+@media screen and (max-width: 850px) {
 
+    footer {
+        padding: 1.5em 4em;
+        
+        * {
+            font-size: 0.85em;
+        }
 
+        .sectionLista {
+            justify-items: center;
+            margin-bottom: 1em;
 
-.sectionLista img:hover {
-    transform: scale(1.15); /* Suaviza la escala para que no sea tan drástica */
-    filter: invert(100%); /* Hace que la imagen sea completamente invertida */
-    opacity: 0.8; /* Reduce ligeramente la opacidad para un efecto más sutil */
+            img {
+                width: 2.5em;
+                transition: transform 0.3s ease, filter 0.3s ease;
+            }
+
+            img:hover {
+                transform: scale(1.25);
+            }
+        }
+    }
 }

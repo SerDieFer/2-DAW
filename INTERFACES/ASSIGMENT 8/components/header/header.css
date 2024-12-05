@@ -4,6 +4,7 @@ header {
     box-shadow: 0px 4px 10px var(--primary-color);
 
     position: sticky;
+    align-content: center;
     top: 0;
     z-index: 100;
 

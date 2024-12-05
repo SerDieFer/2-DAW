@@ -1,9 +1,15 @@
-/* Importacion de archivos CSS */
-@import url('./components/root.css');
+/* IMPORTACION DE ARCHIVOS CSS */
+@import url('./root.css');
 @import url('./components/header/header.css');
 @import url('./components/nav/nav.css');
 @import url('./components/footer/footer.css');
-@import url('./components/main/main.css');
+@import url('./components/main/main_productos/main_productos.css');
+@import url('./components/main/main_home/main_home.css');
+
+p:not(.f3-4_c4-5 > *), h1, a:not(header a) {
+    text-shadow: 1px 1px 4px var(--primary-color), 
+                -1px -1px 4px var(--primary-color);
+}
 
 * {
     box-sizing: border-box;
@@ -12,15 +18,42 @@
     text-decoration: none;
 }
 
-body {
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+
+    z-index: -2;
+
     font-family: var(--font-family);
     color: var(--secondary-color);
     background: var(--primary-color);
 }
 
-p:not(.f3-4_c4-5 > *), h1, a:not(header a) {
-    text-shadow: 1px 1px 4px var(--primary-color), 
-                -1px -1px 4px var(--primary-color);
+header, nav, footer {
+    width: 100%;
 }
 
+header {
+    height: 5%;
+}
 
+nav {
+    height: 20%;
+}
+
+footer {
+    height: 20%;
+}
+
+/* PARA ESCONDER LA SCROLLBAR*/
+main {
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
+
+    &:-webkit-scrollbar {
+    display: none; 
+    }
+}

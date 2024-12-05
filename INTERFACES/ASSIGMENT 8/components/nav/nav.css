@@ -1,13 +1,13 @@
 nav {
     position: sticky;
     bottom: 0;
-    top: 4.75%;
+    top: 4.15%;
     z-index: 100;
 
     background: var(--primary-color);
     box-shadow: 0px 4px 10px var(--shadow-color);
 
-    padding: 1em 2em;
+    padding: 0em 8em;
     gap: 1em;
 
     display: flex;
@@ -21,15 +21,21 @@ nav {
 
     /* ----- LINKS NAV -----*/
 
-    a{
+    a {
         padding: 0.5em 1.5em;
         border-radius: 5px;
+
         color: var(--secondary-color);
+
         transition: background 0.3s ease, transform 0.3s ease;
     
         img {
             max-width: 210px;
             transition: transform 0.5s ease;
+        }
+
+        img:hover {
+            transform: scale(1.25);
         }
     }
     
@@ -37,11 +43,8 @@ nav {
         background: var(--secondary-color);
         color: var(--primary-color);
         text-shadow: none;
+
         transform: scale(1.1);
-    
-        img {
-            transform: scale(1.1);
-        }
     }
 
     /* ----- BOTONES NAV -----*/
@@ -75,54 +78,92 @@ nav {
 
     /* ----- SECCIONES NAV -----*/
 
-    .sectionLista:nth-of-type(1) {
+    .sectionLista {
         display: flex;
         flex-wrap: wrap;
         gap: 1em;
     }
 
     .sectionLista:nth-of-type(2) {
-        display: flex;
-        flex-wrap: wrap;
         justify-content: flex-end;
-        gap: 2em;
-
         margin-left: auto;
+    }
+}
+
+@media screen and (max-width: 1260px) and (min-width: 850px) {
+    nav {
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        a {
+            padding: 0.4em 1em;
+            
+            img {
+                max-width: 200px;
+                margin-bottom: -2em;
+                margin-top: -2em;
+            }
+        }
+
+        .sectionLista {
+            width: 100%;
+            
+            &:nth-of-type(1),&:nth-of-type(2) {
+                display: grid;
+                gap: 1em 3em;
+            }
+
+            &:nth-of-type(1) {
+                grid-template-columns: repeat(4, 1fr); 
+            }
+
+            &:nth-of-type(2) {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            button {
+                height: 2.5em;
+            }
+        }
     }
 }
 
 /* PARA TABLETS */
 @media screen and (max-width: 850px) {
+    
     nav {
         flex-direction: column;
         text-align: center;
+        padding: 0em 4em;
+        margin-top: 2em;
+        margin-bottom: 2em;
 
-        a img {
-            max-width: 400px;
-            transition: transform 0.5s ease;
-            margin-bottom: -2em;
+        * {
+            font-size: 0.85em;
+        }
+
+        a {
+            padding: 0.4em 1em;
+            
+            img {
+                max-width: 200px;
+                margin-bottom: -2em;
+                margin-top: -2em;
+            }
         }
 
         .sectionLista {
             width: 100%;
 
-            &:nth-of-type(1) {
+            &:nth-of-type(1), &:nth-of-type(2) {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
 
                 gap: 1em 3em;
-            }
-
-            &:nth-of-type(2) {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-
-                gap: 1em 3em;
-                margin-bottom: 1em;
             }
 
             button {
-                height: 3em;
+                height: 2.5em;
             }
         }
     }

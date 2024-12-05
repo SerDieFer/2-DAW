@@ -1,48 +1,67 @@
+main {
+    height: calc(100% - 5% - 20% - 20%); 
+}
+
+
 .containerGrid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
     grid-template-areas:
-        "f1-2_c1-2 f1-2_c1-2 f1_c3 f1_c4 f1_c5"
-        "f1-2_c1-2 f1-2_c1-2 f2_c3-4 f2_c3-4 f2_c5"
-        "f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c4-5 f3-4_c4-5"
-        "f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c4-5 f3-4_c4-5"
-        "f5_c1 f5_c2 f5_c3 f5_c4 f5_c5";
-    padding: 1em 2em;
-    height: 115dvh;
+    "f1-2_c1-2 f1-2_c1-2 f1_c3 f1_c4 f1_c5"
+    "f1-2_c1-2 f1-2_c1-2 f2_c3-4 f2_c3-4 f2_c5"
+    "f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c4-5 f3-4_c4-5"
+    "f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c1-2-3 f3-4_c4-5 f3-4_c4-5"
+    "f5_c1 f5_c2 f5_c3 f5_c4 f5_c5";
+
+    margin: 0.75em 0em;
+    padding: 0em 8em;
+    height: 115dvh; 
 
     * {
         display: flex;
         justify-content: center;
         align-items: center;
+
         text-align: center;
+        text-wrap: balance;
+
         transition: transform 0.3s ease, 
                     background 0.3s ease, 
                     box-shadow 0.3s ease;
+
+        background-size: cover;
+        background-position: center;
     }
 
     *:hover {
-        transform: translate(0.65em) scale(1.05);
         box-shadow: 0px 8px 20px var(--shadow-color);
+
+        transform: translate(0.65em) scale(1.05);
     }
 
     button {
-        cursor: pointer;
-        font-size: 1em;
         padding: 2em;
+        
+        cursor: pointer;
+        
+        font-size: 1em;
         font-weight: bold;
-        text-wrap: balance;
     }
+
+    /* ----- ELEMENTOS DEL GRID -----*/
 
     .f1-2_c1-2 {
         grid-area: f1-2_c1-2;
         background-color: var(--secondary-color);
+
         color: var(--primary-color);
 
         &:hover {
             background-color: var(--primary-color);
-            color: var(--secondary-color);
             border: 2px solid var(--secondary-color);
+
+            color: var(--secondary-color);
             font-weight: bold;
             font-size: 1em;
         }
@@ -50,69 +69,62 @@
 
     .f1_c3 {
         grid-area: f1_c3;
-        background-image: var(--grid-image-1);
-        background-size: cover;
-        background-position: center;
+        background-image: var(--grid-image-10);
+
     }
 
     .f1_c4 {
         grid-area: f1_c4;
         background-image: var(--grid-image-3);
-        background-size: cover;
-        background-position: center;
     }
-
-    .f2_c3-4 {
-        grid-area: f2_c3-4;
-        background-image:var(--grid-image-4);
-        background-size: cover;
-        background-position: center;
-    }
-
+    
     .f1_c5 {
         grid-area: f1_c5;
         background-color: var(--secondary-color);
+
         color: var(--primary-color);
 
         &:hover {
             background-color: var(--primary-color);
-            color: var(--secondary-color);
             border: 2px solid var(--secondary-color);
+
+            color: var(--secondary-color);
             font-weight: bold;
             font-size: 1em;
         }
     }
 
+    .f2_c3-4 {
+        grid-area: f2_c3-4;
+        background-image:var(--grid-image-1);
+    }
+
     .f2_c5 {
         grid-area: f2_c5;
         background-image: var(--grid-image-2);
-        background-size: cover;
-        background-position: center;
     }
 
     .f5_c1 {
         grid-area: f5_c1;
-        background-image: var(--grid-image-6);
-        background-size: cover;
-        background-position: center;
+        background-image: var(--grid-image-7);
     }
 
     .f5_c2 {
         grid-area: f5_c2;
-        background-image: var(--grid-image-7);
-        background-size: cover;
-        background-position: center;
+        background-image: var(--grid-image-9);
     }
 
     .f5_c3 {
         grid-area: f5_c3;
         background-color: var(--secondary-color);
+
         color: var(--primary-color);
 
         &:hover {
             background-color: var(--primary-color);
-            color: var(--secondary-color);
             border: 2px solid var(--secondary-color);
+
+            color: var(--secondary-color);
             font-weight: bold;
             font-size: 1em;
         }
@@ -120,39 +132,33 @@
 
     .f5_c4 {
         grid-area: f5_c4;
-        background-image: var(--grid-image-9);
-        background-size: cover;
-        background-position: center;
+        background-image: var(--grid-image-5);
     }
 
     .f5_c5 {
         grid-area: f5_c5;
         background-image: var(--grid-image-8);
-        background-size: cover;
-        background-position: center;
     }
 
     .f3-4_c1-2-3 {
         grid-area: f3-4_c1-2-3;
-        background-image: var(--grid-image-5);
-        background-size: cover;
-        background-position: center;
+        background-image: var(--grid-image-6);
     }
 
     .f3-4_c4-5 {
         grid-area: f3-4_c4-5;
         background-color: var(--secondary-color);
-        color: var(--primary-color);
-        text-wrap: balance;
+        
         gap: 2em;
         flex-direction: column;
 
+        color: var(--primary-color);
+
         h2,p {
             padding: 0em 2em;
-            text-wrap: pretty;
         }
 
-        > *:hover {
+        & > *:hover {
             transform: none;
             box-shadow: none;
         }
@@ -161,27 +167,32 @@
             width: calc(100% - 4em);
             height: 4em;
             padding: 0.5em 2em;
+
             color: var(--secondary-color);
-            border-radius: 5px;
-            border: none;
-            background: var(--primary-color);
-            transition: transform 0.3s ease;
-            cursor: pointer;
             font-weight: bold;
-            border: 1px solid var(--secondary-color);
+
+            background: var(--primary-color);
+
+            border: none;
+            border-radius: 5px;
+
+            cursor: pointer;
+            transition: transform 0.3s ease;
 
             &:hover {
-                transform: scale(0.85);
                 background: var(--secondary-color);
-                color: var(--primary-color);
                 border: 2px solid var(--primary-color);
 
+                color: var(--primary-color);
+                
+                transform: scale(0.85);
+
+                /* CAMBIOS EN EL CONTENEDOR RELACIONADO DURANTE EL HOVER */
                 .f3-4_c4-5:has(&:hover) {
                     background-color: var(--highlight-color);
                     border: 2px solid var(--secondary-color);
 
                     #botonInfo {
-
                         color: var(--primary-color);
                     }
 
@@ -193,4 +204,23 @@
             }
         }
     }
+}
+
+@media (max-width: 850px) {
+    .containerGrid {
+        padding: 0em 4em;
+        gap: 0.45em;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+        grid-template-areas:
+            "f1-2_c1-2 f1_c3"
+            "f1_c4 f1_c5"
+            "f3-4_c4-5 f3-4_c1-2-3"
+            "f5_c4 f5_c3";
+
+        .f2_c3-4, .f2_c5, .f5_c1, .f5_c2, .f5_c5 {
+            display: none;
+        }
+    }
+
 }
