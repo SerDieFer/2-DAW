@@ -16,4 +16,6 @@
     --grid-image-8: url('/assets/gridContainer8.png');
     --grid-image-9: url('/assets/gridContainer9.png');
     --grid-image-10: url('/assets/gridContainer10.png');
+
+    --background-main: url('/assets/background.jpg');
 }

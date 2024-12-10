@@ -20,14 +20,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         // FETCH DE CADA COMPONENTE
         const header = await fetchComponent("../../components/header/header.html");
         const nav = await fetchComponent("../../components/nav/nav.html");
-        const main_productos = await fetchComponent("../../components/main/main_home/main_home.html");
         const footer = await fetchComponent("../../components/footer/footer.html");
+
+        // DETERMINAR EL COMPONENTE MAIN BASADO EN LA PÁGINA
+        let mainComponent = "";
+        if (window.location.pathname.includes("home")) {
+            mainComponent = await fetchComponent("../../components/main/main_home/main_home.html");
+        } else if (window.location.pathname.includes("productos")) {
+            mainComponent = await fetchComponent("../../components/main/main_productos/main_productos.html");
+        }
 
         // INSERTA LOS COMPONENTES EN EL BODY
         document.body.innerHTML = `
             ${header}
             ${nav}
-            ${main_productos}
+            ${mainComponent}
             ${footer}
         `;
     } catch (error) {

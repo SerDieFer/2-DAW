@@ -16,7 +16,7 @@
     left: 0em;
     right: 0em;
     bottom: 0em;
-    background-image: url('../../../assets/background.jpg');
+    background-image: var(--background-main);
     background-size: cover;
     background-position: center;
     opacity: 0.5;
