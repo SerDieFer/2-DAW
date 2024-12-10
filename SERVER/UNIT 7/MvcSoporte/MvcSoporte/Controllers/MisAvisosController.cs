@@ -151,6 +151,9 @@ namespace MvcSoporte.Controllers
             return View(aviso);
         }
 
+
+        // ACCION GET QUE EDITARÁ LA TAREA EN BASE AL ID QUE RECIBA
+
         // GET: MisAvisos/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
