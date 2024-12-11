@@ -1,0 +1,50 @@
+:root{
+    --image-big: url(./assets/kitten-large.png);
+    --image-medium: url(./assets/kitten-medium.png);
+    --image-small: url(./assets/kitten-small.png);
+
+        /* GRADIENTES */
+        --gradient-cabecera: radial-gradient(circle, #ff4d4d, #ff0000);
+        --gradient-menu: radial-gradient(circle, #ffb84d, #ff7f00);
+        --gradient-nav1: radial-gradient(circle, #e5e500, #ffff00);
+        --gradient-nav2: radial-gradient(circle, #66ff66, #00ff00);
+        --gradient-banner: radial-gradient(circle, #4d4dff, #0000ff);
+        --gradient-cuerpo1: radial-gradient(circle, #c71585, #4b0082);
+        --gradient-pie: radial-gradient(circle, #d500f9, #9400d3);
+    
+        /* SOMBRAS */
+        --shadow-cabecera: 0 0 10px #ff4d4d, 0 0 20px #ff4d4d;
+        --shadow-menu: 0 0 10px #ffb84d, 0 0 20px #ffb84d;
+        --shadow-nav1: 0 0 10px #e5e500, 0 0 20px #e5e500;
+        --shadow-nav2: 0 0 10px #66ff66, 0 0 20px #66ff66;
+        --shadow-banner: 0 0 10px #4d4dff, 0 0 20px #4d4dff;
+        --shadow-cuerpo1: 0 0 10px #c71585, 0 0 20px #c71585;
+        --shadow-pie: 0 0 10px #d500f9, 0 0 20px #d500f9;
+    
+        /* BORDES */
+        --border-cabecera: #ff4d4d;
+        --border-menu: #ffb84d;
+        --border-nav1: #e5e500;
+        --border-nav2: #66ff66;
+        --border-banner: #4d4dff;
+        --border-cuerpo1: #c71585;
+        --border-pie: #d500f9;
+    
+        /* COLORES COMPLEMENTARIOS PARA HOVER */
+        --hover-shadow-cabecera: 0 0 10px #00b2b2, 0 0 20px #00b2b2;
+        --hover-shadow-menu: 0 0 10px #004d00, 0 0 20px #004d00;
+        --hover-shadow-nav1: 0 0 10px #1a1a80, 0 0 20px #1a1a80;
+        --hover-shadow-nav2: 0 0 10px #99cc99, 0 0 20px #99cc99;
+        --hover-shadow-banner: 0 0 10px #b3b3ff, 0 0 20px #b3b3ff;
+        --hover-shadow-cuerpo1: 0 0 10px #4b9bff, 0 0 20px #4b9bff;
+        --hover-shadow-pie: 0 0 10px #4bb3ff, 0 0 20px #4bb3ff;
+    
+        --hover-border-cabecera: #00b2b2;
+        --hover-border-menu: #004d00;
+        --hover-border-nav1: #1a1a80;
+        --hover-border-nav2: #99cc99;
+        --hover-border-banner: #b3b3ff;
+        --hover-border-cuerpo1: #4b9bff;
+        --hover-border-pie: #4bb3ff;
+    
+}
