@@ -1,7 +1,7 @@
 :root{
-    --image-big: url(./assets/kitten-large.png);
-    --image-medium: url(./assets/kitten-medium.png);
-    --image-small: url(./assets/kitten-small.png);
+    --image-big: url(./assets/kitten-pc.png);
+    --image-medium: url(./assets/kitten-tablet.png);
+    --image-small: url(./assets/kitten-movil.png);
 
         /* GRADIENTES */
         --gradient-cabecera: radial-gradient(circle, #ff4d4d, #ff0000);
