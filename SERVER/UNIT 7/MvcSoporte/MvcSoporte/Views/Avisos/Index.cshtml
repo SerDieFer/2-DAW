@@ -35,8 +35,8 @@
     </div>
 </form>
 
-<table class="table">
-    <thead>
+<table class="table" style="text-align: center;">
+    <thead style="vertical-align: middle; text-align: center;">
         <tr>
             <th>
                 Descripción
@@ -92,7 +92,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Equipo.CodigoEquipo)
             </td>
-            <td>
+            <td style="text-align:center">
                 <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>

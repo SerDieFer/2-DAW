@@ -1,4 +1,5 @@
-﻿@model IEnumerable<MvcSoporte.Models.Equipo>
+﻿@* @model IEnumerable<MvcSoporte.Models.Equipo> *@
+@model PaginatedList<MvcSoporte.Models.Equipo>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,40 +8,75 @@
 <h1>Equipos</h1>
 
 <p>
-    <a asp-action="Create">Crear Nuevo</a>
+    <a asp-action="Create">Crear nuevo equipo</a>
 </p>
-<table class="table">
-    <thead>
+
+@* AGREGAR UN CUADRO DE BÚSQUEDA EN LA VISTA INDEX DE AVISOS *@ 
+<form asp-action="Index">
+    <div class="container">
+        <div class="row align-items-start">
+            <div class="col-md">
+                <label class="control-label">Código Equipo:</label>
+                <input type="text" name="strCadenaDeBusqueda"
+                       value="@ViewData["BusquedaActual"]" class="form-control" />
+            </div>
+            <div class="col-md">
+                <label class="control-label">Localizacion:</label>
+                <select name="intLocalizacionesId" asp-items="ViewBag.LocalizacionId"
+                        class="form-control">
+                    <option value="">Todas</option>
+                </select>
+            </div>
+            <div class="col-md align-self-end">
+                <input type="submit" value="Buscar" class="btn btn-default" /> |
+                <a asp-action="Index" class="btn btn-default">Lista completa</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<table class="table" style="text-align: center;">
+    <thead style="vertical-align: middle;">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CodigoEquipo)
+                Código Equipo
+                @* @Html.DisplayNameFor(model => model.CodigoEquipo) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Marca)
+                Marca
+                @* @Html.DisplayNameFor(model => model.Marca) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Modelo)
+                Modelo
+                @* @Html.DisplayNameFor(model => model.Modelo) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumeroSerie)
+                Número de Serie
+                @* @Html.DisplayNameFor(model => model.NumeroSerie) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Caracteristicas)
+                Características
+                @* @Html.DisplayNameFor(model => model.Caracteristicas) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Precio)
+                Precio
+                @* @Html.DisplayNameFor(model => model.Precio) *@
             </th>
             @* <th> *@
             @*     @Html.DisplayNameFor(model => model.PrecioCadena) *@
             @* </th> *@
             <th>
-                @Html.DisplayNameFor(model => model.FechaCompra)
+                Fecha de Compra
+                @* @Html.DisplayNameFor(model => model.FechaCompra) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FechaBaja)
+                Fecha de Baja
+                @* @Html.DisplayNameFor(model => model.FechaBaja) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Localizacion)
+                Localización
+                @* @Html.DisplayNameFor(model => model.Localizacion) *@
             </th>
             <th></th>
         </tr>
@@ -63,7 +99,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Caracteristicas)
             </td>
-            <td>
+            <td> 
                 @Html.DisplayFor(modelItem => item.Precio)
             </td>
             @* <td> *@
@@ -78,7 +114,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Localizacion.Descripcion)
             </td>
-            <td>
+            <td style="text-align:center">
                 <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Borrar</a>
@@ -87,3 +123,22 @@
 }
     </tbody>
 </table>
+
+@* Poner botones de página Siguiente y Anterior *@ 
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-busquedaActual="@ViewData["BusquedaActual"]"
+   asp-route-tipoAveriaIdActual="@ViewData["TipoAveriaIdActual"]"
+   class="btn btn-outline-secondary @prevDisabled">
+    Anterior
+</a>
+
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-busquedaActual="@ViewData["BusquedaActual"]"
+   asp-route-tipoAveriaIdActual="@ViewData["TipoAveriaIdActual"]"
+   class="btn btn-outline-secondary @nextDisabled">
+    Siguiente
+</a>

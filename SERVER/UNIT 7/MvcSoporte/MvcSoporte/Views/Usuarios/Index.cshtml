@@ -7,13 +7,12 @@
 
 <h1>Usuarios</h1>
 
-<br />
-
 <p>
-    <a asp-action="Create">Nuevo Administrador</a>
+    <a asp-action="Create">Crear nuevo administrador</a>
 </p>
 
 <table class="table">
+    <thead>
     <tr>
         <th>
             Usuario
@@ -25,7 +24,8 @@
             Rol
         </th>
     </tr>
-
+    </thead>
+    <tbody>
     @foreach (var item in Model)
     {
         <tr>

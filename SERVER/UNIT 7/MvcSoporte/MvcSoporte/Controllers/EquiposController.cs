@@ -22,10 +22,45 @@ namespace MvcSoporte.Controllers
         }   
 
         // GET: Equipos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string strCadenaDeBusqueda, int? intLocalizacionesId, string busquedaActual, int? localizacionesIdActual, int? pageNumber)
         {
-            var mvcSoporteContexto = _context.Equipos.Include(e => e.Localizacion);
-            return View(await mvcSoporteContexto.ToListAsync());
+            //var mvcSoporteContexto = _context.Equipos.Include(e => e.Localizacion);
+            //return View(await mvcSoporteContexto.ToListAsync());
+
+            pageNumber = (strCadenaDeBusqueda != null) ? 1 : pageNumber;
+            strCadenaDeBusqueda ??= busquedaActual;
+
+            ViewData["BusquedaActual"] = strCadenaDeBusqueda;
+
+            // CARGAR TODOS LOS TIPOS DE LOCALIZACIONES PARA EL FILTRO
+            var localizaciones = _context.Localizaciones.ToList();
+            ViewBag.LocalizacionId = new SelectList(localizaciones, "Id", "Descripcion", intLocalizacionesId);
+
+            // CARGAR LOS EQUIPOS
+            var equipos = _context.Equipos.AsQueryable();
+
+            // ORDENAR LOS EQUIPOS POR FECHAAVISO DE FORMA DESCENDENTE
+            equipos = equipos.OrderByDescending(s => s.FechaCompra);
+
+            // FILTRAR POR ID, HACIENDO LA BÚSQUEDA INSENSIBLE A MAYÚSCULAS/MINÚSCULAS
+            if (!String.IsNullOrEmpty(strCadenaDeBusqueda))
+            {
+                // USAMOS TOLOWER() PARA CONVERTIR AMBOS LADOS DE LA COMPARACIÓN A MINÚSCULAS
+                equipos = equipos.Where(s => s.CodigoEquipo.ToLower().Contains(strCadenaDeBusqueda.ToLower()));
+            }
+
+            // FILTRAR POR TIPO DE LOCALIZACION SI ES NECESARIO
+            if (intLocalizacionesId != null)
+            {
+                equipos = equipos.Where(x => x.Localizacion.Id == intLocalizacionesId);
+            }
+
+            // INCLUIR LAS RELACIONES NECESARIAS
+            equipos = equipos.Include(a => a.Localizacion);
+
+
+            int pageSize = 3;
+            return View(await PaginatedList<Equipo>.CreateAsync(equipos.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Equipos/Details/5
@@ -36,6 +71,7 @@ namespace MvcSoporte.Controllers
                 return NotFound();
             }
 
+            // CARGAR EL EQUIPO CON SUS RELACIONES
             var equipo = await _context.Equipos
                 .Include(e => e.Localizacion)
                 .Include(e => e.Avisos)
