@@ -22,11 +22,28 @@ namespace MvcSoporte.Controllers
         }
 
         // GET: Empleados
-        public async Task<IActionResult> Index(int? pageNumber)
+        public async Task<IActionResult> Index(string strCadenaDeBusqueda, string busquedaActual, int? pageNumber)
         {
+            pageNumber = (strCadenaDeBusqueda != null) ? 1 : pageNumber;
+            strCadenaDeBusqueda ??= busquedaActual;
+
+            ViewData["BusquedaActual"] = strCadenaDeBusqueda;
 
             var empleados = from s in _context.Empleados
                             select s;
+
+            // CARGAR LOS EMPLEADOS
+            empleados = _context.Empleados.AsQueryable();
+
+            // ORDENAR LOS EMPLEADOS POR FECHA NACIMIENTO DE FORMA DESCENDENTE
+            empleados = empleados.OrderByDescending(s => s.FechaNacimiento);
+
+            // FILTRAR POR CORREO, HACIENDO LA BÚSQUEDA INSENSIBLE A MAYÚSCULAS/MINÚSCULAS
+            if (!String.IsNullOrEmpty(strCadenaDeBusqueda))
+            {
+                // USAMOS TOLOWER() PARA CONVERTIR AMBOS LADOS DE LA COMPARACIÓN A MINÚSCULAS
+                empleados = empleados.Where(s => s.Email.ToLower().Contains(strCadenaDeBusqueda.ToLower()));
+            }
 
             int pageSize = 3;
 
