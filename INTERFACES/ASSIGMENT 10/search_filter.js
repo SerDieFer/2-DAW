@@ -8,29 +8,39 @@ document.addEventListener("DOMContentLoaded", function () {
     let paginaActual = 1;
     let sortDirection = 1; // 1 ascendente, -1 descendente
 
-    // Filtrado en tiempo real
+    // FILTRADO EN TIEMPO REAL
     inputBusqueda.addEventListener("input", () => {
         paginaActual = 1;
         actualizarTabla();
     });
 
-    // Cambio en registros por página
+    // CAMBIO EN REGISTROS POR PÁGINA
     selectorRegistros.addEventListener("change", () => {
         registrosPorPagina = parseInt(selectorRegistros.value);
         paginaActual = 1;
         actualizarTabla();
     });
 
-    // Ordenar columnas al hacer clic
+    // ORDENAR COLUMNAS AL HACER CLIC
     document.querySelectorAll("th").forEach((th, index) => {
         if (th.textContent.trim() !== "Acción") {
             th.addEventListener("click", () => {
                 ordenarTabla(index);
             });
+            th.addEventListener("mouseover", () => {
+                th.style.cursor = "pointer";
+                th.style.backgroundColor = "#0d6efd";
+                th.style.color = "white";
+            });
+            th.addEventListener("mouseout", () => {
+                th.style.cursor = "default";
+                th.style.backgroundColor = "";
+                th.style.color = "";
+            });
         }
     });
 
-    // Función para ordenar la tabla
+    // FUNCIÓN PARA ORDENAR LA TABLA
     function ordenarTabla(index) {
         filas.sort((a, b) => {
             const celdaA = a.children[index].textContent.trim();
@@ -47,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
         actualizarTabla();
     }
 
-    // Actualizar tabla con paginación y filtrado
+    // ACTUALIZAR TABLA CON PAGINACIÓN Y FILTRADO
     function actualizarTabla() {
         const textoBusqueda = inputBusqueda.value.toLowerCase();
         const filasFiltradas = filas.filter(fila => 
@@ -64,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
         actualizarPaginacion(filasFiltradas.length);
     }
 
-    // Actualizar los controles de paginación
+    // ACTUALIZAR LOS CONTROLES DE PAGINACIÓN
     function actualizarPaginacion(totalFilas) {
         const textoRegistros = document.getElementById("textoRegistros");
         const totalPaginas = Math.ceil(totalFilas / registrosPorPagina);
@@ -77,6 +87,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const li = document.createElement("li");
             li.classList.add("page-item");
             if (!habilitado) li.classList.add("disabled");
+            if (texto === paginaActual) li.classList.add("active");
+            
             const link = document.createElement("a");
             link.classList.add("page-link");
             link.textContent = texto;
@@ -92,6 +104,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         for (let i = 1; i <= totalPaginas; i++) {
             crearItemPaginacion(i, true, () => {
+                const item = paginacion.querySelector(".page-item.active");
+                if (item) item.classList.remove("active");
                 paginaActual = i;
                 actualizarTabla();
             });
@@ -103,6 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Inicializar tabla al cargar
+    // INICIALIZAR TABLA AL CARGAR
     actualizarTabla();
 });
