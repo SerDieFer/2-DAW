@@ -11,7 +11,7 @@ using Vestigio.Data;
 
 namespace Vestigio.Migrations
 {
-    [DbContext(typeof(VestigioDBContext))]
+    [DbContext(typeof(VestigioDbContext))]
     [Migration("20250109160407_Inicial")]
     partial class Inicial
     {

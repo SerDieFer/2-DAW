@@ -12,9 +12,9 @@ namespace Vestigio.Controllers
 {
     public class ChallengeResolutionsController : Controller
     {
-        private readonly VestigioDBContext _context;
+        private readonly VestigioDbContext _context;
 
-        public ChallengeResolutionsController(VestigioDBContext context)
+        public ChallengeResolutionsController(VestigioDbContext context)
         {
             _context = context;
         }

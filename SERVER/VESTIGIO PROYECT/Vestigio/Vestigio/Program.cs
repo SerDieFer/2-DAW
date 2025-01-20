@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
+using Vestigio;
 using Vestigio.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,16 +22,16 @@ if (string.IsNullOrEmpty(userProfile))
 // DEFINE THE PATH TO THE DATABASE DEPENDING ON THE FOLDER STRUCTURE
 string dbFolderPath;
 
-// CHECK IF THE “2-DAW” FOLDER EXISTS ON THE DESKTOP
+// CHECK IF THE ï¿½2-DAWï¿½ FOLDER EXISTS ON THE DESKTOP
 if (Directory.Exists(Path.Combine(userProfile, "2-DAW")))
 {
     dbFolderPath = Path.Combine(userProfile, "2-DAW", "SERVER", "DBMIGRATIONS");
 }
 
-// CHECK IF THE FOLDER “DAW” EXISTS ON THE DESKTOP AND CONTAINS “2-DAW”.
+// CHECK IF THE FOLDER ï¿½DAWï¿½ EXISTS ON THE DESKTOP AND CONTAINS ï¿½2-DAWï¿½.
 else if (Directory.Exists(Path.Combine(userProfile, "DAW")))
 {
-    // CHOOSE “2-DAW”, SET IF ANOTHER FOLDER IS NEEDED
+    // CHOOSE ï¿½2-DAWï¿½, SET IF ANOTHER FOLDER IS NEEDED
     dbFolderPath = Path.Combine(userProfile, "DAW", "2-DAW", "SERVER", "DBMIGRATIONS");
 }
 else
@@ -55,15 +56,31 @@ var connectionString = $"Server=(localdb)\\MSSQL15;AttachDbFileName={dbPath};Dat
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
 // REGISTER THE DATABASE CONTEXT 
-builder.Services.AddDbContext<VestigioDBContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<VestigioDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+// UNABLE USER CONFIRMATION, IT USES IDENTITY CONFIG
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddControllersWithViews();
+
+
+// ASP.NET CORE IDENTITY SERVICES CONFIGURATION
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // PASSWORD SETTINGS.
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    //options.Password.RequireNonAlphanumeric = true; 
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequiredUniqueChars = 1;
+});
+
 
 var app = builder.Build();
 
@@ -90,5 +107,13 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+// ROLE CREATION AND ADMIN SETTING
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    SeedData.InitializeAsync(services).Wait();
+}
 
 app.Run();

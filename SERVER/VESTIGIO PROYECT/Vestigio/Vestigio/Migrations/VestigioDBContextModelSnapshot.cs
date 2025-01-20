@@ -10,7 +10,7 @@ using Vestigio.Data;
 
 namespace Vestigio.Migrations
 {
-    [DbContext(typeof(VestigioDBContext))]
+    [DbContext(typeof(VestigioDbContext))]
     partial class VestigioDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

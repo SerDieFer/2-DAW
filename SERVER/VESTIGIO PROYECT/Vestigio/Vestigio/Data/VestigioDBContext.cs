@@ -3,9 +3,9 @@ using Vestigio.Models;
 
 namespace Vestigio.Data
 {
-    public class VestigioDBContext : DbContext
+    public class VestigioDbContext : DbContext
     {
-        public VestigioDBContext(DbContextOptions<VestigioDBContext> options): base(options) { }
+        public VestigioDbContext(DbContextOptions<VestigioDbContext> options): base(options) { }
 
         // DBSETS (TABLES)
         public DbSet<User> Users { get; set; }

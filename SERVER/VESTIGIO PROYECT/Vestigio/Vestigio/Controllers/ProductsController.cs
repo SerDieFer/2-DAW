@@ -12,9 +12,9 @@ namespace Vestigio.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly VestigioDBContext _context;
+        private readonly VestigioDbContext _context;
 
-        public ProductsController(VestigioDBContext context)
+        public ProductsController(VestigioDbContext context)
         {
             _context = context;
         }
