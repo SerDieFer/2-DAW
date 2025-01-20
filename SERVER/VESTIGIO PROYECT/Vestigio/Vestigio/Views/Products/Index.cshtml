@@ -1,34 +1,41 @@
-﻿@model IEnumerable<Vestigio.Models.Product>
+﻿@* @model IEnumerable<Vestigio.Models.Product> *@
+@model PaginatedList<Vestigio.Models.Product>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Products</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Product</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
+                @* @Html.DisplayNameFor(model => model.Name) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Description
+                @* @Html.DisplayNameFor(model => model.Description) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Price
+                @* @Html.DisplayNameFor(model => model.Price) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Stock)
+                Stock
+                @* @Html.DisplayNameFor(model => model.Stock) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RarityLevel)
+                Rarity Level
+                @* @Html.DisplayNameFor(model => model.RarityLevel) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
+                Category
+                @* @Html.DisplayNameFor(model => model.Category) *@
             </th>
             <th></th>
         </tr>
@@ -63,3 +70,6 @@
 }
     </tbody>
 </table>
+
+@* Incluir el componente Pagination *@
+<Partial name="_Pagination" model="Model" />

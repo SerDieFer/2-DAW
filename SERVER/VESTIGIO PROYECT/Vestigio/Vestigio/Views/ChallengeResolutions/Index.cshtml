@@ -1,31 +1,37 @@
-﻿@model IEnumerable<Vestigio.Models.ChallengeResolution>
+﻿@* @model IEnumerable<Vestigio.Models.ChallengeResolution> *@
+@model PaginatedList<Vestigio.Models.ChallengeResolution>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Challenge Resolutions</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Challenge Resolution</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ResolutionDate)
+                RESOLUTION DATE
+                @* @Html.DisplayNameFor(model => model.ResolutionDate) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CoinsEarned)
+                COINS EARNED
+                @* @Html.DisplayNameFor(model => model.CoinsEarned) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PointsEarned)
+                POINTS EARNED
+                @* @Html.DisplayNameFor(model => model.PointsEarned) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Challenge)
+                CHALLENGE
+                @* @Html.DisplayNameFor(model => model.Challenge) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                USER
+                @* @Html.DisplayNameFor(model => model.User) *@
             </th>
             <th></th>
         </tr>
@@ -57,3 +63,6 @@
 }
     </tbody>
 </table>
+
+@* Incluir el componente Pagination *@
+<Partial name="_Pagination" model="Model" />

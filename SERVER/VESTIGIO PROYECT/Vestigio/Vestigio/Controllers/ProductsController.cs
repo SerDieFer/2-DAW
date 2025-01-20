@@ -20,10 +20,21 @@ namespace Vestigio.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var vestigioDBContext = _context.Products.Include(p => p.Category);
-            return View(await vestigioDBContext.ToListAsync());
+            // PRODUCTS DATA WITH THEIR CATEGORY
+            var productsData = _context.Products.Include(p => p.Category);
+            int pageSize = 3;
+
+            // PAGINATION
+            return View(await PaginatedList<Product>.CreateAsync(
+                productsData.AsNoTracking(),
+                pageNumber ?? 1,
+                pageSize
+            ));
+
+            // WITHOUT LIST 
+            //return View(await productsData.ToListAsync());
         }
 
         // GET: Products/Details/5

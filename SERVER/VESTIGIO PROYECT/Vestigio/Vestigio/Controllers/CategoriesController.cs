@@ -20,9 +20,18 @@ namespace Vestigio.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            return View(await _context.Categories.ToListAsync());
+            int pageSize = 5;
+
+            // PAGINATION
+            return View(await PaginatedList<Category>.CreateAsync(
+                _context.Categories.AsNoTracking(),
+                pageNumber ?? 1,
+                pageSize
+            ));
+
+            //return View(await _context.Categories.ToListAsync());
         }
 
         // GET: Categories/Details/5

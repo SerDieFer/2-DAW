@@ -1,25 +1,29 @@
-﻿@model IEnumerable<Vestigio.Models.Order>
+﻿@* @model IEnumerable<Vestigio.Models.Order> *@
+@model PaginatedList<Vestigio.Models.Order>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Orders</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Order</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CreationDate)
+                Creation Date
+                @* @Html.DisplayNameFor(model => model.CreationDate) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                Status
+                @* @Html.DisplayNameFor(model => model.Status) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                User
+                @* @Html.DisplayNameFor(model => model.User) *@
             </th>
             <th></th>
         </tr>
@@ -45,3 +49,6 @@
 }
     </tbody>
 </table>
+
+@* Incluir el componente Pagination *@
+<Partial name="_Pagination" model="Model" />
