@@ -20,10 +20,25 @@ namespace Vestigio.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var vestigioDBContext = _context.Orders.Include(o => o.User);
-            return View(await vestigioDBContext.ToListAsync());
+            // ORDER DATA WITH THEIR USER
+            var ordersData = _context.Orders.AsQueryable();
+            int pageSize = 3;
+
+            // SORT ORDERS BY DESCENDING CREATION DATA
+            ordersData = ordersData.OrderByDescending(s => s.CreationDate)
+                                   .Include(o => o.User);
+
+            // PAGINATION
+            return View(await PaginatedList<Order>.CreateAsync(
+                ordersData.AsNoTracking(),
+                pageNumber ?? 1,
+                pageSize
+            ));
+
+            // WITHOUT LIST
+            // return View(await ordersData.ToListAsync());
         }
 
         // GET: Orders/Details/5

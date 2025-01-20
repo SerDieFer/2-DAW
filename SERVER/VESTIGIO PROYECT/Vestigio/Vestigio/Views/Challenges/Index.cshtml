@@ -1,46 +1,57 @@
-﻿@model IEnumerable<Vestigio.Models.Challenge>
+﻿@* @model IEnumerable<Vestigio.Models.Challenge> *@
+@model PaginatedList<Vestigio.Models.Challenge>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Challenges</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New Challenge</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                Title
+                @* @Html.DisplayNameFor(model => model.Title) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Description
+                @* @Html.DisplayNameFor(model => model.Description) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Solution)
+                Solution
+                @* @Html.DisplayNameFor(model => model.Solution) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ExpPoints)
+                Exp Points
+                @* @Html.DisplayNameFor(model => model.ExpPoints) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Coins)
+                Coins
+                @* @Html.DisplayNameFor(model => model.Coins) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RarityLevel)
+                Rarity Level
+                @* @Html.DisplayNameFor(model => model.RarityLevel) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Active)
+                Activated
+                @* @Html.DisplayNameFor(model => model.Active) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreationDate)
+                Creation Date
+                @* @Html.DisplayNameFor(model => model.CreationDate) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ProductLevel)
+                Product Level
+                @* @Html.DisplayNameFor(model => model.ProductLevel) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Product)
+                Product
+                @* @Html.DisplayNameFor(model => model.Product) *@
             </th>
             <th></th>
         </tr>
@@ -87,3 +98,6 @@
 }
     </tbody>
 </table>
+
+@* Incluir el componente Pagination *@
+<Partial name="_Pagination" model="Model" />

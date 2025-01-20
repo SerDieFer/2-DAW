@@ -20,10 +20,21 @@ namespace Vestigio.Controllers
         }
 
         // GET: OrderDetails
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id, int? pageNumber)
         {
-            var vestigioDBContext = _context.OrderDetails.Include(o => o.Order).Include(o => o.Product);
-            return View(await vestigioDBContext.ToListAsync());
+            // ORDERS DETAIL DATA
+            var orderDetailsData = _context.OrderDetails.Include(o => o.Order)
+                                                        .Include(o => o.Product);
+            int pageSize = 3;
+
+            // PAGINATION
+            return View(await PaginatedList<OrderDetail>.CreateAsync(
+                orderDetailsData.AsNoTracking(),
+                pageNumber ?? 1,
+                pageSize
+            ));
+
+            //return View(await orderDetailsData.ToListAsync());
         }
 
         // GET: OrderDetails/Details/5

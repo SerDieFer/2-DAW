@@ -20,10 +20,24 @@ namespace Vestigio.Controllers
         }
 
         // GET: Challenges
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var vestigioDBContext = _context.Challenges.Include(c => c.Product);
-            return View(await vestigioDBContext.ToListAsync());
+            // CHALLENGE DATA WITH PRODUCT 
+            var challengesData = _context.Challenges.Include(c => c.Product)
+                                                    .OrderByDescending(s => s.CreationDate);
+
+            int pageSize = 3;
+
+            // PAGINATION
+            return View(await PaginatedList<Challenge>.CreateAsync(
+                challengesData.AsNoTracking(),
+                pageNumber ?? 1,
+                pageSize
+            ));
+
+
+
+            //return View(await vestigioDBContext.ToListAsync());
         }
 
         // GET: Challenges/Details/5

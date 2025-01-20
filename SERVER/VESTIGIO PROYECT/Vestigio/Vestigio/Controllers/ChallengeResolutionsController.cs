@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,21 @@ namespace Vestigio.Controllers
         }
 
         // GET: ChallengeResolutions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            var vestigioDBContext = _context.ChallengeResolutions.Include(c => c.Challenge).Include(c => c.User);
-            return View(await vestigioDBContext.ToListAsync());
+            // CHALLENGE RESOLUTION DATA WITH ITS USER
+            var challengeResolutionsData = _context.ChallengeResolutions.Include(c => c.Challenge)
+                                                                        .Include(c => c.User)
+                                                                        .OrderByDescending(c => c.ResolutionDate);
+            int pageSize = 3;
+
+            // PAGINATION
+            return View(await PaginatedList<ChallengeResolution>.CreateAsync(
+                challengeResolutionsData.AsNoTracking(),
+                pageNumber ?? 1,
+                pageSize
+            ));
+            //return View(await vestigioDBContext.ToListAsync());
         }
 
         // GET: ChallengeResolutions/Details/5
