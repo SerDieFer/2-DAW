@@ -119,6 +119,33 @@ namespace Vestigio.Migrations
                     b.ToTable("ChallengeResolution", (string)null);
                 });
 
+            modelBuilder.Entity("Vestigio.Models.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ChallengeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChallengeId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Images", (string)null);
+                });
+
             modelBuilder.Entity("Vestigio.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -271,6 +298,23 @@ namespace Vestigio.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Vestigio.Models.Image", b =>
+                {
+                    b.HasOne("Vestigio.Models.Challenge", "Challenge")
+                        .WithMany("Images")
+                        .HasForeignKey("ChallengeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Vestigio.Models.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Challenge");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Vestigio.Models.Order", b =>
                 {
                     b.HasOne("Vestigio.Models.User", "User")
@@ -317,6 +361,11 @@ namespace Vestigio.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("Vestigio.Models.Challenge", b =>
+                {
+                    b.Navigation("Images");
+                });
+
             modelBuilder.Entity("Vestigio.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
@@ -324,6 +373,8 @@ namespace Vestigio.Migrations
 
             modelBuilder.Entity("Vestigio.Models.Product", b =>
                 {
+                    b.Navigation("Images");
+
                     b.Navigation("OrderDetails");
                 });
 

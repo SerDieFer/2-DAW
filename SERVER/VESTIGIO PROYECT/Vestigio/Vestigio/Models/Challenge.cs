@@ -46,5 +46,7 @@ namespace Vestigio.Models
         public int? ProductLevel { get; set; }
 
         public Product? Product { get; set; }
+
+        public ICollection<Image> Images { get; set; } // Relación 1:N
     }
 }

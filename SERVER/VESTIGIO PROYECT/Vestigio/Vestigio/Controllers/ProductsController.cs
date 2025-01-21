@@ -47,7 +47,9 @@ namespace Vestigio.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Category)
+                .Include(p => p.Images) // Incluye las imágenes
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (product == null)
             {
                 return NotFound();
@@ -55,6 +57,7 @@ namespace Vestigio.Controllers
 
             return View(product);
         }
+
 
         // GET: Products/Create
         public IActionResult Create()
@@ -68,17 +71,44 @@ namespace Vestigio.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product, List<IFormFile> imageFiles)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
+
+                if (imageFiles != null && imageFiles.Count > 0)
+                {
+                    foreach (var file in imageFiles)
+                    {
+                        // Ruta donde se guardarán las imágenes
+                        var imagePath = Path.Combine("wwwroot/images/products", file.FileName);
+                        using (var stream = new FileStream(imagePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+
+                        // Guardar la imagen en la base de datos
+                        var image = new Image
+                        {
+                            Url = $"/images/products/{file.FileName}",
+                            ProductId = product.Id
+                        };
+
+                        _context.Images.Add(image);
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
+
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -102,7 +132,7 @@ namespace Vestigio.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product, List<IFormFile> imageFiles)
         {
             if (id != product.Id)
             {
@@ -114,6 +144,27 @@ namespace Vestigio.Controllers
                 try
                 {
                     _context.Update(product);
+
+                    if (imageFiles != null && imageFiles.Count > 0)
+                    {
+                        foreach (var file in imageFiles)
+                        {
+                            var imagePath = Path.Combine("wwwroot/images/products", file.FileName);
+                            using (var stream = new FileStream(imagePath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(stream);
+                            }
+
+                            var image = new Image
+                            {
+                                Url = $"/images/products/{file.FileName}",
+                                ProductId = product.Id
+                            };
+
+                            _context.Images.Add(image);
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -129,9 +180,11 @@ namespace Vestigio.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
+
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -171,5 +224,7 @@ namespace Vestigio.Controllers
         {
             return _context.Products.Any(e => e.Id == id);
         }
+
+
     }
 }

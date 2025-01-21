@@ -50,6 +50,7 @@ namespace Vestigio.Controllers
 
             var challenge = await _context.Challenges
                 .Include(c => c.Product)
+                .Include(p => p.Images)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (challenge == null)
             {

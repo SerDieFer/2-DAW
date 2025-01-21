@@ -15,6 +15,7 @@ namespace Vestigio.Data
         public DbSet<ChallengeResolution> ChallengeResolutions { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +27,7 @@ namespace Vestigio.Data
             modelBuilder.Entity<ChallengeResolution>().ToTable("ChallengeResolution");
             modelBuilder.Entity<Order>().ToTable("Order");
             modelBuilder.Entity<OrderDetail>().ToTable("OrderDetails");
+            modelBuilder.Entity<Image>().ToTable("Images");
 
             // DISABLE CASCADING DELETION IN ALL RELATIONSHIPS 
             base.OnModelCreating(modelBuilder);
@@ -84,6 +86,20 @@ namespace Vestigio.Data
                 .HasOne(cr => cr.User)
                 .WithMany(u => u.ChallengesResolutions)
                 .HasForeignKey(cr => cr.UserId);
+
+            // RELACIÓN: PRODUCTO - IMAGEN (1:N)
+            modelBuilder.Entity<Image>()
+                .HasOne(i => i.Product)
+                .WithMany(p => p.Images)
+                .HasForeignKey(i => i.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // RELACIÓN: CHALLENGE - IMAGEN (1:N)
+            modelBuilder.Entity<Image>()
+                .HasOne(i => i.Challenge)
+                .WithMany(c => c.Images)
+                .HasForeignKey(i => i.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // CREATE THE MODEL
             base.OnModelCreating(modelBuilder);
