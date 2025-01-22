@@ -110,10 +110,11 @@ namespace Vestigio.Controllers
         // POST: Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product, List<IFormFile> imageFiles)
+        public async Task<IActionResult> Create(
+            [Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product, List<IFormFile> imageFiles)
         {
             if (ModelState.IsValid)
-            {
+            {   
                 _context.Add(product);
                 await _context.SaveChangesAsync();
 
@@ -172,7 +173,8 @@ namespace Vestigio.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                                        .FindAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -184,7 +186,12 @@ namespace Vestigio.Controllers
         // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product, List<IFormFile> imageFiles)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")]
+            Product product,
+            List<IFormFile> imageFiles,
+            List<int> imagesToDelete)
         {
             if (id != product.Id)
             {
@@ -195,33 +202,51 @@ namespace Vestigio.Controllers
             {
                 try
                 {
+                    // Actualizamos el producto
                     _context.Update(product);
+
+                    // Eliminar imágenes seleccionadas
+                    if (imagesToDelete != null && imagesToDelete.Any())
+                    {
+                        var images = _context.Images.Where(i => imagesToDelete.Contains(i.Id)).ToList();
+
+                        foreach (var image in images)
+                        {
+                            // Eliminamos el archivo físico del servidor
+                            var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", image.Url.TrimStart('/'));
+                            if (System.IO.File.Exists(imagePath))
+                            {
+                                System.IO.File.Delete(imagePath);
+                            }
+
+                            // Eliminamos el registro de la base de datos
+                            _context.Images.Remove(image);
+                        }
+                    }
 
                     // Crear la carpeta de imágenes si no existe
                     var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products");
+
                     if (!Directory.Exists(imageDirectory))
                     {
                         Directory.CreateDirectory(imageDirectory);
                     }
 
+                    // Guardar nuevas imágenes si se han subido
                     if (imageFiles != null && imageFiles.Count > 0)
                     {
+                        int imageCount = _context.Images.Count(i => i.ProductId == product.Id);
+
                         foreach (var file in imageFiles)
                         {
-                            // Obtener el contador de imágenes para este producto
-                            int imageCount = _context.Images.Count(i => i.ProductId == product.Id);
-
-                            // Crear el nombre de archivo único basado en ProductId y el número de imagen
                             var uniqueFileName = $"product{product.Id}-image{imageCount + 1}{Path.GetExtension(file.FileName)}";
                             var imagePath = Path.Combine(imageDirectory, uniqueFileName);
 
-                            // Guardar la imagen en el directorio
                             using (var stream = new FileStream(imagePath, FileMode.Create))
                             {
                                 await file.CopyToAsync(stream);
                             }
 
-                            // Crear la entidad de imagen y asociarla al producto
                             var image = new Image
                             {
                                 Url = $"/images/products/{uniqueFileName}",
@@ -229,6 +254,7 @@ namespace Vestigio.Controllers
                             };
 
                             _context.Images.Add(image);
+                            imageCount++;
                         }
                     }
 
@@ -245,11 +271,14 @@ namespace Vestigio.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
+
 
 
         // GET: Products/Delete/5
