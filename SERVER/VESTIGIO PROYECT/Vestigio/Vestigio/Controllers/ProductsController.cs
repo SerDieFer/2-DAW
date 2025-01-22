@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Vestigio.Controllers
 {
@@ -20,22 +23,61 @@ namespace Vestigio.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index(int? pageNumber)
+        public async Task<IActionResult> Index(int? pageNumber, string searchName, decimal? minPrice, decimal? maxPrice, int? rarityLevel, int? categoryId, int pageSize = 5)
         {
-            // PRODUCTS DATA WITH THEIR CATEGORY
-            var productsData = _context.Products.Include(p => p.Category);
-            int pageSize = 3;
+            var productsData = _context.Products
+                                       .Include(p => p.Category)
+                                       .Include(p => p.Images)
+                                       .AsQueryable();
 
-            // PAGINATION
-            return View(await PaginatedList<Product>.CreateAsync(
+            // Filtros
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                productsData = productsData.Where(p => p.Name.Contains(searchName));
+            }
+
+            if (minPrice.HasValue)
+            {
+                productsData = productsData.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                productsData = productsData.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            if (rarityLevel.HasValue)
+            {
+                productsData = productsData.Where(p => p.RarityLevel == rarityLevel.Value);
+            }
+
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+
+                productsData = productsData.Where(p => p.CategoryId == categoryId);
+            }
+
+            // Paginación
+            var paginatedList = await PaginatedList<Product>.CreateAsync(
                 productsData.AsNoTracking(),
                 pageNumber ?? 1,
                 pageSize
-            ));
+            );
 
-            // WITHOUT LIST 
-            //return View(await productsData.ToListAsync());
+            // Obtener todas las categorías para el filtro
+            ViewData["Categories"] = await _context.Categories.ToListAsync();
+
+            // Asignamos los valores a ViewData
+            ViewData["searchName"] = searchName;
+            ViewData["minPrice"] = minPrice;
+            ViewData["maxPrice"] = maxPrice;
+            ViewData["rarityLevel"] = rarityLevel;
+            ViewData["categoryId"] = categoryId ?? 0;
+
+            return View(paginatedList);
         }
+
+
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -47,7 +89,7 @@ namespace Vestigio.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Category)
-                .Include(p => p.Images) // Incluye las imágenes
+                .Include(p => p.Images)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)
@@ -58,7 +100,6 @@ namespace Vestigio.Controllers
             return View(product);
         }
 
-
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -67,8 +108,6 @@ namespace Vestigio.Controllers
         }
 
         // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product, List<IFormFile> imageFiles)
@@ -78,25 +117,41 @@ namespace Vestigio.Controllers
                 _context.Add(product);
                 await _context.SaveChangesAsync();
 
+                // Crear la carpeta de imágenes si no existe
+                var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products");
+                if (!Directory.Exists(imageDirectory))
+                {
+                    Directory.CreateDirectory(imageDirectory);
+                }
+
+                // Guardar las imágenes asociadas al producto
                 if (imageFiles != null && imageFiles.Count > 0)
                 {
+                    // Obtener el contador de imágenes para este producto
+                    int imageCount = _context.Images.Count(i => i.ProductId == product.Id);
+
                     foreach (var file in imageFiles)
                     {
-                        // Ruta donde se guardarán las imágenes
-                        var imagePath = Path.Combine("wwwroot/images/products", file.FileName);
+
+                        // Crear el nombre de archivo único basado en ProductId y el número de imagen
+                        var uniqueFileName = $"product{product.Id}-image{imageCount + 1}{Path.GetExtension(file.FileName)}";
+                        var imagePath = Path.Combine(imageDirectory, uniqueFileName);
+
+                        // Guardar la imagen en el directorio
                         using (var stream = new FileStream(imagePath, FileMode.Create))
                         {
                             await file.CopyToAsync(stream);
                         }
 
-                        // Guardar la imagen en la base de datos
+                        // Crear la entidad de imagen y asociarla al producto
                         var image = new Image
                         {
-                            Url = $"/images/products/{file.FileName}",
+                            Url = $"/images/products/{uniqueFileName}",
                             ProductId = product.Id
                         };
 
                         _context.Images.Add(image);
+                        imageCount++;
                     }
 
                     await _context.SaveChangesAsync();
@@ -108,7 +163,6 @@ namespace Vestigio.Controllers
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
-
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -128,8 +182,6 @@ namespace Vestigio.Controllers
         }
 
         // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Stock,RarityLevel,CategoryId")] Product product, List<IFormFile> imageFiles)
@@ -145,19 +197,34 @@ namespace Vestigio.Controllers
                 {
                     _context.Update(product);
 
+                    // Crear la carpeta de imágenes si no existe
+                    var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products");
+                    if (!Directory.Exists(imageDirectory))
+                    {
+                        Directory.CreateDirectory(imageDirectory);
+                    }
+
                     if (imageFiles != null && imageFiles.Count > 0)
                     {
                         foreach (var file in imageFiles)
                         {
-                            var imagePath = Path.Combine("wwwroot/images/products", file.FileName);
+                            // Obtener el contador de imágenes para este producto
+                            int imageCount = _context.Images.Count(i => i.ProductId == product.Id);
+
+                            // Crear el nombre de archivo único basado en ProductId y el número de imagen
+                            var uniqueFileName = $"product{product.Id}-image{imageCount + 1}{Path.GetExtension(file.FileName)}";
+                            var imagePath = Path.Combine(imageDirectory, uniqueFileName);
+
+                            // Guardar la imagen en el directorio
                             using (var stream = new FileStream(imagePath, FileMode.Create))
                             {
                                 await file.CopyToAsync(stream);
                             }
 
+                            // Crear la entidad de imagen y asociarla al producto
                             var image = new Image
                             {
-                                Url = $"/images/products/{file.FileName}",
+                                Url = $"/images/products/{uniqueFileName}",
                                 ProductId = product.Id
                             };
 
@@ -180,7 +247,6 @@ namespace Vestigio.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
@@ -224,7 +290,5 @@ namespace Vestigio.Controllers
         {
             return _context.Products.Any(e => e.Id == id);
         }
-
-
     }
 }

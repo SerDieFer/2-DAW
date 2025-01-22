@@ -35,6 +35,6 @@ namespace Vestigio.Models
         [Display(Name = "Order Details")]
         public ICollection<OrderDetail>? OrderDetails { get; set; }
 
-        public ICollection<Image> Images { get; set; }
+        public ICollection<Image>? Images { get; set; }
     }
 }
