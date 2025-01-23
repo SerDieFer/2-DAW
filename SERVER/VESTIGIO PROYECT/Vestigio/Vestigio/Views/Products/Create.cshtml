@@ -38,7 +38,7 @@
                                 <!-- Price -->
                                 <div class="form-group mb-4">
                                     <label asp-for="Price" class="form-label fw-bold">Price</label>
-                                    <input asp-for="Price" class="form-control form-control-lg" placeholder="59.99..." />
+                                    <input asp-for="Price" class="form-control form-control-lg" placeholder="59.99..." min="0" />
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
 
@@ -49,7 +49,7 @@
                                 <!-- Stock -->
                                 <div class="form-group mb-4">
                                     <label asp-for="Stock" class="form-label fw-bold">Stock</label>
-                                    <input asp-for="Stock" class="form-control form-control-lg" placeholder="100..." />
+                                    <input asp-for="Stock" class="form-control form-control-lg" placeholder="100..." min="0" />
                                     <span asp-validation-for="Stock" class="text-danger"></span>
                                 </div>
 
@@ -80,7 +80,7 @@
 
                         <!-- Submit Button -->
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-dark btn-lg text-uppercase fw-bold">Create Product</button>
+                            <button type="submit" class="btn btn-success btn-lg text-uppercase fw-bold">Create Product</button>
                         </div>
                     </form>
                 </div>
