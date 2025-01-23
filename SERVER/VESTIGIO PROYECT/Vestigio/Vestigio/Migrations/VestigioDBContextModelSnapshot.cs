@@ -47,9 +47,6 @@ namespace Vestigio.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
                     b.Property<int>("Coins")
                         .HasColumnType("int");
 
@@ -62,6 +59,12 @@ namespace Vestigio.Migrations
                     b.Property<int>("ExpPoints")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
@@ -71,9 +74,11 @@ namespace Vestigio.Migrations
                     b.Property<int>("RarityLevel")
                         .HasColumnType("int");
 
-                    b.Property<string>("Solution")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("ReleaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SolutionMode")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -82,6 +87,8 @@ namespace Vestigio.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductLevel");
 
                     b.ToTable("Challenge", (string)null);
                 });
@@ -212,8 +219,14 @@ namespace Vestigio.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -271,9 +284,13 @@ namespace Vestigio.Migrations
 
             modelBuilder.Entity("Vestigio.Models.Challenge", b =>
                 {
+                    b.HasOne("Vestigio.Models.Product", null)
+                        .WithMany("Challenges")
+                        .HasForeignKey("ProductId");
+
                     b.HasOne("Vestigio.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductLevel")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Product");
@@ -373,6 +390,8 @@ namespace Vestigio.Migrations
 
             modelBuilder.Entity("Vestigio.Models.Product", b =>
                 {
+                    b.Navigation("Challenges");
+
                     b.Navigation("Images");
 
                     b.Navigation("OrderDetails");

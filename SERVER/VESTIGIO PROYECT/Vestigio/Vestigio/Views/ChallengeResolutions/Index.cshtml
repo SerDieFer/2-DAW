@@ -1,5 +1,5 @@
 ﻿@* @model IEnumerable<Vestigio.Models.ChallengeResolution> *@
-@model PaginatedList<Vestigio.Models.ChallengeResolution>
+@model Vestigio.Utilities.PaginatedList<Vestigio.Models.ChallengeResolution>
 
 @{
     ViewData["Title"] = "Index";
@@ -48,9 +48,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.PointsEarned)
             </td>
-            <td>
+@*             <td>
                 @Html.DisplayFor(modelItem => item.Challenge.Solution)
-            </td>
+            </td> *@
             <td>
                 @Html.DisplayFor(modelItem => item.User.Email)
             </td>

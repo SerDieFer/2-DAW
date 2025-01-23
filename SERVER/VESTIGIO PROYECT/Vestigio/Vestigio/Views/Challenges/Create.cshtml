@@ -12,6 +12,11 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
+                </label>
+            </div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -21,11 +26,6 @@
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Solution" class="control-label"></label>
-                <input asp-for="Solution" class="form-control" />
-                <span asp-validation-for="Solution" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ExpPoints" class="control-label"></label>
@@ -42,32 +42,34 @@
                 <input asp-for="RarityLevel" class="form-control" />
                 <span asp-validation-for="RarityLevel" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
-                </label>
-            </div>
             <div class="form-group">
                 <label asp-for="CreationDate" class="control-label"></label>
                 <input asp-for="CreationDate" class="form-control" />
                 <span asp-validation-for="CreationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="ProductLevel" class="control-label"></label>
+                <select asp-for="ProductLevel" class ="form-control" asp-items="ViewBag.ProductLevel"></select>
+            </div>
+            <div class="form-group">
                 <label asp-for="ProductId" class="control-label"></label>
                 <select asp-for="ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="ProductLevel" class="control-label"></label>
-                <input asp-for="ProductLevel" class="form-control" />
-                <span asp-validation-for="ProductLevel" class="text-danger"></span>
+                <label asp-for="SolutionMode" class="control-label"></label>
+                <select asp-for="SolutionMode" class="form-control"></select>
+                <span asp-validation-for="SolutionMode" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-                <label for="imageFiles">Images</label>
-                <input type="file" id="imageFiles" name="imageFiles" multiple class="form-control" />
-                <span asp-validation-for="Images" class="text-danger"></span>
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
-
+            <div class="form-group">
+                <label asp-for="ReleaseDate" class="control-label"></label>
+                <input asp-for="ReleaseDate" class="form-control" />
+                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

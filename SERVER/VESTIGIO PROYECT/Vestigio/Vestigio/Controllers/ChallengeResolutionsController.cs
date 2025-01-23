@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
+using Vestigio.Utilities;
 
 namespace Vestigio.Controllers
 {

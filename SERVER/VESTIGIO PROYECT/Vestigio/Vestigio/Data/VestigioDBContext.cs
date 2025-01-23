@@ -5,7 +5,7 @@ namespace Vestigio.Data
 {
     public class VestigioDbContext : DbContext
     {
-        public VestigioDbContext(DbContextOptions<VestigioDbContext> options): base(options) { }
+        public VestigioDbContext(DbContextOptions<VestigioDbContext> options) : base(options) { }
 
         // DBSETS (TABLES)
         public DbSet<User> Users { get; set; }
@@ -30,13 +30,12 @@ namespace Vestigio.Data
             modelBuilder.Entity<Image>().ToTable("Images");
 
             // DISABLE CASCADING DELETION IN ALL RELATIONSHIPS 
-            base.OnModelCreating(modelBuilder);
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
 
-            // SET DECIMAL PRECISION (TO AVOID TRUNCATION ISSUES)
+            // SET DECIMAL PRECISION
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(9, 2);
@@ -68,12 +67,22 @@ namespace Vestigio.Data
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
 
-            // RELATION: CHALLENGE - PRODUCT (1:1 O 1:N)
+            // RELATION: CHALLENGE - PRODUCT (1:1 OR 1:N) 
+            // ADJUST THIS TO HANDLE THE TWO POSSIBLE KEYS (PRODUCTID AND PRODUCTLEVEL)
             modelBuilder.Entity<Challenge>()
                 .HasOne(c => c.Product)
                 .WithMany()
                 .HasForeignKey(c => c.ProductId)
-                .IsRequired(false); // A CHALLENGE MAY OR MAY NOT BE RELATED TO A SPECIFIC PRODUCT.
+                .IsRequired(false) // A CHALLENGE MAY OR MAY NOT BE RELATED TO A SPECIFIC PRODUCT.
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // IF USING PRODUCTLEVEL AS AN OPTIONAL FOREIGN KEY, CONFIGURE THIS RELATIONSHIP TOO
+            modelBuilder.Entity<Challenge>()
+                .HasOne<Product>(c => c.Product)
+                .WithMany()
+                .HasForeignKey(c => c.ProductLevel)
+                .IsRequired(false) // THIS IS OPTIONAL IF USED.
+                .OnDelete(DeleteBehavior.Restrict);
 
             // RELATION: USER - ORDERS (1:N)
             modelBuilder.Entity<Order>()
@@ -81,27 +90,26 @@ namespace Vestigio.Data
                 .WithMany(u => u.Orders)
                 .HasForeignKey(o => o.UserId);
 
-            // RELACIÓN: USER - CHALLENGE RESOLUTION (1:N)
+            // RELATION: USER - CHALLENGE RESOLUTION (1:N)
             modelBuilder.Entity<ChallengeResolution>()
                 .HasOne(cr => cr.User)
                 .WithMany(u => u.ChallengesResolutions)
                 .HasForeignKey(cr => cr.UserId);
 
-            // RELACIÓN: PRODUCTO - IMAGEN (1:N)
+            // RELATION: PRODUCT - IMAGE (1:N)
             modelBuilder.Entity<Image>()
                 .HasOne(i => i.Product)
                 .WithMany(p => p.Images)
                 .HasForeignKey(i => i.ProductId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A PRODUCT IS DELETED.
 
-            // RELACIÓN: CHALLENGE - IMAGEN (1:N)
+            // RELATION: CHALLENGE - IMAGE (1:N)
             modelBuilder.Entity<Image>()
                 .HasOne(i => i.Challenge)
                 .WithMany(c => c.Images)
                 .HasForeignKey(i => i.ChallengeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A CHALLENGE IS DELETED.
 
-            // CREATE THE MODEL
             base.OnModelCreating(modelBuilder);
         }
     }
