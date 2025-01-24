@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub User Info</title>
+    <style>
+        #user-info {
+            display: none;
+            margin-top: 20px;
+        }
+        #error-message {
+            color: red;
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <form id="github-form">
+        <label for="username">GitHub Username:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Get User Info</button>
+    </form>
+    
+    <div id="user-info">
+        <h2 id="user-login"></h2>
+        <img id="user-avatar" src="" alt="User Avatar" width="100">
+    </div>
+    
+    <div id="error-message">User not found</div>
+
+    <script src="extra1.js"></script>
+</body>
+</html>
