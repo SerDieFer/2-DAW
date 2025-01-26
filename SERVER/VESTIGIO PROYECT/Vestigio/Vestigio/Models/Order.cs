@@ -7,7 +7,7 @@ namespace Vestigio.Models
         public int Id { get; set; }
 
         [Required]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         [Display(Name = "Creation Date")]
         [DataType(DataType.Date)]

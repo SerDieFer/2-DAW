@@ -1,11 +1,18 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Vestigio.Models
 {
-    public class User : IdentityUser
+    public class User
     {
-        public string? Nickname { get; set; }
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "The username is required.")]
+        public string? Name { get; set; }
+
+        [Display(Name = "Email")]
+        [Required(ErrorMessage = "The user email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
+        public string? Email { get; set; }
 
         [Display(Name = "Level")]
         [Range(1, int.MaxValue, ErrorMessage = "Level must be at least 1.")]
