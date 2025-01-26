@@ -10,7 +10,7 @@ namespace Vestigio.Models
         public int ChallengeId { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [Display(Name = "Resolution Date")]
         [DataType(DataType.Date)]

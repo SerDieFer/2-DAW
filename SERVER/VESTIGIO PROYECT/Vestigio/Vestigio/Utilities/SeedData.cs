@@ -1,61 +1,41 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
+using Vestigio.Models;
 
-namespace Vestigio.Utilities
+public static class SeedData
 {
-    public class SeedData
+    public static async Task InitializeAsync(IServiceProvider serviceProvider)
     {
-        public static async Task InitializeAsync(IServiceProvider services)
-        {
-            // COMPROBAR Y CREAR LOS ROLES PREDETERMINADOS
-            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-            await CrearRolesAsync(roleManager);
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>(); // Usa tu clase personalizada 'User'
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            // COMPROBAR Y CREAR EL ADMINISTRADOR PREDETERMINADO
-            var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-            await CrearAdminAsync(userManager);
+        // Crea roles y usuarios según tu lógica
+        string adminRole = "Admin";
+        if (!await roleManager.RoleExistsAsync(adminRole))
+        {
+            await roleManager.CreateAsync(new IdentityRole(adminRole));
         }
 
-        private static async Task CrearAdminAsync(UserManager<IdentityUser> userManager)
+        string adminEmail = "admin@example.com";
+        string adminNickname = "AdminMaster";
+        if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
-            // COMPROBAR SI EXISTE EL ADMINISTRADOR PREDETERMINDADO
-            var testAdmin = userManager.Users
-                    .Where(x => x.UserName == "admin@vestigio.com")
-                    .SingleOrDefault();
-
-            if (testAdmin != null) return;
-
-            testAdmin = new IdentityUser
+            var adminUser = new User
             {
-                UserName = "admin@vestigio.com",
-                Email = "admin@vestigio.com"
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true,
+                Nickname = adminNickname,
             };
 
-            string admPasswd = "Vestigio-123";
-
-            // SI NO EXISTE, SE CREA EL ADMINISTRADOR PREDETERMINADO "ADMIN@VESTIGIO.COM"
-            IdentityResult userResult;
-            userResult = await userManager.CreateAsync(testAdmin, admPasswd);
-
-            // SE AGREGA EL ROL "ADMINISTRADOR" AL ADMINISTRADOR PREDETERMINADO
-            if (userResult.Succeeded)
+            var result = await userManager.CreateAsync(adminUser, "AdminPassword123!");
+            if (result.Succeeded)
             {
-                await userManager.AddToRoleAsync(testAdmin, "Admin");
+                await userManager.AddToRoleAsync(adminUser, adminRole);
             }
         }
-
-        private static async Task CrearRolesAsync(RoleManager<IdentityRole> roleManager)
-        {
-            // SI NO EXISTE, SE CREA EL ROL PREDETERMINADO "ADMIN"
-            string rolName = "Admin";
-            var alreadyExist = await roleManager.RoleExistsAsync(rolName);
-            if (!alreadyExist)
-                await roleManager.CreateAsync(new IdentityRole(rolName));
-
-            // SI NO EXISTE, SE CREA EL ROL PREDETERMINADO "USER"
-            rolName = "User";
-            alreadyExist = await roleManager.RoleExistsAsync(rolName);
-            if (!alreadyExist)
-                await roleManager.CreateAsync(new IdentityRole(rolName));
-        }
     }
+
 }

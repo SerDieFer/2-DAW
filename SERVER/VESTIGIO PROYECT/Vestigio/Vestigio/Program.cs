@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using Vestigio.Data;
+using Vestigio.Models;
 using Vestigio.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,24 +54,18 @@ var dbPath = Path.Combine(dbFolderPath, dbFileName);
 // BUILD THE CONNECTION STRING USING THE ABSOLUTE ROUTE
 var connectionString = $"Server=(localdb)\\MSSQL15;AttachDbFileName={dbPath};Database=aspnet-Vestigio;Trusted_Connection=True;MultipleActiveResultSets=true";
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+//builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
 // REGISTER THE DATABASE CONTEXT 
 builder.Services.AddDbContext<VestigioDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// UNABLE USER CONFIRMATION, IT USES IDENTITY CONFIG
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddControllersWithViews();
-
-
-// ASP.NET CORE IDENTITY SERVICES CONFIGURATION
-builder.Services.Configure<IdentityOptions>(options =>
+// Configura Identity con tu User y IdentityRole
+builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
+    options.User.RequireUniqueEmail = false;
+
     // PASSWORD SETTINGS.
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -79,8 +74,16 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequiredLength = 8;
     options.Password.RequiredUniqueChars = 1;
-});
+})
+    .AddEntityFrameworkStores<VestigioDbContext>()
+    .AddDefaultTokenProviders();
 
+
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddHealthChecks();
+
+builder.Services.AddMvc();
 
 var app = builder.Build();
 
@@ -98,22 +101,33 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
+app.UseAuthentication(); // Asegúrate de que esto esté antes de UseAuthorization
 app.UseAuthorization();
+
+
+
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
 
 // ROLE CREATION AND ADMIN SETTING
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+    var services = scope.ServiceProvider;   
 
-    SeedData.InitializeAsync(services).Wait();
+    try
+    {
+        await SeedData.InitializeAsync(services);
+    }
+    catch (Exception ex)
+    {
+        // Manejar errores
+        Console.WriteLine($"Error durante la inicialización de datos: {ex.Message}");
+    }
 }
 
 app.Run();

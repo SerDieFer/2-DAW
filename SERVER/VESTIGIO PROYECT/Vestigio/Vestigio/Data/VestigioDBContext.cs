@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Vestigio.Models;
 
 namespace Vestigio.Data
 {
-    public class VestigioDbContext : DbContext
+    public class VestigioDbContext : IdentityDbContext<User>
     {
         public VestigioDbContext(DbContextOptions<VestigioDbContext> options) : base(options) { }
 
