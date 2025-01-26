@@ -1,0 +1,72 @@
+﻿@* @model IEnumerable<Vestigio.Models.OrderDetail> *@
+@model Vestigio.Utilities.PaginatedList<Vestigio.Models.OrderDetail>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Order Details</h1>
+
+<p>
+    <a asp-action="Create">Create New Order Detail</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Quantity
+                @* @Html.DisplayNameFor(model => model.Quantity) *@
+            </th>
+            <th>
+                Price
+                @* @Html.DisplayNameFor(model => model.Price) *@
+            </th>
+            <th>
+                Order
+                @* @Html.DisplayNameFor(model => model.Order) *@
+            </th>
+            <th>
+                Product
+                @* @Html.DisplayNameFor(model => model.Product) *@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Order.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@* Poner botones de página Siguiente y Anterior *@ 
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)"
+   class="btn btn-outline-secondary @prevDisabled">
+    Anterior
+</a>
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
+   class="btn btn-outline-secondary @nextDisabled">
+    Siguiente
+</a> 

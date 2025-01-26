@@ -1,0 +1,79 @@
+﻿@* @model IEnumerable<Vestigio.Models.ChallengeResolution> *@
+@model Vestigio.Utilities.PaginatedList<Vestigio.Models.ChallengeResolution>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Challenge Resolutions</h1>
+
+<p>
+    <a asp-action="Create">Create New Challenge Resolution</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                RESOLUTION DATE
+                @* @Html.DisplayNameFor(model => model.ResolutionDate) *@
+            </th>
+            <th>
+                COINS EARNED
+                @* @Html.DisplayNameFor(model => model.CoinsEarned) *@
+            </th>
+            <th>
+                POINTS EARNED
+                @* @Html.DisplayNameFor(model => model.PointsEarned) *@
+            </th>
+            <th>
+                CHALLENGE
+                @* @Html.DisplayNameFor(model => model.Challenge) *@
+            </th>
+            <th>
+                USER
+                @* @Html.DisplayNameFor(model => model.User) *@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ResolutionDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CoinsEarned)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PointsEarned)
+            </td>
+@*             <td>
+                @Html.DisplayFor(modelItem => item.Challenge.Solution)
+            </td> *@
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Email)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@* Poner botones de página Siguiente y Anterior *@ 
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)"
+   class="btn btn-outline-secondary @prevDisabled">
+    Anterior
+</a>
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
+   class="btn btn-outline-secondary @nextDisabled">
+    Siguiente
+</a> 

@@ -1,0 +1,227 @@
+﻿@model Vestigio.Utilities.PaginatedList<Vestigio.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+    var searchName = ViewData["searchName"]?.ToString();
+    var minPrice = ViewData["minPrice"] != null ? (decimal)ViewData["minPrice"] : (decimal?)null;
+    var maxPrice = ViewData["maxPrice"] != null ? (decimal)ViewData["maxPrice"] : (decimal?)null;
+    var rarityLevel = ViewData["rarityLevel"] != null ? (int)ViewData["rarityLevel"] : (int?)null;
+    var selectedCategoryId = ViewData["categoryId"] != null ? (int)ViewData["categoryId"] : 0;
+    var isActive = ViewData["isActive"] != null ? (bool?)ViewData["isActive"] : null;
+    var stockLessThan = ViewData["stockLessThan"] != null ? (int?)ViewData["stockLessThan"] : null;
+    var startDate = ViewData["startDate"] != null ? (DateTime?)ViewData["startDate"] : null;
+    var endDate = ViewData["endDate"] != null ? (DateTime?)ViewData["endDate"] : null;
+}
+<div class="container">
+    <h1 class="text-center mb-2 fw-bold">Products</h1>
+
+    <!-- Filters Section -->
+    <form method="get" action="@Url.Action("Index")" class="mb-5">
+
+        <!-- First Row: Name and Category -->
+        <div class="row g-2">
+            <!-- Search by Name -->
+            <div class="col-md-3">
+                <label for="searchName" class="form-label small text-muted">Name</label>
+                <input type="text" id="searchName" name="searchName" class="form-control" placeholder="Search name..." value="@searchName" />
+            </div>
+
+            <!-- Filter by Category -->
+            <div class="col-md-3">
+                <label for="categoryId" class="form-label small text-muted">Category</label>
+                <select id="categoryId" name="categoryId" class="form-select">
+                    <option value="@(selectedCategoryId == 0 ? "selected" : "")">Todas</option>
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        var isSelected = selectedCategoryId == category.Id ? "selected" : "";
+                        @Html.Raw($"<option value=\"{category.Id}\" {isSelected}>{category.Name}</option>")
+                    }
+                </select>
+            </div>
+
+            <!-- Filter by Min Price -->
+            <div class="col-md-2">
+                <label for="minPrice" class="form-label small text-muted">Min Price</label>
+                <input type="number" id="minPrice" name="minPrice" class="form-control" placeholder="0" value="@minPrice" min="0" />
+            </div>
+
+            <!-- Filter by Max Price -->
+            <div class="col-md-2">
+                <label for="maxPrice" class="form-label small text-muted">Max Price</label>
+                <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="0" value="@maxPrice" min="0" />
+            </div>
+
+            <!-- Filter by Stock -->
+            <div class="col-md-2">
+                <label for="minStock" class="form-label small text-muted">Min Stock</label>
+                <input type="number" id="minStock" name="minStock" class="form-control" placeholder="0" value="@ViewData["minStock"]" min="0" />
+            </div>
+        </div>
+
+        <!-- Second Row: Price, Rarity, and Buttons -->
+        <div class="row g-2 mt-1">
+            <!-- Filter by Rarity Level -->
+            <div class="col-md-1">
+                <label for="rarityLevel" class="form-label small text-muted">Rarity</label>
+                <input type="number" id="rarityLevel" name="rarityLevel" class="form-control" placeholder="Level..." value="@rarityLevel" min="1" max="10" />
+            </div>
+
+            <!-- Filter by Active Status -->
+            <div class="col-md-1">
+                <label for="isActive" class="form-label small text-muted">Active</label>
+                <select id="isActive" name="isActive" class="form-select">
+                    @Html.Raw($"<option value=\"\" {(isActive == null ? "selected" : "")}>Any</option>")
+                    @Html.Raw($"<option value=\"true\" {(isActive == true ? "selected" : "")}>Yes</option>")
+                    @Html.Raw($"<option value=\"false\" {(isActive == false ? "selected" : "")}>No</option>")
+                </select>
+            </div>
+
+            <!-- Filter by Start Date -->
+            <div class="col-md-2">
+                <label for="startDate" class="form-label small text-muted">Start Date</label>
+                <input type="date"
+                       id="startDate"
+                       name="startDate"
+                       class="form-control"
+                       value="@startDate?.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <!-- Filter by End Date -->
+            <div class="col-md-2">
+                <label for="endDate" class="form-label small text-muted">End Date</label>
+                <input type="date"
+                       id="endDate"
+                       name="endDate"
+                       class="form-control"
+                       value="@endDate?.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-md-6 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary w-100">Search</button>
+                <a href="@Url.Action("Index")" class="btn btn-outline-secondary w-100">Clear</a>
+                <a asp-action="Create" class="btn btn-success w-100">+ Create Product</a>
+            </div>
+        </div>
+
+    </form>
+
+    <!-- Products Table -->
+    <div class="table-responsive mt-4">
+        <table class="table table-hover table-striped align-middle text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-uppercase">Activated</th>
+                    <th class="text-uppercase">Name</th>
+                    <th class="text-uppercase">Description</th>
+                    <th class="text-uppercase">Price</th>
+                    <th class="text-uppercase">Stock</th>
+                    <th class="text-uppercase">Rarity</th>
+                    <th class="text-uppercase">Category</th>
+                    <th class="text-uppercase">Creation Date</th>
+                    @* <th class="text-uppercase">Challenges</th> *@
+                    <th class="text-uppercase">Image</th>
+                    <th class="text-uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="text-success">&#x2714;</span> <!-- TICK -->
+                                }
+                                else
+                                {
+                                    <span class="text-danger">&#x2716;</span> <!-- CROSS -->
+                                }
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>@item.Price.ToString("C")</td>
+                            <td>@item.Stock</td>
+                            <td>@item.RarityName (@item.RarityLevel)</td>
+                            <td>@item.Category?.Name</td>
+                            <td>@item.CreationDate.ToShortDateString()</td>
+                            @* <td>@item.Challenges</td> *@
+                            <td style="height: 150px; width: 200px; padding:20px">
+                                @if (item.Images != null && item.Images.Any())
+                                {
+                                    <!-- Carousel with Fixed Size -->
+                                    <div id="carousel-@item.Id" class="carousel slide" data-bs-ride="carousel" style="height: 150px; width: 200px; overflow: hidden; margin: 0 auto;">
+                                        <div class="carousel-inner" style="height: 100%; width: 100%;">
+                                            @foreach (var image in item.Images)
+                                            {
+                                                <div class="carousel-item @(item.Images.First() == image ? "active" : "")">
+                                                    <!-- Image shown completely but scaled down -->
+                                                    <img src="@image.Url" alt="@item.Name" class="d-block w-100" style="max-height: 150px; max-width: 200px; object-fit: contain;" />
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <style>
+                                            .carousel-control-prev-icon,
+                                            .carousel-control-next-icon {
+                                                filter: invert(1) grayscale(100%) brightness(0.5);
+                                            }
+                                        </style>
+
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <img src="default_image.jpg" class="d-block w-100" style="max-height: 150px; max-width: 200px; object-fit: contain;">
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = item.Id })">Details</a>
+                                <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", new { id = item.Id })">Edit</a>
+                                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = item.Id })">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="10">No products found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav class="d-flex justify-content-center align-items-center flex-column mt-4">
+        <div class="d-flex justify-content-center mb-2">
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)"
+               class="btn btn-outline-secondary @(!Model.HasPreviousPage ? "disabled" : "")">
+                &laquo; Previous
+            </a>
+            <ul class="pagination mb-0 mx-3">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a asp-action="Index" asp-route-pageNumber="@i" class="page-link">@i</a>
+                    </li>
+                }
+            </ul>
+            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
+               class="btn btn-outline-secondary @(!Model.HasNextPage ? "disabled" : "")">
+                Next &raquo;
+            </a>
+        </div>
+        <p class="text-muted text-center mt-2">Page @Model.PageIndex of @Model.TotalPages</p>
+    </nav>
+
+</div>

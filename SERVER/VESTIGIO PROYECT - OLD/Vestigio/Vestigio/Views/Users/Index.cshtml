@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Vestigio.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Users</h1>
+
+<p>
+    <a asp-action="Create">Create New User</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+                @* @Html.DisplayNameFor(model => model.Name) *@
+            </th>
+            <th>
+                Email
+                @* @Html.DisplayNameFor(model => model.Email) *@
+            </th>
+            <th>
+                Level
+                @* @Html.DisplayNameFor(model => model.Level) *@
+            </th>
+            <th>
+                Exp Points
+                @* @Html.DisplayNameFor(model => model.ExpPoints) *@
+            </th>
+            <th>
+                Coins
+                @* @Html.DisplayNameFor(model => model.Coins) *@
+            </th>
+            <th>
+                Register Date
+                @* @Html.DisplayNameFor(model => model.RegistrationDate) *@
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Level)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpPoints)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Coins)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegistrationDate)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@* Incluir el componente Pagination *@
+<Partial name="_Pagination" model="Model" />
+

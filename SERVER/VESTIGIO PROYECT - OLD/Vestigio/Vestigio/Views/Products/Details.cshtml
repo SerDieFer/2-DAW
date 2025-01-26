@@ -1,0 +1,86 @@
+﻿@model Vestigio.Models.Product
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <!-- Product Details Card -->
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+        <div class="row g-0">
+            <!-- Left: Carousel -->
+            <div class="col-md-6 position-relative bg-light">
+                @if (Model.Images != null && Model.Images.Any())
+                {
+                    <!-- Carousel -->
+                    <div id="productCarousel" class="carousel slide h-100" data-bs-ride="carousel">
+                        <div class="carousel-inner h-100">
+                            @foreach (var (image, index) in Model.Images.Select((img, idx) => (img, idx)))
+                            {
+                                <div class="carousel-item @(index == 0 ? "active" : "")">
+                                    <img src="@image.Url" alt="@Model.Name" class="d-block w-100 rounded-3" style="object-fit: cover; max-height: 500px;">
+                                </div>
+                            }
+                        </div>
+                        <!-- Navigation Arrows -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <!-- Placeholder Image -->
+                    <div class="d-flex align-items-center justify-content-center" style="height: 100%; min-height: 500px; background-color: #f8f9fa;">
+                        <img src="/images/default_product.jpg" alt="Default Image" class="rounded-3 shadow-sm" style="object-fit: contain; max-height: 400px;">
+                    </div>
+                }
+                <div class="position-absolute top-0 end-0 p-3">
+                    <span class="badge bg-primary fs-6 px-3 py-2">@Model.RarityName (@Model.RarityLevel)</span>
+                </div>
+            </div>
+
+            <!-- Right: Product Details -->
+            <div class="col-md-6 bg-white">
+                <div class="card-body p-5">
+                    <!-- Product Title -->
+                    <h1 class="card-title fw-bold text-dark">@Model.Name</h1>
+
+                    <!-- Short Description -->
+                    <p class="card-text text-muted fs-5">@Model.Description</p>
+
+                    <!-- Price -->
+                    <div class="d-flex align-items-center my-4">
+                        <span class="fw-bold h2 text-success">$@Model.Price</span>
+                    </div>
+
+                    <!-- Product Details -->
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-box-seam me-2 text-primary"></i><strong>Stock:</strong> @Model.Stock</li>
+                        <li class="mb-2"><i class="bi bi-tag me-2 text-primary"></i><strong>Category:</strong> @Model.Category.Name</li>
+                    </ul>
+
+                    <!-- Action Buttons-->
+                    <div class="d-flex gap-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success btn-lg rounded-pill px-4 shadow-sm flex-grow-1">
+                            <i class="bi bi-pencil-square me-2"></i>Edit
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary btn-lg rounded-pill px-4 shadow-sm flex-grow-1">
+                            <i class="bi bi-arrow-left me-2"></i>Back
+                        </a>
+                        <a asp-action="Delete" class="btn btn-danger btn-lg rounded-pill px-4 shadow-sm flex-grow-1">
+                            <i class="bi bi-trash me-2"></i>Delete
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
