@@ -14,11 +14,32 @@
             <h4 class="card-title fw-bold">@Model.Name</h4>
             <p class="card-text text-muted">@Model.Description</p>
             <ul class="list-unstyled">
-                <li><strong>Price:</strong> $@Model.Price</li>
-                <li><strong>Stock:</strong> @Model.Stock</li>
-                <li><strong>Category:</strong> @Model.Category.Name</li>
-                <li><strong>Rarity Level:</strong> @Model.RarityLevel</li>
+                <li><strong>Price:</strong> $@Model.Price.ToString("N2")</li>
+                <li><strong>Total Stock:</strong> @Model.TotalStock</li>
+                <li>
+                    <strong>Categories:</strong>
+                    @if (Model.ProductCategories?.Any() == true)
+                    {
+                        @string.Join(", ", Model.ProductCategories.Select(pc => pc.Category.Name))
+                    }
+                    else
+                    {
+                        <span class="text-muted">None</span>
+                    }
+                </li>
+                <li><strong>Rarity Level:</strong> @Model.RarityLevel (@Model.RarityName)</li>
                 <li><strong>Created:</strong> @Model.CreationDate.ToString("dd/MM/yyyy")</li>
+                <li>
+                    <strong>Status:</strong>
+                    @if (Model.IsActive)
+                    {
+                        <span class="text-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Inactive</span>
+                    }
+                </li>
             </ul>
         </div>
     </div>
@@ -42,6 +63,7 @@
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete <strong>@Model.Name</strong>? This action cannot be undone.</p>
+                <p class="text-danger"><strong>Warning:</strong> This will also delete all associated sizes, images, and order details.</p>
             </div>
             <div class="modal-footer">
                 <form asp-action="Delete">

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
 using Vestigio.Utilities;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace Vestigio.Controllers
 {
@@ -28,7 +30,9 @@ namespace Vestigio.Controllers
         {
             // BASE QUERY
             var productsQuery = _context.Products
-                .Include(p => p.Category)
+                .Include(p => p.ProductCategories)
+                    .ThenInclude(pc => pc.Category)
+                .Include(p => p.Sizes)
                 .Include(p => p.Images)
                 .AsQueryable();
 
@@ -43,7 +47,7 @@ namespace Vestigio.Controllers
                 productsQuery = productsQuery.Where(p => p.Price <= maxPrice.Value);
 
             if (minStock.HasValue)
-                productsQuery = productsQuery.Where(p => p.Stock >= minStock.Value);
+                productsQuery = productsQuery.Where(p => p.TotalStock >= minStock.Value);
 
             if (rarityLevel.HasValue)
                 productsQuery = productsQuery.Where(p => p.RarityLevel == rarityLevel.Value);
@@ -52,7 +56,8 @@ namespace Vestigio.Controllers
                 productsQuery = productsQuery.Where(p => p.IsActive == isActive.Value);
 
             if (categoryId.HasValue && categoryId.Value > 0)
-                productsQuery = productsQuery.Where(p => p.CategoryId == categoryId.Value);
+                productsQuery = productsQuery.Where(p => p.ProductCategories
+                .Any(pc => pc.CategoryId == categoryId.Value));
 
             if (startDate.HasValue)
                 productsQuery = productsQuery.Where(p => p.CreationDate >= startDate.Value);
@@ -85,7 +90,6 @@ namespace Vestigio.Controllers
             return View(paginatedList);
         }
 
-
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -95,7 +99,9 @@ namespace Vestigio.Controllers
             }
 
             var product = await _context.Products
-                .Include(p => p.Category)
+                .Include(p => p.ProductCategories)
+                    .ThenInclude(pc => pc.Category)
+                .Include(p => p.Sizes)
                 .Include(p => p.Images)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -108,23 +114,34 @@ namespace Vestigio.Controllers
         }
 
         // GET: Products/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
+            ViewData["Categories"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
+            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
             return View();
         }
 
         // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Id,IsActive,Name,Description,Price,Stock,RarityLevel,CreationDate,CategoryId")] 
-            Product product, List<IFormFile> imageFiles)
+            [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")]
+            Product product, List<int> categoryIds, Dictionary<string, int> sizes, List<IFormFile> imageFiles)
         {
             if (ModelState.IsValid)
             {
+                // Add selected categories
+                foreach (var categoryId in categoryIds)
+                {
+                    product.ProductCategories.Add(new ProductCategory { CategoryId = categoryId });
+                }
+
+                // Add sizes with stock
+                foreach (var size in sizes)
+                {
+                    product.AddSize(size.Key, size.Value);
+                }
+
                 _context.Add(product);
                 await _context.SaveChangesAsync();
 
@@ -132,7 +149,9 @@ namespace Vestigio.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+
+            ViewData["Categories"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
+            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
             return View(product);
         }
 
@@ -144,24 +163,32 @@ namespace Vestigio.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.ProductCategories)
+                .Include(p => p.Sizes)
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+
+            ViewData["Categories"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
+            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
+            ViewData["SelectedCategories"] = product.ProductCategories.Select(pc => pc.CategoryId).ToList();
+            ViewData["SelectedSizes"] = product.Sizes.ToDictionary(ps => ps.Size, ps => ps.Stock);
+
             return View(product);
         }
 
         // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-            int id, 
-            [Bind("Id,IsActive,Name,Description,Price,Stock,RarityLevel,CreationDate,CategoryId")]
-            Product product, List<IFormFile> imageFiles)
+            int id,
+            [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")]
+            Product product, List<int> categoryIds, Dictionary<string, int> sizes, List<IFormFile> imageFiles)
         {
             if (id != product.Id)
             {
@@ -172,7 +199,33 @@ namespace Vestigio.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    var existingProduct = await _context.Products
+                        .Include(p => p.ProductCategories)
+                        .Include(p => p.Sizes)
+                        .FirstOrDefaultAsync(p => p.Id == id);
+
+                    if (existingProduct == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // UPDATE PRODUCT PROPERTIES
+                    _context.Entry(existingProduct).CurrentValues.SetValues(product);
+
+                    // UPDATE CATEGORIES
+                    existingProduct.ProductCategories.Clear();
+                    foreach (var categoryId in categoryIds)
+                    {
+                        existingProduct.ProductCategories.Add(new ProductCategory { CategoryId = categoryId });
+                    }
+
+                    // UPDATE SIZES
+                    foreach (var size in sizes)
+                    {
+                        existingProduct.UpdateSizeStock(size.Key, size.Value);
+                    }
+
+                    _context.Update(existingProduct);
                     await _context.SaveChangesAsync();
 
                     await SaveImages(imageFiles, product.Id);
@@ -190,7 +243,9 @@ namespace Vestigio.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+
+            ViewData["Categories"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
+            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
             return View(product);
         }
 
@@ -203,7 +258,9 @@ namespace Vestigio.Controllers
             }
 
             var product = await _context.Products
-                .Include(p => p.Category)
+                .Include(p => p.ProductCategories)
+                    .ThenInclude(pc => pc.Category)
+                .Include(p => p.Sizes)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)

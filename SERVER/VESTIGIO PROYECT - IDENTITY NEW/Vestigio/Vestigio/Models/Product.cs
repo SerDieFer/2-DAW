@@ -24,10 +24,6 @@ namespace Vestigio.Models
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
 
-        [Required(ErrorMessage = "The stock amount is required.")]
-        [Range(0, int.MaxValue, ErrorMessage = "Stock cannot be negative.")]
-        public int Stock { get; set; }
-
         [Required]
         [Display(Name = "Rarity Level")]
         public int RarityLevel { get; set; }
@@ -43,10 +39,41 @@ namespace Vestigio.Models
         // LINKED CATEGORIES, CHALLENGES, ORDER DETAILS, IMAGES, ETC
         // ------------------------------------------------------------------------------------------------------ //
 
-        [Display(Name = "Category")]
-        public int CategoryId { get; set; }
+        // RELATIONSHIP WITH SIZES (1:N)
+        public ICollection<ProductSize> Sizes { get; set; } = new List<ProductSize>();
 
-            public Category? Category { get; set; }
+        // METHOD TO ADD SIZE WITH STOCK
+        public void AddSize(string size, int stock)
+        {
+            if (ClothingSizes.Sizes.ContainsKey(size))
+            {
+                Sizes.Add(new ProductSize { Size = size, Stock = stock });
+            }
+            else
+            {
+                throw new ArgumentException($"Invalid size: {size}");
+            }
+        }
+
+        // METHOD TO UPDATE STOCK FOR A SPECIFIC SIZE
+        public void UpdateSizeStock(string size, int quantity)
+        {
+            var productSize = Sizes.FirstOrDefault(s => s.Size == size);
+            if (productSize != null)
+            {
+                productSize.UpdateStock(quantity);
+            }
+            else
+            {
+                throw new ArgumentException($"Size not found: {size}");
+            }
+        }
+
+        // RELATIONSHIP WITH CATEGORIES (MANY-TO-MANY)
+        public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
+
+        // METHOD TO GET THE PRODUCT'S TOTAL STOCK FROM ALL SIZES
+        public int TotalStock => Sizes.Sum(s => s.Stock);
 
         [Display(Name = "Order Details")]
         public ICollection<OrderDetail>? OrderDetails { get; set; }

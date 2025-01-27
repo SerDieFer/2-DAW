@@ -11,13 +11,14 @@ namespace Vestigio.Data
         // DBSETS (TABLES)
         public DbSet<User> Users { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductSize> ProductSizes { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<Challenge> Challenges { get; set; }
         public DbSet<ChallengeResolution> ChallengeResolutions { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Image> Images { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // SINGULAR NAME TABLE
@@ -29,6 +30,8 @@ namespace Vestigio.Data
             modelBuilder.Entity<Order>().ToTable("Order");
             modelBuilder.Entity<OrderDetail>().ToTable("OrderDetails");
             modelBuilder.Entity<Image>().ToTable("Images");
+            modelBuilder.Entity<ProductSize>().ToTable("ProductSize");
+            modelBuilder.Entity<ProductCategory>().ToTable("ProductCategory");
 
             // DISABLE CASCADING DELETION IN ALL RELATIONSHIPS 
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
@@ -62,27 +65,32 @@ namespace Vestigio.Data
                 .WithOne(od => od.Product)
                 .HasForeignKey(od => od.ProductId);
 
-            // RELATION: PRODUCT - CATEGORY (N:1)
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Category)
-                .WithMany(c => c.Products)
-                .HasForeignKey(p => p.CategoryId);
+            // RELATION: PRODUCT - PRODUCT CATEGORY (MANY-TO-MANY)
+            modelBuilder.Entity<ProductCategory>()
+                .HasKey(pc => new { pc.ProductId, pc.CategoryId });
 
-            // RELATION: CHALLENGE - PRODUCT (1:1 OR 1:N) 
-            // ADJUST THIS TO HANDLE THE TWO POSSIBLE KEYS (PRODUCTID AND PRODUCTLEVEL)
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(pc => pc.Product)
+                .WithMany(p => p.ProductCategories)
+                .HasForeignKey(pc => pc.ProductId);
+
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(pc => pc.Category)
+                .WithMany(c => c.ProductCategories)
+                .HasForeignKey(pc => pc.CategoryId);
+
+            // RELATION: PRODUCT - PRODUCT SIZE (1:N)
+            modelBuilder.Entity<ProductSize>()
+                .HasOne(ps => ps.Product)
+                .WithMany(p => p.Sizes)
+                .HasForeignKey(ps => ps.ProductId);
+
+            // RELATION: CHALLENGE - PRODUCT (1:1 OR 1:N)
             modelBuilder.Entity<Challenge>()
                 .HasOne(c => c.Product)
-                .WithMany()
+                .WithMany(p => p.Challenges)
                 .HasForeignKey(c => c.ProductId)
-                .IsRequired(false) // A CHALLENGE MAY OR MAY NOT BE RELATED TO A SPECIFIC PRODUCT.
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // IF USING PRODUCTLEVEL AS AN OPTIONAL FOREIGN KEY, CONFIGURE THIS RELATIONSHIP TOO
-            modelBuilder.Entity<Challenge>()
-                .HasOne<Product>(c => c.Product)
-                .WithMany()
-                .HasForeignKey(c => c.ProductLevel)
-                .IsRequired(false) // THIS IS OPTIONAL IF USED.
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // RELATION: USER - ORDERS (1:N)

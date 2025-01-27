@@ -57,14 +57,74 @@
 
                     <!-- Price -->
                     <div class="d-flex align-items-center my-4">
-                        <span class="fw-bold h2 text-success">$@Model.Price</span>
+                        <span class="fw-bold h2 text-success">$@Model.Price.ToString("N2")</span>
                     </div>
 
                     <!-- Product Details -->
                     <ul class="list-unstyled mb-4">
-                        <li class="mb-2"><i class="bi bi-box-seam me-2 text-primary"></i><strong>Stock:</strong> @Model.Stock</li>
-                        <li class="mb-2"><i class="bi bi-tag me-2 text-primary"></i><strong>Category:</strong> @Model.Category.Name</li>
+                        <li class="mb-2">
+                            <i class="bi bi-box-seam me-2 text-primary"></i>
+                            <strong>Total Stock:</strong> @Model.TotalStock
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-tags me-2 text-primary"></i>
+                            <strong>Categories:</strong>
+                            @if (Model.ProductCategories?.Any() == true)
+                            {
+                                @string.Join(", ", Model.ProductCategories.Select(pc => pc.Category.Name))
+                            }
+                            else
+                            {
+                                <span class="text-muted">None</span>
+                            }
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-calendar me-2 text-primary"></i>
+                            <strong>Created:</strong> @Model.CreationDate.ToShortDateString()
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-check-circle me-2 text-primary"></i>
+                            <strong>Status:</strong>
+                            @if (Model.IsActive)
+                            {
+                                <span class="text-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Inactive</span>
+                            }
+                        </li>
                     </ul>
+
+                    <!-- Sizes and Stock -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold mb-3">Available Sizes</h5>
+                        <div class="row g-2">
+                            @if (Model.Sizes?.Any() == true)
+                            {
+                                foreach (var size in Model.Sizes)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-body text-center">
+                                                <h6 class="card-title mb-1">@size.Size</h6>
+                                                <p class="card-text text-muted small mb-0">Stock: @size.Stock</p>
+                                                <p class="card-text small @(size.IsActive ? "text-success" : "text-danger")">
+                                                    @(size.IsActive ? "Available" : "Out of Stock")
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="col-12">
+                                    <div class="alert alert-warning mb-0">No sizes available</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
 
                     <!-- Action Buttons-->
                     <div class="d-flex gap-3">

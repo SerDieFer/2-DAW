@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
-using Vestigio.Utilities;
 
 namespace Vestigio.Controllers
 {
@@ -21,18 +20,9 @@ namespace Vestigio.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index(int? pageNumber)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 5;
-
-            // PAGINATION
-            return View(await PaginatedList<Category>.CreateAsync(
-                _context.Categories.AsNoTracking(),
-                pageNumber ?? 1,
-                pageSize
-            ));
-
-            //return View(await _context.Categories.ToListAsync());
+            return View(await _context.Categories.ToListAsync());
         }
 
         // GET: Categories/Details/5

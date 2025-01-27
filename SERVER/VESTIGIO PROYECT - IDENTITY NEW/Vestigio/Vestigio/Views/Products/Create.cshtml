@@ -42,31 +42,53 @@
                                     <span asp-validation-for="Price" class="text-danger"></span>
                                 </div>
 
+                                <!-- Rarity Level -->
+                                <div class="form-group mb-4">
+                                    <label asp-for="RarityLevel" class="form-label fw-bold">Rarity Level</label>
+                                    <select asp-for="RarityLevel" class="form-control form-control-lg">
+                                        @for (int i = 1; i <= 10; i++)
+                                        {
+                                            <option value="@i">@i - @Vestigio.Utilities.LevelsNaming.GetLevelName(i)</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="RarityLevel" class="text-danger"></span>
+                                </div>
                             </div>
 
                             <!-- Right Column -->
                             <div class="col-md-6">
-                                <!-- Stock -->
+                                <!-- Categories (Many-to-Many) -->
                                 <div class="form-group mb-4">
-                                    <label asp-for="Stock" class="form-label fw-bold">Stock</label>
-                                    <input asp-for="Stock" class="form-control form-control-lg" placeholder="100..." min="0" />
-                                    <span asp-validation-for="Stock" class="text-danger"></span>
-                                </div>
-
-                                <!-- Rarity Level -->
-                                <div class="form-group mb-4">
-                                    <label asp-for="RarityLevel" class="form-label fw-bold">Rarity Level</label>
-                                    <input asp-for="RarityLevel" class="form-control form-control-lg" placeholder="1 for common, 10 for legendary..." min="1" max="10" />
-                                    <span asp-validation-for="RarityLevel" class="text-danger"></span>
-                                </div>
-
-                                <!-- Category -->
-                                <div class="form-group mb-4">
-                                    <label asp-for="CategoryId" class="form-label fw-bold">Category</label>
-                                    <select asp-for="CategoryId" class="form-control form-control-lg" asp-items="ViewBag.CategoryId">
-                                        <option value="">Select Category</option>
+                                    <label class="form-label fw-bold">Categories</label>
+                                    <select name="SelectedCategories" class="form-select form-control-lg" multiple size="4">
+                                        @foreach (var category in ViewBag.Categories)
+                                        {
+                                            <option value="@category.Id">@category.Name</option>
+                                        }
                                     </select>
-                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                    <small class="form-text text-muted">Hold CTRL to select multiple</small>
+                                </div>
+
+                                <!-- Sizes -->
+                                <div class="form-group mb-4">
+                                    <label class="form-label fw-bold">Sizes</label>
+                                    <div id="sizesContainer">
+                                        <div class="size-entry mb-2">
+                                            <input type="text" name="Sizes[0].Size" class="form-control form-control-lg mb-1" placeholder="Size (e.g., M)" />
+                                            <input type="number" name="Sizes[0].Stock" class="form-control form-control-lg" placeholder="Stock" min="0" />
+                                        </div>
+                                    </div>
+                                    <button type="button" id="addSize" class="btn btn-sm btn-outline-secondary mt-2">Add Size</button>
+                                </div>
+
+                                <!-- Active Status -->
+                                <div class="form-group mb-4">
+                                    <label asp-for="IsActive" class="form-label fw-bold">Active</label>
+                                    <select asp-for="IsActive" class="form-control form-control-lg">
+                                        <option value="true">Active</option>
+                                        <option value="false">Inactive</option>
+                                    </select>
+                                    <span asp-validation-for="IsActive" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
@@ -96,4 +118,19 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Dynamic size addition
+        let sizeIndex = 1;
+        document.getElementById('addSize').addEventListener('click', function() {
+            const container = document.getElementById('sizesContainer');
+            const newSize = document.createElement('div');
+            newSize.classList.add('size-entry', 'mb-2');
+            newSize.innerHTML = `
+                <input type="text" name="Sizes[${sizeIndex}].Size" class="form-control form-control-lg mb-1" placeholder="Size (e.g., L)" />
+                <input type="number" name="Sizes[${sizeIndex}].Stock" class="form-control form-control-lg" placeholder="Stock" min="0" />
+            `;
+            container.appendChild(newSize);
+            sizeIndex++;
+        });
+    </script>
 }

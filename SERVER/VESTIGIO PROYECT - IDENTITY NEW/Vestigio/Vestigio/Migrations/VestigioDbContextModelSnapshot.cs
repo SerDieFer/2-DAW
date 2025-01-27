@@ -221,8 +221,6 @@ namespace Vestigio.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductLevel");
-
                     b.ToTable("Challenge", (string)null);
                 });
 
@@ -351,9 +349,6 @@ namespace Vestigio.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
@@ -374,14 +369,53 @@ namespace Vestigio.Migrations
                     b.Property<int>("RarityLevel")
                         .HasColumnType("int");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Product", (string)null);
+                });
+
+            modelBuilder.Entity("Vestigio.Models.ProductCategory", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("ProductCategory", (string)null);
+                });
+
+            modelBuilder.Entity("Vestigio.Models.ProductSize", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex("ProductId");
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("ProductSize", (string)null);
                 });
 
             modelBuilder.Entity("Vestigio.Models.User", b =>
@@ -517,13 +551,9 @@ namespace Vestigio.Migrations
 
             modelBuilder.Entity("Vestigio.Models.Challenge", b =>
                 {
-                    b.HasOne("Vestigio.Models.Product", null)
-                        .WithMany("Challenges")
-                        .HasForeignKey("ProductId");
-
                     b.HasOne("Vestigio.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductLevel")
+                        .WithMany("Challenges")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Product");
@@ -595,20 +625,39 @@ namespace Vestigio.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Vestigio.Models.Product", b =>
+            modelBuilder.Entity("Vestigio.Models.ProductCategory", b =>
                 {
                     b.HasOne("Vestigio.Models.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany("ProductCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Vestigio.Models.Product", "Product")
+                        .WithMany("ProductCategories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Vestigio.Models.ProductSize", b =>
+                {
+                    b.HasOne("Vestigio.Models.Product", "Product")
+                        .WithMany("Sizes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Vestigio.Models.Category", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("ProductCategories");
                 });
 
             modelBuilder.Entity("Vestigio.Models.Challenge", b =>
@@ -628,6 +677,10 @@ namespace Vestigio.Migrations
                     b.Navigation("Images");
 
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("ProductCategories");
+
+                    b.Navigation("Sizes");
                 });
 
             modelBuilder.Entity("Vestigio.Models.User", b =>

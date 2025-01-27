@@ -9,8 +9,7 @@ namespace Vestigio.Models
         [Required(ErrorMessage = "The category name is required.")]
         public string Name { get; set; }
 
-        // RELATIONS
-        [Display(Name = "Products")]
-        public ICollection<Product>? Products { get; set; }
+        // RELATIONSHIP WITH PRODUCTS (MANY-TO-MANY)
+        public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
     }
 }
