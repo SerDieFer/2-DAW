@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Vestigio.Migrations
 {
     /// <inheritdoc />
-    public partial class userUpdate : Migration
+    public partial class UsersUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

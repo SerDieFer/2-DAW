@@ -12,8 +12,8 @@ using Vestigio.Data;
 namespace Vestigio.Migrations
 {
     [DbContext(typeof(VestigioDbContext))]
-    [Migration("20250125203532_userUpdate")]
-    partial class userUpdate
+    [Migration("20250127152208_UsersUpdate")]
+    partial class UsersUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

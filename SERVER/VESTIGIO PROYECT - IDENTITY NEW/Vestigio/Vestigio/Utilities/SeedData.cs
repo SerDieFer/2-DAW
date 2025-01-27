@@ -1,41 +1,62 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Vestigio.Models;
 
 public static class SeedData
 {
-    public static async Task InitializeAsync(IServiceProvider serviceProvider)
+    public static async Task InitializeAsync(IServiceProvider services)
     {
-        var userManager = serviceProvider.GetRequiredService<UserManager<User>>(); // Usa tu clase personalizada 'User'
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        // Create default roles
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        await CreateRolesAsync(roleManager);
 
-        // Crea roles y usuarios según tu lógica
-        string adminRole = "Admin";
-        if (!await roleManager.RoleExistsAsync(adminRole))
+        // Create default admin user
+        var userManager = services.GetRequiredService<UserManager<User>>();
+        await CreateAdminAsync(userManager);
+    }
+
+    private static async Task CreateRolesAsync(RoleManager<IdentityRole> roleManager)
+    {
+        // Create "Admin" role if it doesn't exist
+        if (!await roleManager.RoleExistsAsync("Admin"))
         {
-            await roleManager.CreateAsync(new IdentityRole(adminRole));
+            await roleManager.CreateAsync(new IdentityRole("Admin"));
         }
 
-        string adminEmail = "admin@example.com";
-        string adminNickname = "AdminMaster";
-        if (await userManager.FindByEmailAsync(adminEmail) == null)
+        // Create "User" role if it doesn't exist
+        if (!await roleManager.RoleExistsAsync("User"))
         {
-            var adminUser = new User
-            {
-                UserName = adminEmail,
-                Email = adminEmail,
-                EmailConfirmed = true,
-                Nickname = adminNickname,
-            };
-
-            var result = await userManager.CreateAsync(adminUser, "AdminPassword123!");
-            if (result.Succeeded)
-            {
-                await userManager.AddToRoleAsync(adminUser, adminRole);
-            }
+            await roleManager.CreateAsync(new IdentityRole("User"));
         }
     }
 
+    private static async Task CreateAdminAsync(UserManager<User> userManager)
+    {
+        string adminEmail = "admin@vestigio.com";
+        string adminNickname = "AdminMaster";
+
+        // Check if the admin user already exists
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+        if (adminUser == null)
+        {
+            adminUser = new User
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true, // Skip email confirmation for the admin
+                Nickname = adminNickname
+            };
+
+            // Create the admin user with a strong password
+            var result = await userManager.CreateAsync(adminUser, "Vestigio-123");
+            if (result.Succeeded)
+            {
+                // Assign the "Admin" role to the user
+                await userManager.AddToRoleAsync(adminUser, "Admin");
+            }
+        }
+    }
 }

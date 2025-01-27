@@ -75,8 +75,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequiredLength = 8;
     options.Password.RequiredUniqueChars = 1;
 })
-    .AddEntityFrameworkStores<VestigioDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+            .AddDefaultUI()
+            .AddEntityFrameworkStores<VestigioDbContext>();
 
 
 builder.Services.AddControllersWithViews();
