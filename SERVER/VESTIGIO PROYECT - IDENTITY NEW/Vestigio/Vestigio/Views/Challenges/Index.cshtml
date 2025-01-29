@@ -4,142 +4,484 @@
     ViewData["Title"] = "Challenges";
     var searchTitle = ViewData["searchTitle"]?.ToString();
     var rarityLevel = ViewData["rarityLevel"] as int?;
+
     var isActive = ViewData["isActive"]?.ToString();
+    var solutionMode = ViewData["solutionMode"]?.ToString();
+
+    var minCoins = ViewData["minCoins"] != null ? (int)ViewData["minCoins"] : (int?)null;
+    var maxCoins = ViewData["maxCoins"] != null ? (int)ViewData["maxCoins"] : (int?)null;
+
+    var minExp = ViewData["minExp"] != null ? (int)ViewData["minExp"] : (int?)null;
+    var maxExp = ViewData["maxExp"] != null ? (int)ViewData["maxExp"] : (int?)null;
+
+    var startDate = ViewData["startDate"] != null ? (DateTime?)ViewData["startDate"] : null;
+    var endDate = ViewData["endDate"] != null ? (DateTime?)ViewData["endDate"] : null;
+
+    var startReleaseDate = ViewData["startReleaseDate"] != null ? (DateTime?)ViewData["startReleaseDate"] : null;
+    var endReleaseDate = ViewData["endReleaseDate"] != null ? (DateTime?)ViewData["endReleaseDate"] : null;
 }
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #222222;
+        --secondary-color: #404040;
+        --accent-color: #d7d7d7;
+        --light-bg: #F6F6F6;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: var(--light-bg);
+    }
+
+    .table-hover tbody tr {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .table-hover tbody tr:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+    .btn-primary {
+        background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+        border: none;
+        padding: 8px 20px;
+        border-radius: 8px;
+    }
+
+    .filter-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .product-image-container {
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    }
+
+    .table-custom {
+        min-width: 1200px;
+        margin-bottom: 0;
+    }
+
+        .table-custom th,
+        .table-custom td {
+            vertical-align: middle !important;
+            padding: 1rem !important;
+            white-space: nowrap;
+        }
+
+        .table-custom thead th {
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+    .pagination .page-item.active .page-link {
+        background: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    .action-buttons {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+    }
+
+    .rarity-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        padding: 0 10px; /* Añade padding para compensar el hover */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+
+        /* Oculta la scrollbar en navegadores WebKit */
+        .table-container::-webkit-scrollbar {
+            display: none;
+        }
+
+    .table-custom {
+        min-width: 1200px;
+        margin-bottom: 0;
+        transform: translateX(-10px); /* Compensa el padding del contenedor */
+        width: calc(100% + 20px);
+    }
+
+    .table-hover tbody tr:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-right: -5px; /* Compensa el movimiento para evitar scroll */
+    }
+
+    .carousel-inner {
+        width: 200px; /* Ancho fijo para la imagen */
+        margin: 0 auto;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #f8f9fa;
+    }
+
+    .carousel-item img {
+        width: 100%;
+        height: 200px; /* Altura fija */
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .carousel-control-prev {
+        left: -20px !important; /* Posición fuera del contenedor */
+    }
+
+    .carousel-control-next {
+        right: -20px !important; /* Posición fuera del contenedor */
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.9;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        background-size: 100% 100%;
+        filter: invert(50%);
+    }
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+
+    /* Product name alignment */
+    .product-name-cell {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+
+    .product-name-content {
+        display: flex;
+        justify-content: center; /* Horizontal center */
+        align-items: center; /* Vertical center */
+        height: 100%;
+    }
+</style>
+
 <div class="container">
-    <h1 class="text-center mb-4 fw-bold">Challenges</h1>
+    <h1 class="text-center mb-4 display-4 fw-600" style="color: var(--primary-color);">
+        Challenge Management
+        <hr class="mx-auto" style="width: 120px; height: 3px; background: var(--secondary-color); opacity: 1;">
+    </h1>
 
-    <!-- Filters Section -->
-    <form method="get" action="@Url.Action("Index")" class="mb-5">
-        <div class="row g-3">
-            <!-- Search by Title -->
-            <div class="col-md-6">
-                <label for="searchTitle" class="form-label small text-muted">Title</label>
-                <input type="text" id="searchTitle" name="searchTitle" class="form-control" placeholder="Search title..." value="@searchTitle" />
+    <!-- Filtros -->
+    <div class="filter-card">
+        <form method="get" action="@Url.Action("Index")">
+
+            <!-- Row 1 -->
+            <div class="row filter-rows g-4">
+
+                <!-- Filter by Name -->
+                <div class="col-md-4">  
+                    <label class="form-label small text-uppercase text-muted fw-500">Challenge Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchTitle" class="form-control"  value="@searchTitle">
+                    </div>
+                </div>
+
+                <!-- Filter by Level -->
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Rarity Level</label>
+                    <input type="number" name="rarityLevel" class="form-control"
+                           min="1" max="10" placeholder="1-10" value="@rarityLevel">
+                </div>
+
+                <!-- Filter by Coins -->
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Coins Range</label>
+                    <div class="input-group">
+                        <input type="number" name="minCoins" class="form-control" value="@minCoins" min="0">
+                        <span class="input-group-text">-</span>
+                        <input type="number" name="maxCoins" class="form-control" value="@maxCoins" min="0">
+                    </div>
+                </div>
+
+                <!-- Filter by Experience -->
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Experience Range</label>
+                    <div class="input-group">
+                        <input type="number" name="minExperience" class="form-control" value="@minExperience" min="0">
+                        <span class="input-group-text">-</span>
+                        <input type="number" name="maxExperience" class="form-control" value="@maxExperience" min="0">
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Filter by Status -->
-            <div class="col-md-6">
-                <label for="isActive" class="form-label small text-muted">Status</label>
-                <select id="isActive" name="isActive" class="form-select">
-                    <option value="@(isActive == null ? "selected" : "")">Any Status</option>
-                    <option value="True @(isActive == "True" ? "selected" : "")">Active</option>
-                    <option value="False @(isActive == "False" ? "selected" : "")">Inactive</option>
-                </select>
-            </div>
-        </div>
+            <!-- Row 2 -->
+            <div class="row g-3 mt-1">
 
-        <div class="row g-3 mt-1">
-            <!-- Filter by Rarity Level -->
-            <div class="col-md-4">
-                <label for="rarityLevel" class="form-label small text-muted">Rarity Level</label>
-                <input type="number" id="rarityLevel" name="rarityLevel" class="form-control" placeholder="Select Rarity..." value="@rarityLevel" min="1" />
+                <!-- Filter by Status -->
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Status</label>
+                    <select name="isActive" class="form-select">
+                        <option value="">Any Status</option>
+                        <option value="True" selected="@(isActive == "True")">Active</option>
+                        <option value="False" selected="@(isActive == "False")">Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Filter by Solution Mode -->
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Solution Mode</label>
+                    <select name="solutionMode" class="form-select">
+                        <option value="">Any Mode</option>
+                        <option value="Password" selected="@(solutionMode == "Password")">Password</option>
+                        <option value="TimeBased" selected="@(solutionMode == "TimeBased")">Time Based</option>
+                    </select>
+                </div>
+
+                <!-- Filter by Date -->
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Creation Date Range</label>
+                    <div class="input-group">
+                            <input type="date" name="endDate" class="form-control"
+                                   value="@endDate?.ToString("yyyy-MM-dd")">
+                        <span class="input-group-text">-</span>
+                            <input type="date" name="endDate" class="form-control"
+                                   value="@endDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                </div>
+
+                <!-- Filter by Release Date -->
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Release Date Range</label>
+                    <div class="input-group">
+                        <input type="date" name="startReleaseDate" class="form-control"
+                                value="@startReleaseDate?.ToString("yyyy-MM-dd")">
+                        <span class="input-group-text">-</span>
+                        <input type="date" name="endReleaseDate" class="form-control"
+                                value="@endReleaseDate?.ToString("yyyy-MM-dd")">
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Buttons -->
-            <div class="col-md-8 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary w-100">Search</button>
-                <a href="@Url.Action("Index")" class="btn btn-outline-secondary w-100">Clear</a>
-                <a asp-action="Create" class="btn btn-success w-100">+ Create Challenge</a>
+            <!-- Row 3 -->
+            <div class="action-buttons d-flex justify-content-between align-items-center mt-3">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-light px-4">
+                        <i class="bi bi-funnel me-2"></i>Apply Filters
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-light px-4">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
+                    </a>
+                </div>
+                <a asp-action="Create" class="btn btn-light px-4">
+                    <i class="bi bi-plus-circle me-2"></i>New Challenge
+                </a>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover table-striped text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th>Activated</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Exp. Points</th>
-                    <th>Coins</th>
-                    <th>Rarity</th>
-                    <th>Creation Date</th>
-                    <th>Assignated Product ID</th>
-                    <th>Assignated Products Levels</th>
-                    <th>Solution Mode</th>
-                    <th>Password</th>
-                    <th>Release Date</th>
-                    <th>Images</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.Any()) {
-                    @foreach (var item in Model) {
+        <div class="table-container mb-5">
+            <table class="table table-hover table-custom">
+                <thead class="text-white text-center">
                     <tr>
-                        <td>@(item.IsActive ? "Active" : "Inactive")</td>
-                        <td>@item.Title</td>
-                        <td>@item.Description</td>
-                        <td>@item.ExpPoints</td>
-                        <td>@item.Coins</td>
-                        <td>@item.RarityName (@item.RarityLevel)</td>
-                        <td>@item.CreationDate</td>
-                        <td>@item.Product.Id</td>
-                        <td>@item.ProductLevel</td>
-                        <td>@item.SolutionMode</td>
-                        <td>@item.Password</td>
-                        <td>@item.ReleaseDate</td>
-                        <td>
-                            @if (item.Images != null && item.Images.Any())
-                            {
-                                <div id="carousel-@item.Id" class="carousel slide" data-bs-ride="carousel" style="width: 200px; margin: 0 auto;">
-                                    <div class="carousel-inner">
-                                        @foreach (var image in item.Images)
-                                        {
-                                            <div class="carousel-item @(item.Images.First() == image ? "active" : "")">
-                                                <img src="@image.Url" alt="@item.Title" class="d-block w-100" style="max-height: 150px; max-width: 200px; object-fit: contain;" />
-                                            </div>
-                                        }
+                        <th style="width: 70px;"><i class="bi bi-power"></i></th>
+                        <th style="width: 15%;">Title</th>
+                        <th style="width: 10%;">Rarity</th>
+                        <th style="width: 10%;">Exp & Coins</th>
+                        <th style="width: 7.5%;">Creation Date</th>
+                        <th style="width: 7.5%;">Release Date</th>
+                        <th style="width: 10%;">Solution Mode</th>
+                        <th style="width: 150px;">Preview</th>
+                        <th style="width: 100px;">Actions</th>
+                    </tr>
+                </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <div class="d-flex">
+                                    <div class="form-check form-switch d-flex justify-content-center">
+                                        <input class="form-check-input" type="checkbox" role="switch" @(item.IsActive ? "checked" : "") disabled>
                                     </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </button>
                                 </div>
-                            }
-                            else
-                            {
-                                <span class="text-muted small">No images</span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                        </td>
+                            </td>
+
+                            <td class="product-name-cell">
+                                <div class="product-name-content">
+                                    <h6 class="mb-0 fw-500">@item.Title</h6>
+                                </div>
+                            </td>
+   
+                            <td class="text-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="rarity-indicator" style="background-color: @GetRarityColor(item.RarityLevel);"></div>
+                                    <span style="color: @GetRarityColor(item.RarityLevel)">
+                                        @item.RarityName (@item.RarityLevel)
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td class="text-center">
+                                <span class="badge">@item.ExpPoints Exp</span>
+                                <span class="badge">@item.Coins Coins</span>
+                            </td>
+
+                            <td class="text-center">@item.CreationDate.ToString("dd-MM-yyyy")</td>
+                            <td class="text-center">@item.ReleaseDate?.ToString("dd-MM-yyyy")</td>
+
+                            <td class="text-center">
+                                <span class="badge @(item.SolutionMode == SolutionMode.Password ? "bg-success" : "bg-warning")">
+                                        @item.SolutionMode
+                                </span>
+                            </td>
+
+                            <td>
+                                @if (item.Images?.Any() == true)
+                                {
+                                    var imageList = item.Images.ToList();
+                                    <div class="carousel-container">
+                                        <div id="carousel-@item.Id" class="carousel slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                @for (int i = 0; i < imageList.Count; i++)
+                                                {
+                                                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                        <img src="@imageList[i].Url" class="d-block w-100">
+                                                    </div>
+                                                }
+                                            </div>
+                                            @if (imageList.Count > 1)
+                                            {
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon"></span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon"></span>
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </td>
+
+                            <td class="align-middle">
+                                <div class="btn-group-vertical d-flex align-items-center gap-2 w-100" role="group" aria-label="Item actions">
+                                    <a asp-action="Edit" asp-route-id="@item.Id"
+                                        class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                                        aria-label="Edit"
+                                        style="width: 2.5rem; height: 2.5rem;">
+                                        <i class="bi bi-pencil-square fs-5"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                        class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                                        aria-label="Details"
+                                        style="width: 2.5rem; height: 2.5rem;">
+                                        <i class="bi bi-eye fs-5"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id"
+                                        class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                        aria-label="Delete"
+                                        style="width: 2.5rem; height: 2.5rem;">
+                                        <i class="bi bi-trash fs-5"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="13" class="text-muted">No challenges found.</td>
                     </tr>
                 }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="11" class="text-muted">No challenges found.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="d-flex justify-content-center mt-4">
+            <ul class="pagination pagination-lg">
+                <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>
 
-<!-- Pagination -->
-<nav class="d-flex justify-content-center mt-4">
-    <ul class="pagination">
-        <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">&laquo;</a>
-        </li>
-        @for (int i = 1; i <= Model.TotalPages; i++)
+@functions {
+    private string GetRarityColor(int level)
+    {
+        return level switch
         {
-            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
-            </li>
-        }
-        <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">&raquo;</a>
-        </li>
-    </ul>
-    <p class="text-muted mt-2">Page @Model.PageIndex of @Model.TotalPages</p>
-</nav>
-</div>
+            1 => "#6c757d",
+            2 => "#28a745",
+            3 => "#17a2b8",
+            4 => "#007bff",
+            5 => "#6610f2",
+            6 => "#dc3545",
+            7 => "#fd7e14",
+            8 => "#ffc107",
+            9 => "#e83e8c",
+            10 => "#20c997",
+            _ => "#6c757d"
+        };
+    }
+}

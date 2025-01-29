@@ -118,7 +118,7 @@ app.MapControllerRoute(
 // ROLE CREATION AND ADMIN SETTING
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;   
+    var services = scope.ServiceProvider;
 
     try
     {

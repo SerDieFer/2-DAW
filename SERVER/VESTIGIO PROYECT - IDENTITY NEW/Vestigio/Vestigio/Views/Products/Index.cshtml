@@ -8,249 +8,435 @@
     var rarityLevel = ViewData["rarityLevel"] != null ? (int)ViewData["rarityLevel"] : (int?)null;
     var selectedCategoryId = ViewData["categoryId"] != null ? (int)ViewData["categoryId"] : 0;
     var isActive = ViewData["isActive"] != null ? (bool?)ViewData["isActive"] : null;
-    var stockLessThan = ViewData["stockLessThan"] != null ? (int?)ViewData["stockLessThan"] : null;
+    var stockLessThan = ViewData["minStock"] != null ? (int?)ViewData["minStock"] : null;
     var startDate = ViewData["startDate"] != null ? (DateTime?)ViewData["startDate"] : null;
     var endDate = ViewData["endDate"] != null ? (DateTime?)ViewData["endDate"] : null;
 }
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #222222;
+        --secondary-color: #404040;
+        --accent-color: #d7d7d7;
+        --light-bg: #F6F6F6;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: var(--light-bg);
+    }
+
+    .table-hover tbody tr {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .table-hover tbody tr:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+    .btn-primary {
+        background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+        border: none;
+        padding: 8px 20px;
+        border-radius: 8px;
+    }
+
+    .filter-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .product-image-container {
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    }
+
+    .table-custom {
+        min-width: 1200px;
+        margin-bottom: 0;
+    }
+
+        .table-custom th,
+        .table-custom td {
+            vertical-align: middle !important;
+            padding: 1rem !important;
+            white-space: nowrap;
+        }
+
+        .table-custom thead th {
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+    .pagination .page-item.active .page-link {
+        background: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    .action-buttons {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        padding: 1rem;
+        border-radius: 12px;
+        margin-top: 1rem;
+    }
+
+    .rarity-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+        padding: 0 10px; /* Añade padding para compensar el hover */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    /* Oculta la scrollbar en navegadores WebKit */
+    .table-container::-webkit-scrollbar {
+        display: none;
+    }
+
+    .table-custom {
+        min-width: 1200px;
+        margin-bottom: 0;
+        transform: translateX(-10px); /* Compensa el padding del contenedor */
+        width: calc(100% + 20px);
+    }
+
+    .table-hover tbody tr:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        margin-right: -5px; /* Compensa el movimiento para evitar scroll */
+    }
+
+    .carousel-inner {
+        width: 200px; /* Ancho fijo para la imagen */
+        margin: 0 auto;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #f8f9fa;
+    }
+
+    .carousel-item img {
+        width: 100%;
+        height: 200px; /* Altura fija */
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .carousel-control-prev {
+        left: -20px !important; /* Posición fuera del contenedor */
+    }
+
+    .carousel-control-next {
+        right: -20px !important; /* Posición fuera del contenedor */
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.9;
+        transition: all 0.3s ease;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        width: 1.5rem;
+        height: 1.5rem;
+        background-size: 100% 100%;
+        filter: invert(50%);
+    }
+
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+
+    /* Product name alignment */
+    .product-name-cell {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+
+    .product-name-content {
+        display: flex;
+        justify-content: center; /* Horizontal center */
+        align-items: center; /* Vertical center */
+        height: 100%;
+    }
+</style>
+
 <div class="container">
-    <h1 class="text-center mb-2 fw-bold">Products</h1>
+    <h1 class="text-center mb-4 display-4 fw-600" style="color: var(--primary-color);">
+        Product Management
+        <hr class="mx-auto" style="width: 120px; height: 3px; background: var(--secondary-color); opacity: 1;">
+    </h1>
 
-    <!-- Filters Section -->
-    <form method="get" action="@Url.Action("Index")" class="mb-5">
+    <!-- Filtros -->
+    <div class="filter-card">
+        <form method="get" action="@Url.Action("Index")">
+            <div class="row filter-rows g-4">
 
-        <!-- First Row: Name and Category -->
-        <div class="row g-2">
-            <!-- Search by Name -->
-            <div class="col-md-3">
-                <label for="searchName" class="form-label small text-muted">Name</label>
-                <input type="text" id="searchName" name="searchName" class="form-control" placeholder="Search name..." value="@searchName" />
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Product Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchName" class="form-control" value="@searchName">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Category</label>
+                    <select name="categoryId" class="form-select">
+                        <option value="0">All Categories</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.Id" selected="@(selectedCategoryId == category.Id)">@category.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Status</label>
+                    <select name="isActive" class="form-select">
+                        <option value="">All</option>
+                        <option value="true" selected="@(isActive == true)">Active</option>
+                        <option value="false" selected="@(isActive == false)">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Rarity Level</label>
+                    <input type="number" name="rarityLevel" class="form-control"
+                           min="1" max="10" placeholder="1-10" value="@rarityLevel">
+                </div>
+
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Stock</label>
+                    <input type="number" name="minStock" class="form-control" value="@ViewData["minStock"]">
+                </div>
             </div>
 
-            <!-- Filter by Category -->
-            <div class="col-md-3">
-                <label for="categoryId" class="form-label small text-muted">Category</label>
-                @* <select id="categoryId" name="categoryId" class="form-select"> *@
-                @*     <option value="@(selectedCategoryId == 0 ? "selected" : "")">Todas</option> *@
-                @*     @foreach (var category in ViewBag.Categories) *@
-                @*     { *@
-                @*         var isSelected = selectedCategoryId == category.Id ? "selected" : ""; *@
-                @*         @Html.Raw($"<option value=\"{category.Id}\" {isSelected}>{category.Name}</option>") *@
-                @*     } *@
-                @* </select> *@
-                <select id="categoryId" name="categoryId" class="form-select">
-                <option value="@(selectedCategoryId == 0 ? "selected" : "")">All</option>
-                @foreach (var category in ViewBag.Categories)
-                {
-                    <option value="@(selectedCategoryId == category.Id ? "selected" : "")">@category.Name</option>
-                }
-</select>
+            <div class="row filter-rows g-4 mt-2">
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Price Range</label>
+                    <div class="input-group">
+                        <input type="number" name="minPrice" class="form-control" placeholder="Min" value="@minPrice">
+                        <span class="input-group-text">-</span>
+                        <input type="number" name="maxPrice" class="form-control" placeholder="Max" value="@maxPrice">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Start Date</label>
+                    <input type="date" name="startDate" class="form-control"
+                           value="@startDate?.ToString("yyyy-MM-dd")">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">End Date</label>
+                    <input type="date" name="endDate" class="form-control"
+                           value="@endDate?.ToString("yyyy-MM-dd")">
+                </div>
             </div>
 
-            <!-- Filter by Min Price -->
-            <div class="col-md-2">
-                <label for="minPrice" class="form-label small text-muted">Min Price</label>
-                <input type="number" id="minPrice" name="minPrice" class="form-control" placeholder="0" value="@minPrice" min="0" />
+            <div class="action-buttons d-flex justify-content-between align-items-center mt-3">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-light px-4">
+                        <i class="bi bi-funnel me-2"></i>Apply Filters
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-light px-4">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
+                    </a>
+                </div>
+                <a asp-action="Create" class="btn btn-light px-4">
+                    <i class="bi bi-plus-circle me-2"></i>New Product
+                </a>
             </div>
+        </form>
+    </div>
 
-            <!-- Filter by Max Price -->
-            <div class="col-md-2">
-                <label for="maxPrice" class="form-label small text-muted">Max Price</label>
-                <input type="number" id="maxPrice" name="maxPrice" class="form-control" placeholder="0" value="@maxPrice" min="0" />
-            </div>
-
-            <!-- Filter by Stock -->
-            <div class="col-md-2">
-                <label for="minStock" class="form-label small text-muted">Min Stock</label>
-                <input type="number" id="minStock" name="minStock" class="form-control" placeholder="0" value="@ViewData["minStock"]" min="0" />
-            </div>
-        </div>
-
-        <!-- Second Row: Price, Rarity, and Buttons -->
-        <div class="row g-2 mt-1">
-            <!-- Filter by Rarity Level -->
-            <div class="col-md-1">
-                <label for="rarityLevel" class="form-label small text-muted">Rarity</label>
-                <input type="number" id="rarityLevel" name="rarityLevel" class="form-control" placeholder="Level..." value="@rarityLevel" min="1" max="10" />
-            </div>
-
-            <!-- Filter by Active Status -->
-            <div class="col-md-1">
-                <label for="isActive" class="form-label small text-muted">Active</label>
-                <select id="isActive" name="isActive" class="form-select">
-                    @Html.Raw($"<option value=\"\" {(isActive == null ? "selected" : "")}>Any</option>")
-                    @Html.Raw($"<option value=\"true\" {(isActive == true ? "selected" : "")}>Yes</option>")
-                    @Html.Raw($"<option value=\"false\" {(isActive == false ? "selected" : "")}>No</option>")
-                </select>
-            </div>
-
-            <!-- Filter by Start Date -->
-            <div class="col-md-2">
-                <label for="startDate" class="form-label small text-muted">Start Date</label>
-                @* <input type="date" *@
-                @*        id="startDate" *@
-                @*        name="startDate" *@
-                @*        class="form-control" *@
-                @*        value="@startDate?.ToString("yyyy-MM-dd")" /> *@
-                <input type="date" id="startDate" name="startDate" class="form-control"
-                       value="@(startDate?.ToString("yyyy-MM-dd") ?? "")" />
-            </div>
-
-            <!-- Filter by End Date -->
-            <div class="col-md-2">
-                <label for="endDate" class="form-label small text-muted">End Date</label>
-                @* <input type="date" *@
-                @*        id="endDate" *@
-                @*        name="endDate" *@
-                @*        class="form-control" *@
-                @*        value="@endDate?.ToString("yyyy-MM-dd")" /> *@
-                <input type="date" id="endDate" name="endDate" class="form-control"
-                       value="@(endDate?.ToString("yyyy-MM-dd") ?? "")" />
-            </div>
-
-            <!-- Buttons -->
-            <div class="col-md-6 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary w-100">Search</button>
-                <a href="@Url.Action("Index")" class="btn btn-outline-secondary w-100">Clear</a>
-                <a asp-action="Create" class="btn btn-success w-100">+ Create Product</a>
-            </div>
-        </div>
-
-    </form>
-
-    <!-- Products Table -->
-    <div class="table-responsive mt-4">
-        <table class="table table-hover table-striped align-middle text-center">
-            <thead class="table-dark">
+    <!-- Tabla -->
+    <div class="table-container mb-5">
+        <table class="table table-hover table-custom">
+            <thead class="text-white text-center">
                 <tr>
-                    <th class="text-uppercase">Activated</th>
-                    <th class="text-uppercase">Name</th>
-                    <th class="text-uppercase">Description</th>
-                    <th class="text-uppercase">Price</th>
-                    <th class="text-uppercase">Stock</th>
-                    <th class="text-uppercase">Rarity</th>
-                    <th class="text-uppercase">Category</th>
-                    <th class="text-uppercase">Creation Date</th>
-                    @* <th class="text-uppercase">Challenges</th> *@
-                    <th class="text-uppercase">Image</th>
-                    <th class="text-uppercase">Actions</th>
+                    <th style="width: 70px;"><i class="bi bi-power"></i></th>
+                    <th style="width: 15%;">Product</th>
+                    <th style="width: 15%;">Price</th>
+                    <th style="width: 15%;">Stock</th>
+                    <th style="width: 10%;">Rarity</th>
+                    <th style="width: 15%;">Categories</th>
+                    <th style="width: 7.5%;">Created</th>
+                    <th style="width: 150px;">Preview</th>
+                    <th style="width: 100px;">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Any())
+                @foreach (var item in Model)
                 {
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @if (item.IsActive)
+                    <tr>
+                        <td class="text-center">
+                            <div class="d-flex">
+                                <div class="form-check form-switch d-flex justify-content-center">
+                                    <input class="form-check-input" type="checkbox" role="switch" @(item.IsActive ? "checked" : "") disabled>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="product-name-cell">
+                            <div class="product-name-content">
+                                <h6 class="mb-0 fw-500">@item.Name</h6>
+                            </div>
+                        </td>
+                        <td class="text-center">@item.Price.ToString("C")</td>
+                        <td class="text-center">
+                            <span class="badge @(item.TotalStock > 10 ? "bg-success" : "bg-warning")">
+                                @item.TotalStock in stock
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center">
+                                <div class="rarity-indicator" style="background-color: @GetRarityColor(item.RarityLevel);"></div>
+                                <span style="color: @GetRarityColor(item.RarityLevel)">
+                                    @item.RarityName (@item.RarityLevel)
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            @if (item.ProductCategories?.Any() == true)
+                            {
+                                @foreach (var cat in item.ProductCategories)
                                 {
-                                    <span class="text-success">&#x2714;</span> <!-- TICK -->
+                                    <span class="badge bg-light text-dark me-1">@cat.Category.Name</span>
                                 }
-                                else
-                                {
-                                    <span class="text-danger">&#x2716;</span> <!-- CROSS -->
-                                }
-                            </td>
-                            <td>@item.Name</td>
-                            <td>@item.Description</td>
-                            <td>@item.Price.ToString("C")</td>
-                            <td>@item.TotalStock</td>
-                            <td>@item.RarityName (@item.RarityLevel)</td>
-                            <td>
-                                @if (item.ProductCategories?.Any() == true)
-                                {
-                                    @string.Join(", ", item.ProductCategories.Select(pc => pc.Category.Name))
-                                }
-                                else
-                                {
-                                    <span class="text-muted">None</span>
-                                }
-                            </td>
-                            <td>@item.CreationDate.ToShortDateString()</td>
-                            @* <td>@item.Challenges</td> *@
-                            <td style="height: 150px; width: 200px; padding:20px">
-                                @if (item.Images != null && item.Images.Any())
-                                {
-                                    <!-- Carousel with Fixed Size -->
-                                    <div id="carousel-@item.Id" class="carousel slide" data-bs-ride="carousel" style="height: 150px; width: 200px; overflow: hidden; margin: 0 auto;">
-                                        <div class="carousel-inner" style="height: 100%; width: 100%;">
-                                            @foreach (var image in item.Images)
+                            }
+                        </td>
+                        <td class="text-center">@item.CreationDate.ToString("dd-MM-yyyy")</td>
+                        <td>
+                            @if (item.Images?.Any() == true)
+                            {
+                                var imageList = item.Images.ToList();
+                                <div class="carousel-container">
+                                    <div id="carousel-@item.Id" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            @for (int i = 0; i < imageList.Count; i++)
                                             {
-                                                <div class="carousel-item @(item.Images.First() == image ? "active" : "")">
-                                                    <!-- Image shown completely but scaled down -->
-                                                    <img src="@image.Url" alt="@item.Name" class="d-block w-100" style="max-height: 150px; max-width: 200px; object-fit: contain;" />
+                                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                    <img src="@imageList[i].Url" class="d-block w-100">
                                                 </div>
                                             }
                                         </div>
-
-                                        <style>
-                                            .carousel-control-prev-icon,
-                                            .carousel-control-next-icon {
-                                                filter: invert(1) grayscale(100%) brightness(0.5);
-                                            }
-                                        </style>
-
-                                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Previous</span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                            <span class="visually-hidden">Next</span>
-                                        </button>
+                                        @if (imageList.Count > 1)
+                                        {
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon"></span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon"></span>
+                                            </button>
+                                        }
                                     </div>
-                                }
-                                else
-                                {
-                                    <img src="default_image.jpg" class="d-block w-100" style="max-height: 150px; max-width: 200px; object-fit: contain;">
-                                }
-                            </td>
-                            <td>
-                                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = item.Id })">Details</a>
-                                <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", new { id = item.Id })">Edit</a>
-                                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = item.Id })">Delete</a>
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr><td colspan="10">No products found.</td></tr>
+                                </div>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            <div class="btn-group-vertical d-flex align-items-center gap-2 w-100" role="group" aria-label="Item actions">
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                                   aria-label="Edit"
+                                   style="width: 2.5rem; height: 2.5rem;">
+                                    <i class="bi bi-pencil-square fs-5"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                                   aria-label="Details"
+                                   style="width: 2.5rem; height: 2.5rem;">
+                                    <i class="bi bi-eye fs-5"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                   aria-label="Delete"
+                                   style="width: 2.5rem; height: 2.5rem;">
+                                    <i class="bi bi-trash fs-5"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    <!-- Pagination -->
-    <nav class="d-flex justify-content-center align-items-center flex-column mt-4">
-        <div class="d-flex justify-content-center mb-2">
-            <a asp-action="Index"
-               asp-route-pageNumber="@(Model.PageIndex - 1)"
-               asp-route-searchName="@searchName"
-               asp-route-categoryId="@selectedCategoryId"
-               asp-route-minPrice="@minPrice"
-               asp-route-maxPrice="@maxPrice"
-               asp-route-rarityLevel="@rarityLevel"
-               asp-route-isActive="@isActive"
-               asp-route-startDate="@startDate?.ToString("yyyy-MM-dd")"
-               asp-route-endDate="@endDate?.ToString("yyyy-MM-dd")"
-               class="btn btn-outline-secondary @(!Model.HasPreviousPage ? "disabled" : "")">
-                &laquo; Previous
-            </a>
-            <ul class="pagination mb-0 mx-3">
+    <!-- Paginación -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="d-flex justify-content-center mt-4">
+            <ul class="pagination pagination-lg">
+                <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
                 @for (int i = 1; i <= Model.TotalPages; i++)
                 {
                     <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                        <a asp-action="Index" asp-route-pageNumber="@i" class="page-link">@i</a>
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
                     </li>
                 }
-            </ul>
-            <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
-               class="btn btn-outline-secondary @(!Model.HasNextPage ? "disabled" : "")">
-                Next &raquo;
-            </a>
-        </div>
-        <p class="text-muted text-center mt-2">Page @Model.PageIndex of @Model.TotalPages</p>
-    </nav>
 
+                <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>
+
+@functions {
+    private string GetRarityColor(int level)
+    {
+        return level switch
+        {
+            1 => "#6c757d",
+            2 => "#28a745",
+            3 => "#17a2b8",
+            4 => "#007bff",
+            5 => "#6610f2",
+            6 => "#dc3545",
+            7 => "#fd7e14",
+            8 => "#ffc107",
+            9 => "#e83e8c",
+            10 => "#20c997",
+            _ => "#6c757d"
+        };
+    }
+}

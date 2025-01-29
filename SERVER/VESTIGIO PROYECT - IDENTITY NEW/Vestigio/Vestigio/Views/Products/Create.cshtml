@@ -8,7 +8,6 @@
 <div class="container mt-1">
     <div class="row justify-content-center">
         <div class="col-xxl col-xl">
-            <!-- Card Wrapper -->
             <div class="card shadow-lg border-0">
                 <div class="card-header bg-dark text-white text-center">
                     <h2 class="mb-0">Create New Product</h2>
@@ -17,120 +16,330 @@
                     <form asp-action="Create" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                        <!-- Form divided into two columns -->
-                        <div class="row">
+                        <div class="row g-4">
                             <!-- Left Column -->
                             <div class="col-md-6">
-                                <!-- Product Name -->
-                                <div class="form-group mb-4">
-                                    <label asp-for="Name" class="form-label fw-bold">Product Name</label>
-                                    <input asp-for="Name" class="form-control form-control-lg" placeholder="Classic Hoodie..." />
-                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                </div>
+                                <!-- Basic Information Card -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Basic Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group mb-4">
+                                            <label asp-for="Name" class="form-label fw-bold">Product Name</label>
+                                            <input asp-for="Name" class="form-control form-control-lg" placeholder="Classic Hoodie..." />
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
 
-                                <!-- Description -->
-                                <div class="form-group mb-4">
-                                    <label asp-for="Description" class="form-label fw-bold">Description</label>
-                                    <textarea asp-for="Description" class="form-control form-control-lg" style="resize:none" draggable="false" rows="1" placeholder="A comfortable and stylish hoodie..."></textarea>
-                                    <span asp-validation-for="Description" class="text-danger"></span>
-                                </div>
+                                        <div class="form-group mb-4">
+                                            <label asp-for="Description" class="form-label fw-bold">Description</label>
+                                            <textarea asp-for="Description" class="form-control form-control-lg"
+                                                      style="resize:none; min-height: 100px"
+                                                      placeholder="A comfortable and stylish hoodie..."></textarea>
+                                            <span asp-validation-for="Description" class="text-danger"></span>
+                                        </div>
 
-                                <!-- Price -->
-                                <div class="form-group mb-4">
-                                    <label asp-for="Price" class="form-label fw-bold">Price</label>
-                                    <input asp-for="Price" class="form-control form-control-lg" placeholder="59.99..." min="0" />
-                                    <span asp-validation-for="Price" class="text-danger"></span>
-                                </div>
-
-                                <!-- Rarity Level -->
-                                <div class="form-group mb-4">
-                                    <label asp-for="RarityLevel" class="form-label fw-bold">Rarity Level</label>
-                                    <select asp-for="RarityLevel" class="form-control form-control-lg">
-                                        @for (int i = 1; i <= 10; i++)
-                                        {
-                                            <option value="@i">@i - @Vestigio.Utilities.LevelsNaming.GetLevelName(i)</option>
-                                        }
-                                    </select>
-                                    <span asp-validation-for="RarityLevel" class="text-danger"></span>
+                                        <div class="form-group mb-4">
+                                            <label asp-for="Price" class="form-label fw-bold">Price ($)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input asp-for="Price" class="form-control form-control-lg" placeholder="59.99" min="0" />
+                                            </div>
+                                            <span asp-validation-for="Price" class="text-danger"></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             <!-- Right Column -->
                             <div class="col-md-6">
-                                <!-- Categories (Many-to-Many) -->
-                                <div class="form-group mb-4">
-                                    <label class="form-label fw-bold">Categories</label>
-                                    <select name="SelectedCategories" class="form-select form-control-lg" multiple size="4">
-                                        @foreach (var category in ViewBag.Categories)
-                                        {
-                                            <option value="@category.Id">@category.Name</option>
-                                        }
-                                    </select>
-                                    <small class="form-text text-muted">Hold CTRL to select multiple</small>
-                                </div>
+                                <!-- Product Configuration Card -->
+                                <div class="card mb-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Product Configuration</h5>
+                                    </div>
+                                    <div class="card-body">
 
-                                <!-- Sizes -->
-                                <div class="form-group mb-4">
-                                    <label class="form-label fw-bold">Sizes</label>
-                                    <div id="sizesContainer">
-                                        <div class="size-entry mb-2">
-                                            <input type="text" name="Sizes[0].Size" class="form-control form-control-lg mb-1" placeholder="Size (e.g., M)" />
-                                            <input type="number" name="Sizes[0].Stock" class="form-control form-control-lg" placeholder="Stock" min="0" />
+                                        <!-- Rarity Level-->
+                                        <div class="form-group mb-4">
+                                            <label asp-for="RarityLevel" class="form-label fw-bold">Rarity Level</label>
+                                            <select asp-for="RarityLevel" class="form-select form-select-lg">
+                                                @for (int i = 1; i <= 10; i++)
+                                                {
+                                                    <option value="@i">@i - @Vestigio.Utilities.LevelsNaming.GetLevelName(i)</option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="RarityLevel" class="text-danger"></span>
+                                        </div>
+
+                                        <!-- Categories Section -->
+                                        <div class="form-group mb-4">
+                                            <label class="form-label fw-bold">Categories</label>
+                                            <div id="categoriesContainer">
+                                                <div class="category-item mb-3">
+                                                    <div class="card border-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="row g-2 align-items-center">
+                                                                <div class="col-md-9">
+                                                                    <select name="categoryIds" class="form-select" required>
+                                                                        <option value="" disabled selected>Select category</option>
+                                                                        @foreach (var category in ViewBag.Categories)
+                                                                        {
+                                                                            <option value="@category.Value">@category.Text</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-3 text-end">
+                                                                    <button type="button" class="btn btn-danger btn-sm remove-category">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="addCategory" class="btn btn-secondary btn-sm mt-2">
+                                                <i class="bi bi-plus-circle me-2"></i>Add Category
+                                            </button>
+                                        </div>
+
+                                        <!-- Sizes & Stock Section -->
+                                        <div class="form-group mb-4">
+                                            <label class="form-label fw-bold">Sizes & Stock</label>
+                                            <div id="sizesContainer">
+                                                <div class="size-item mb-3">
+                                                    <div class="card border-primary">
+                                                        <div class="card-body p-2">
+                                                            <div class="row g-2 align-items-center">
+                                                                <div class="col-5">
+                                                                    <select name="sizes[0].Key" class="form-select" required>
+                                                                        <option value="" disabled selected>Select size</option>
+                                                                        @foreach (var size in (List<string>)ViewData["Sizes"])
+                                                                        {
+                                                                            <option value="@size">@size</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    <input type="number" name="sizes[0].Value"
+                                                                           class="form-control" placeholder="Stock"
+                                                                           min="1" value="1" required>
+                                                                </div>
+                                                                <div class="col-2 text-end">
+                                                                    <button type="button" class="btn btn-danger btn-sm remove-size">
+                                                                        <i class="bi bi-trash"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" id="addSize" class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-plus-circle me-2"></i>Add Size
+                                            </button>
                                         </div>
                                     </div>
-                                    <button type="button" id="addSize" class="btn btn-sm btn-outline-secondary mt-2">Add Size</button>
-                                </div>
-
-                                <!-- Active Status -->
-                                <div class="form-group mb-4">
-                                    <label asp-for="IsActive" class="form-label fw-bold">Active</label>
-                                    <select asp-for="IsActive" class="form-control form-control-lg">
-                                        <option value="true">Active</option>
-                                        <option value="false">Inactive</option>
-                                    </select>
-                                    <span asp-validation-for="IsActive" class="text-danger"></span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Images -->
                         <div class="form-group mb-4">
-                            <label for="imageFiles" class="form-label fw-bold">Images</label>
-                            <input type="file" id="imageFiles" name="imageFiles" multiple class="form-control form-control-lg" />
+                            <label for="imageFiles" class="form-label fw-bold">Product Images</label>
+                            <input type="file" id="imageFiles" name="imageFiles" multiple
+                                   class="form-control form-control-lg" accept="image/*">
+                            <div class="form-text">Upload product photos</div>
                             <span asp-validation-for="Images" class="text-danger"></span>
                         </div>
 
                         <!-- Submit Button -->
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg text-uppercase fw-bold">Create Product</button>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-plus-circle me-2"></i>Create Product
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to List
+                            </a>
                         </div>
                     </form>
-                </div>
-                <div class="card-footer bg-light text-center">
-                    <a asp-action="Index" class="btn btn-outline-dark">Back to List</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
+@section Scripts 
+{
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
     <script>
-        // Dynamic size addition
-        let sizeIndex = 1;
-        document.getElementById('addSize').addEventListener('click', function() {
-            const container = document.getElementById('sizesContainer');
-            const newSize = document.createElement('div');
-            newSize.classList.add('size-entry', 'mb-2');
-            newSize.innerHTML = `
-                <input type="text" name="Sizes[${sizeIndex}].Size" class="form-control form-control-lg mb-1" placeholder="Size (e.g., L)" />
-                <input type="number" name="Sizes[${sizeIndex}].Stock" class="form-control form-control-lg" placeholder="Stock" min="0" />
-            `;
-            container.appendChild(newSize);
-            sizeIndex++;
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeCategoryHandlers();
+            initializeSizeHandlers();
+            updateAvailableOptions('category');
+            updateAvailableOptions('size');
         });
+
+        // Category Management
+        document.getElementById('addCategory').addEventListener('click', function () {
+            const container = document.getElementById('categoriesContainer');
+            const newItem = document.createElement('div');
+            newItem.className = 'category-item mb-3';
+            newItem.innerHTML = `
+                <div class="card border-primary">
+                    <div class="card-body p-2">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-md-9">
+                                <select name="categoryIds" class="form-select" required>
+                                    <option value="" disabled selected>Select category</option>
+                                    @foreach (var category in ViewBag.Categories)
+                                    {
+                                        <option value="@category.Value">@category.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <button type="button" class="btn btn-danger btn-sm remove-category">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+            initializeCategoryHandlers();
+            updateAvailableOptions('category');
+        });
+
+        // Size Management
+        document.getElementById('addSize').addEventListener('click', function () {
+            const container = document.getElementById('sizesContainer');
+            const index = container.querySelectorAll('.size-item').length;
+            const newItem = document.createElement('div');
+            newItem.className = 'size-item mb-3';
+            newItem.innerHTML = `
+                <div class="card border-primary">
+                    <div class="card-body p-2">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-5">
+                                <select name="sizes[${index}].Key" class="form-select" required>
+                                    <option value="" disabled selected>Select size</option>
+                                    @foreach (var size in (List<string>)ViewData["Sizes"])
+                                    {
+                                        <option value="@size">@size</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-5">
+                                <input type="number" name="sizes[${index}].Value"
+                                       class="form-control" placeholder="Stock"
+                                       min="1" value="1" required>
+                            </div>
+                            <div class="col-2 text-end">
+                                <button type="button" class="btn btn-danger btn-sm remove-size">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+            reindexSizes();
+            initializeSizeHandlers();
+            updateAvailableOptions('size');
+        });
+
+        function initializeCategoryHandlers() {
+            document.querySelectorAll('.remove-category').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    const container = document.getElementById('categoriesContainer');
+                    if (container.querySelectorAll('.category-item').length <= 1) {
+                        alert('At least one category is required.');
+                        return;
+                    }
+                    e.target.closest('.category-item').remove();
+                    updateAvailableOptions('category');
+                });
+            });
+
+            document.querySelectorAll('select[name="categoryIds"]').forEach(select => {
+                select.addEventListener('change', () => updateAvailableOptions('category'));
+            });
+        }
+
+        function initializeSizeHandlers() {
+            document.querySelectorAll('.remove-size').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    const container = document.getElementById('sizesContainer');
+                    if (container.querySelectorAll('.size-item').length <= 1) {
+                        alert('At least one size is required.');
+                        return;
+                    }
+                    e.target.closest('.size-item').remove();
+                    reindexSizes();
+                    updateAvailableOptions('size');
+                });
+            });
+
+            document.querySelectorAll('select[name^="sizes"]').forEach(select => {
+                select.addEventListener('change', () => updateAvailableOptions('size'));
+            });
+        }
+
+        function reindexSizes() {
+            document.querySelectorAll('.size-item').forEach((item, index) => {
+                const select = item.querySelector('select');
+                const input = item.querySelector('input[type="number"]');
+                select.name = `sizes[${index}].Key`;
+                input.name = `sizes[${index}].Value`;
+            });
+        }
+
+        function updateAvailableOptions(type) {
+            const selector = type === 'category' ? 
+                'select[name="categoryIds"]' : 
+                'select[name^="sizes"]';
+            const selects = document.querySelectorAll(selector);
+            const usedValues = Array.from(selects)
+                .map(select => select.value)
+                .filter(value => value !== "");
+
+            selects.forEach(select => {
+                Array.from(select.options).forEach(option => {
+                    if (option.value !== "") {
+                        const isUsed = usedValues.some(val => 
+                            val === option.value && 
+                            val !== select.value
+                        );
+                        option.disabled = isUsed;
+                        if (option.selected) option.disabled = false;
+                    }
+                });
+            });
+        }
     </script>
+
+    <style>
+        .category-item .card,
+        .size-item .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .category-item:hover .card,
+        .size-item:hover .card {
+            transform: translateY(-2px);
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+        }
+
+        select:disabled {
+            background-color: #f8f9fa !important;
+            opacity: 0.7;
+        }
+    </style>
 }

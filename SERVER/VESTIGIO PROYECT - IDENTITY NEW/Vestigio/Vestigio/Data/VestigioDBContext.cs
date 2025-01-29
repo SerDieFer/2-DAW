@@ -72,18 +72,25 @@ namespace Vestigio.Data
             modelBuilder.Entity<ProductCategory>()
                 .HasOne(pc => pc.Product)
                 .WithMany(p => p.ProductCategories)
-                .HasForeignKey(pc => pc.ProductId);
+                .HasForeignKey(pc => pc.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A PRODUCT IS DELETED.
 
             modelBuilder.Entity<ProductCategory>()
                 .HasOne(pc => pc.Category)
                 .WithMany(c => c.ProductCategories)
                 .HasForeignKey(pc => pc.CategoryId);
+                    
 
             // RELATION: PRODUCT - PRODUCT SIZE (1:N)
             modelBuilder.Entity<ProductSize>()
                 .HasOne(ps => ps.Product)
                 .WithMany(p => p.Sizes)
-                .HasForeignKey(ps => ps.ProductId);
+                .HasForeignKey(ps => ps.ProductId)
+                  .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A PRODUCT IS DELETED.
+
+            // Product-Size relationship
+            modelBuilder.Entity<ProductSize>()
+                .HasKey(ps => new { ps.ProductId, ps.Size });
 
             // RELATION: CHALLENGE - PRODUCT (1:1 OR 1:N)
             modelBuilder.Entity<Challenge>()
@@ -118,6 +125,7 @@ namespace Vestigio.Data
                 .WithMany(c => c.Images)
                 .HasForeignKey(i => i.ChallengeId)
                 .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A CHALLENGE IS DELETED.
+
 
             base.OnModelCreating(modelBuilder);
         }

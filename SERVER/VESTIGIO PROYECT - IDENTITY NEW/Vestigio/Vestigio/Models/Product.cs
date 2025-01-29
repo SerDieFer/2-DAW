@@ -14,18 +14,24 @@ namespace Vestigio.Models
         [Required]
         public bool IsActive { get; set; } = true;
 
+        [Display(Name = "Name")]
         [Required(ErrorMessage = "The product name is required.")]
+        [StringLength(100, MinimumLength = 3, ErrorMessage = "The name must have betweeen 3 and 100 characters")]
         public string? Name { get; set; }
 
+        [Required(ErrorMessage = "The description is obligatory")]
+        [StringLength(500, ErrorMessage = "It musn't have more than 500 characters")]
         [Display(Name = "Description")]
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "The price is required.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "The prise should be bigger than 0")]
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
 
         [Required]
         [Display(Name = "Rarity Level")]
+        [Range(1, 10, ErrorMessage = "The level must be between 1 y 10")]
         public int RarityLevel { get; set; }
 
             // DYNAMICALLY DISPLAYS THE NAME OF THE RARITY LEVEL
