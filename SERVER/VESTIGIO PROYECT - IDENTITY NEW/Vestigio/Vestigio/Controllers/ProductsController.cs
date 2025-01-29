@@ -129,7 +129,8 @@ namespace Vestigio.Controllers
             [HttpPost]
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> Create(
-                [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")] Product product,
+                [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")] 
+                Product product,
                 List<int> categoryIds, // Cambiar a List<int> para recibir los IDs de las categorías
                 Dictionary<string, int> sizes, // Cambiar a Dictionary para recibir tamaños y stock
                 List<IFormFile> imageFiles) // Cambiar a List<IFormFile> para recibir las imágenes

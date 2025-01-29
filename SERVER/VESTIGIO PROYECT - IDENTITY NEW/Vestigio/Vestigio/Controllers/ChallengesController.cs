@@ -1,25 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Vestigio.Data;
 using Vestigio.Models;
 using Vestigio.Utilities;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Vestigio.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class ChallengesController : Controller
     {
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly VestigioDbContext _context;
 
-        public ChallengesController(VestigioDbContext context)
+        public ChallengesController(VestigioDbContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Challenges
@@ -29,7 +35,9 @@ namespace Vestigio.Controllers
             DateTime? startDate, DateTime? endDate, int? minExp, int? maxExp,
             DateTime? startReleaseDate, DateTime? endReleaseDate, int pageSize = 5)
         {
-            var challenges = _context.Challenges.Include(c => c.Product).AsQueryable();
+            var challenges = _context.Challenges
+                .Include(c => c.Images)
+                .AsQueryable();
 
             // Apply filters
             if (!string.IsNullOrEmpty(searchTitle))
@@ -100,8 +108,6 @@ namespace Vestigio.Controllers
             ViewData["searchTitle"] = searchTitle;
             ViewData["minCoins"] = minCoins;
             ViewData["maxCoins"] = maxCoins;
-            ViewData["rarityLevel"] = rarityLevel;
-            ViewData["solutionMode"] = solutionMode;
             ViewData["isActive"] = isActive;
             ViewData["startDate"] = startDate?.ToString("yyyy-MM-dd");
             ViewData["endDate"] = endDate?.ToString("yyyy-MM-dd");
@@ -111,7 +117,15 @@ namespace Vestigio.Controllers
             ViewData["endReleaseDate"] = endReleaseDate?.ToString("yyyy-MM-dd");
             ViewData["pageSize"] = pageSize;
 
-            return View(paginatedChallenges);
+            ViewData["SolutionModes"] = new SelectList(Enum.GetValues(typeof(SolutionMode)));
+            ViewData["RarityLevels"] = Enumerable.Range(1, 10).Select(i => new SelectListItem
+            {
+                Value = i.ToString(),
+                Text = $"{i} - {LevelsNaming.GetLevelName(i)}"
+            });
+
+            return View(await PaginatedList<Challenge>
+                .CreateAsync(challenges.OrderBy(c => c.CreationDate), pageNumber ?? 1, pageSize));
         }
 
         // GET: Challenges/Details/5
@@ -136,41 +150,61 @@ namespace Vestigio.Controllers
         // GET: Challenges/Create
         public IActionResult Create()
         {
-            ViewData["ProductLevel"] = new SelectList(_context.Products, "Id", "Name");
-            return View();
+            PrepareDropdowns();
+            return View(new Challenge
+            {
+                IsActive = true,
+                CreationDate = DateTime.Now,
+                ReleaseDate = DateTime.Now.AddHours(1) // Fecha por defecto +1 hora
+            });
         }
 
-        // POST: Challenges/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,IsActive,Title,Description,ExpPoints,Coins,RarityLevel,CreationDate,ProductLevel,ProductId,SolutionMode,Password,ReleaseDate")] Challenge challenge)
+        public async Task<IActionResult> Create(
+            [Bind("Title,Description,ExpPoints,Coins,RarityLevel,SolutionMode," +
+            "Password,ReleaseDate,ProductLevel,ProductId,IsActive")]
+            Challenge challenge,
+            List<IFormFile> imageFiles)
         {
+            ValidateChallenge(challenge);
+
             if (ModelState.IsValid)
             {
-                _context.Add(challenge);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(challenge);
+                    await _context.SaveChangesAsync();
+
+                    if (imageFiles != null && imageFiles.Any())
+                    {
+                        await SaveImages(imageFiles, challenge.Id);
+                    }
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException ex)
+                {
+                    ModelState.AddModelError("", "Error al guardar: " + ex.Message);
+                }
             }
-            ViewData["ProductLevel"] = new SelectList(_context.Products, "Id", "Name", challenge.ProductLevel);
+
+            PrepareDropdowns();
             return View(challenge);
         }
 
         // GET: Challenges/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var challenge = await _context.Challenges.FindAsync(id);
-            if (challenge == null)
-            {
-                return NotFound();
-            }
-            ViewData["ProductLevel"] = new SelectList(_context.Products, "Id", "Name", challenge.ProductLevel);
+            var challenge = await _context.Challenges
+                .Include(c => c.Images)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (challenge == null) return NotFound();
+
+            PrepareDropdowns();
             return View(challenge);
         }
 
@@ -179,34 +213,41 @@ namespace Vestigio.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,IsActive,Title,Description,ExpPoints,Coins,RarityLevel,CreationDate,ProductLevel,ProductId,SolutionMode,Password,ReleaseDate")] Challenge challenge)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,IsActive,Title,Description,ExpPoints,Coins,RarityLevel," +
+            "CreationDate,ProductLevel,ProductId,SolutionMode,Password,ReleaseDate")]
+            Challenge challenge,
+            List<IFormFile> imageFiles)
         {
-            if (id != challenge.Id)
-            {
-                return NotFound();
-            }
+            if (id != challenge.Id) return NotFound();
+
+            ValidateChallenge(challenge);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(challenge);
+                    // Cargar entidad existente
+                    var existingChallenge = await _context.Challenges
+                        .Include(c => c.Images)
+                        .FirstOrDefaultAsync(c => c.Id == id);
+
+                    _context.Entry(existingChallenge).CurrentValues.SetValues(challenge);
+
+                    await SaveImages(imageFiles, challenge.Id);
+
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ChallengeExists(challenge.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!ChallengeExists(challenge.Id)) return NotFound();
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductLevel"] = new SelectList(_context.Products, "Id", "Name", challenge.ProductLevel);
+
+            PrepareDropdowns();
             return View(challenge);
         }
 
@@ -247,6 +288,72 @@ namespace Vestigio.Controllers
         private bool ChallengeExists(int id)
         {
             return _context.Challenges.Any(e => e.Id == id);
+        }
+
+        private void ValidateChallenge(Challenge challenge)
+        {
+            // Validación de modo de solución
+            if (challenge.SolutionMode == SolutionMode.Password)
+            {
+                if (string.IsNullOrWhiteSpace(challenge.Password))
+                    ModelState.AddModelError("Password", "La contraseña es requerida");
+                
+                challenge.ReleaseDate = null;
+            }
+            else if (challenge.SolutionMode == SolutionMode.TimeBased)
+            {
+                if (!challenge.ReleaseDate.HasValue)
+                    ModelState.AddModelError("ReleaseDate", "La fecha de lanzamiento es requerida");
+                else if (challenge.ReleaseDate <= DateTime.Now)
+                    ModelState.AddModelError("ReleaseDate", "La fecha debe ser futura");
+                
+                challenge.Password = null;
+            }
+
+            // Validación de asociación
+            if (challenge.ProductLevel.HasValue && challenge.ProductId.HasValue)
+                ModelState.AddModelError("", "Seleccione solo un método de asociación");
+            else if (!challenge.ProductLevel.HasValue && !challenge.ProductId.HasValue)
+                ModelState.AddModelError("", "Debe seleccionar un método de asociación");
+        }
+
+        private void PrepareDropdowns()
+        {
+            ViewBag.ProductLevels = Enumerable.Range(1, 10)
+                .Select(i => new SelectListItem 
+                { 
+                    Value = i.ToString(),
+                    Text = $"{i} - {LevelsNaming.GetLevelName(i)}" 
+                });
+
+            ViewBag.Products = new SelectList(_context.Products
+                .Where(p => p.IsActive)
+                .OrderBy(p => p.Name)
+                .ToList(), "Id", "Name");
+        }
+
+        private async Task SaveImages(List<IFormFile> imageFiles, int challengeId)
+        {
+            foreach (var file in imageFiles)
+            {
+                if (file.Length > 0)
+                {
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+                    var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "images", "challenges", fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    _context.Images.Add(new Image
+                    {
+                        Url = $"/images/challenges/{fileName}",
+                        ChallengeId = challengeId
+                    });
+                }
+            }
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,129 +1,128 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 using Vestigio.Utilities;
 
 namespace Vestigio.Models
 {
     public class Challenge : IValidatableObject
     {
+        // PROPERTIES
+        // =====================================================================
 
-        // DEFAULT VALIDATION
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            throw new NotImplementedException();
-        }
-
-        // CHALLENGE INFO
-        // ------------------------------------------------------------------------------------------------------ //
-
+        // Basic Info
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Challenge status is required")]
         public bool IsActive { get; set; } = true;
 
-        [Required(ErrorMessage = "The challenge title is required.")]
-        public string? Title { get; set; }
+        [Required(ErrorMessage = "Title is required")]
+        [StringLength(100, ErrorMessage = "Title cannot exceed 100 characters")]
+        public string Title { get; set; }
 
-        [Display(Name = "Description")]
-        public string? Description { get; set; }
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
+        public string Description { get; set; }
 
-        [Required]
-        [Display(Name = "Experience Points")]
-        [Range(0, int.MaxValue, ErrorMessage = "Experience points cannot be negative.")]
+        // Rewards
+        [Required(ErrorMessage = "Experience points are required")]
+        [Range(0, int.MaxValue, ErrorMessage = "Experience points must be positive")]
         public int ExpPoints { get; set; }
 
-        [Required]
-        [Display(Name = "Coins")]
-        [Range(0, int.MaxValue, ErrorMessage = "Coins cannot be negative.")]
+        [Required(ErrorMessage = "Coins are required")]
+        [Range(0, int.MaxValue, ErrorMessage = "Coins must be positive")]
         public int Coins { get; set; }
 
-        [Required]
-        [Display(Name = "Rarity Level")]
+        // Rarity
+        [Required(ErrorMessage = "Rarity level is required")]
+        [Range(1, 10, ErrorMessage = "Rarity must be between 1-10")]
         public int RarityLevel { get; set; }
 
-            // PROPERTY TO DISPLAY THE NAME OF THE RARITY LEVEL
-            public string RarityName => LevelsNaming.GetLevelName(RarityLevel);
+        [Display(Name = "Rarity Name")]
+        public string RarityName => LevelsNaming.GetLevelName(RarityLevel);
 
+        // Timing
         [Display(Name = "Creation Date")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.DateTime)]
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
-        // LINKED IMAGES
-        // ------------------------------------------------------------------------------------------------------ //
+        // Media
+        public ICollection<Image> Images { get; set; } = new List<Image>();
 
-        [Display(Name = "Challenge Images")]
-        public ICollection<Image>? Images { get; set; } = new List<Image>(); // 1:N RELATIONSHIP
-
-        // LINKED PRODUCTS OR LEVEL WHICH UNLOCKS THE PRODUCTS OF THAT LEVEL
-        // ------------------------------------------------------------------------------------------------------ //
-
-        [Display(Name = "Product Level (if by rarity)")]
+        // Associations
+        [Display(Name = "Product Level")]
+        [Range(1, 10, ErrorMessage = "The level must be between 1 and 10")]
         public int? ProductLevel { get; set; }
 
-        [Display(Name = "Product ID (if specific)")]
+        [Display(Name = "Specific Product")]
         public int? ProductId { get; set; }
 
-            public Product? Product { get; set; }
+        [ValidateNever]
+        public Product Product { get; set; }
 
-        // VALIDATION FOR PRODUCT TYPE MODE SELECTION
-        public IEnumerable<ValidationResult> ValidateAffectedProducts(ValidationContext validationContext)
-        {
-            if (!ProductLevel.HasValue && !ProductId.HasValue)
-            {
-                yield return new ValidationResult("Either Product Level or Product ID must be specified.", new[] { nameof(ProductLevel), nameof(ProductId) });
-            }
+        // Solution Configuration
+        [Required(ErrorMessage = "Solution type is required")]
+        [Display(Name = "Solution Type")]
+        public SolutionMode SolutionMode { get; set; }
 
-            if (ProductLevel.HasValue && ProductId.HasValue)
-            {
-                yield return new ValidationResult("Only one of Product Level or Product ID can be specified.", new[] { nameof(ProductLevel), nameof(ProductId) });
-            }
-        }
+        [Display(Name = "Access Password")]
+        [StringLength(50, ErrorMessage = "Password cannot exceed 50 characters")]
+        public string Password { get; set; }
 
-        // SOLUTION
-        // ------------------------------------------------------------------------------------------------------ //
-
-        [Required]
-        [Display(Name = "Solution Mode")]
-        public SolutionMode SolutionMode { get; set; } // USES ENUM TO DEFINE MODE
-
-            // VALIDATION FOR SOLUTION MODE ENUM SELECTION
-            public IEnumerable<ValidationResult> ValidateEnum(ValidationContext validationContext)
-            {
-                if (!Enum.IsDefined(typeof(SolutionMode), SolutionMode))
-                {
-                    yield return new ValidationResult("Invalid solution mode.", new[] { nameof(SolutionMode) });
-                }
-            }
-
-        [Display(Name = "Password (for password-based challenges)")]
-        public string? Password { get; set; }
-
-        [Display(Name = "Release Date (for time-based challenges)")]
+        [Display(Name = "Release Date")]
         [DataType(DataType.DateTime)]
         public DateTime? ReleaseDate { get; set; }
 
-            // INDICATES WHETHER THE CHALLENGE IS PUBLIC BASED ON THE RELEASE DATE
-            public bool IsPublic => SolutionMode == SolutionMode.TimeBased && ReleaseDate.HasValue && DateTime.UtcNow >= ReleaseDate;
+        [Display(Name = "Public Status")]
+        public bool IsPublic => SolutionMode == SolutionMode.TimeBased &&
+                              ReleaseDate.HasValue &&
+                              DateTime.UtcNow >= ReleaseDate.Value.ToUniversalTime();
 
-        // VALIDATION FOR SOLUTION MODE SELECTION
-        public IEnumerable<ValidationResult> ValidateSolutionMode(ValidationContext validationContext)
+        // VALIDATION
+        // =====================================================================
+        public IEnumerable<ValidationResult> Validate(ValidationContext context)
         {
-            if (SolutionMode == SolutionMode.Password && string.IsNullOrEmpty(Password))
+            if (SolutionMode == SolutionMode.TimeBased && ReleaseDate.HasValue)
             {
-                yield return new ValidationResult("Password is required for password-based challenges.", new[] { nameof(Password) });
+                if (ReleaseDate <= DateTime.UtcNow)
+                {
+                    yield return new ValidationResult("La fecha de lanzamiento debe ser futura",
+                        new[] { nameof(ReleaseDate) });
+                }
+            }
+
+            // Validación de método de desbloqueo
+            if (SolutionMode == SolutionMode.Password && string.IsNullOrWhiteSpace(Password))
+            {
+                yield return new ValidationResult("Se requiere una contraseña para el modo de desbloqueo con contraseña.",
+                    new[] { nameof(Password) });
             }
 
             if (SolutionMode == SolutionMode.TimeBased && !ReleaseDate.HasValue)
             {
-                yield return new ValidationResult("Release date is required for time-based challenges.", new[] { nameof(ReleaseDate) });
+                yield return new ValidationResult("Se requiere una fecha de lanzamiento para el modo de desbloqueo por tiempo.",
+                    new[] { nameof(ReleaseDate) });
+            }
+
+            // Validación de asociación de producto/nivel de rareza
+            if (ProductLevel.HasValue && ProductId.HasValue)
+            {
+                yield return new ValidationResult("No puedes asignar un producto específico y un nivel de rareza al mismo tiempo. Debes elegir solo uno.",
+                    new[] { nameof(ProductLevel), nameof(ProductId) });
+            }
+
+            if (!ProductLevel.HasValue && !ProductId.HasValue)
+            {
+                yield return new ValidationResult("Debes seleccionar al menos un método de asociación: un nivel de rareza o un producto específico.",
+                    new[] { nameof(ProductLevel), nameof(ProductId) });
             }
         }
     }
 
-    // ENUM FOR SOLUTION MODES
     public enum SolutionMode
     {
+        [Display(Name = "Password Protected")]
         Password,
+
+        [Display(Name = "Timed Release")]
         TimeBased
     }
 }
