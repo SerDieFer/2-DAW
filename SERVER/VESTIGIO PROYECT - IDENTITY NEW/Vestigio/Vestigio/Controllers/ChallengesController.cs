@@ -19,13 +19,11 @@ namespace Vestigio.Controllers
     [Authorize(Roles = "Admin")]
     public class ChallengesController : Controller
     {
-        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly VestigioDbContext _context;
 
         public ChallengesController(VestigioDbContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
-            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Challenges
@@ -155,7 +153,6 @@ namespace Vestigio.Controllers
             {
                 IsActive = true,
                 CreationDate = DateTime.Now,
-                ReleaseDate = DateTime.Now.AddHours(1) // Fecha por defecto +1 hora
             });
         }
 
@@ -167,6 +164,7 @@ namespace Vestigio.Controllers
             Challenge challenge,
             List<IFormFile> imageFiles)
         {
+
             ValidateChallenge(challenge);
 
             if (ModelState.IsValid)
@@ -296,25 +294,25 @@ namespace Vestigio.Controllers
             if (challenge.SolutionMode == SolutionMode.Password)
             {
                 if (string.IsNullOrWhiteSpace(challenge.Password))
-                    ModelState.AddModelError("Password", "La contraseña es requerida");
+                    ModelState.AddModelError("Password", "The password is required!");
                 
                 challenge.ReleaseDate = null;
             }
             else if (challenge.SolutionMode == SolutionMode.TimeBased)
             {
                 if (!challenge.ReleaseDate.HasValue)
-                    ModelState.AddModelError("ReleaseDate", "La fecha de lanzamiento es requerida");
+                    ModelState.AddModelError("ReleaseDate", "The release date is required!");
                 else if (challenge.ReleaseDate <= DateTime.Now)
-                    ModelState.AddModelError("ReleaseDate", "La fecha debe ser futura");
+                    ModelState.AddModelError("ReleaseDate", "The release date must be in the future! ");
                 
                 challenge.Password = null;
             }
 
             // Validación de asociación
             if (challenge.ProductLevel.HasValue && challenge.ProductId.HasValue)
-                ModelState.AddModelError("", "Seleccione solo un método de asociación");
+                ModelState.AddModelError("", "Select only one association method!");
             else if (!challenge.ProductLevel.HasValue && !challenge.ProductId.HasValue)
-                ModelState.AddModelError("", "Debe seleccionar un método de asociación");
+                ModelState.AddModelError("", "You must select an association method!");
         }
 
         private void PrepareDropdowns()
@@ -332,26 +330,31 @@ namespace Vestigio.Controllers
                 .ToList(), "Id", "Name");
         }
 
+        // AUX METHOD TO SAVE IMAGES
         private async Task SaveImages(List<IFormFile> imageFiles, int challengeId)
         {
+            if (imageFiles == null || !imageFiles.Any()) return;
+
+            var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "challenges");
+            if (!Directory.Exists(imageDirectory)) Directory.CreateDirectory(imageDirectory);
+
+            int imageCount = _context.Images.Count(i => i.ChallengeId == challengeId);
+
             foreach (var file in imageFiles)
             {
-                if (file.Length > 0)
+                var uniqueFileName = $"challenge{challengeId}-image{++imageCount}{Path.GetExtension(file.FileName)}";
+                var imagePath = Path.Combine(imageDirectory, uniqueFileName);
+
+                using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
-                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-                    var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "images", "challenges", fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    _context.Images.Add(new Image
-                    {
-                        Url = $"/images/challenges/{fileName}",
-                        ChallengeId = challengeId
-                    });
+                    await file.CopyToAsync(stream);
                 }
+
+                _context.Images.Add(new Image
+                {
+                    Url = $"/images/challenges/{uniqueFileName}",
+                    ChallengeId = challengeId
+                });
             }
             await _context.SaveChangesAsync();
         }

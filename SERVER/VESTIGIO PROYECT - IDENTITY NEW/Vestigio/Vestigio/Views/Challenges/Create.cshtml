@@ -86,14 +86,14 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label asp-for="ExpPoints" class="form-label"><i class="bi bi-lightning-charge me-2"></i>Experience Points</label>
-                                <input asp-for="ExpPoints" type="number" min="0" class="form-control" placeholder="XP points" />
+                                <input asp-for="ExpPoints" type="number" min="0" class="form-control" placeholder="XP points" required />
                                 <span asp-validation-for="ExpPoints" class="text-danger small"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label asp-for="Coins" class="form-label"><i class="bi bi-coin me-2"></i>Coins</label>
-                                <input asp-for="Coins" type="number" min="0" class="form-control" placeholder="Coin amount" />
+                                <input asp-for="Coins" type="number" min="0" class="form-control" placeholder="Coin amount" required />
                                 <span asp-validation-for="Coins" class="text-danger small"></span>
                             </div>
                         </div>
@@ -119,21 +119,21 @@
             </div>
 
             <!-- Unlock Mechanism Section -->
-            <div class="card mb-4 border shadow-sm">
+           <div class="card mb-4 border shadow-sm">
                 <div class="card-body">
                     <h5 class="card-title mb-4"><i class="bi bi-unlock me-2"></i>Unlock Mechanism</h5>
-                    <div id="solution-error" class="alert alert-danger d-none mb-3">
-                        <i class="bi bi-exclamation-circle me-2"></i><span class="error-text"></span>
-                    </div>
+        
                     <div class="mb-3">
                         <label class="form-label">Unlock Type</label>
                         <select asp-for="SolutionMode" class="form-select" onchange="toggleUnlockFields()">
-                            <option value="">Select unlock method</option>
+                            <option value="" selected>Select unlock method</option>
                             <option value="Password">Password Protected</option>
                             <option value="TimeBased">Timed Release</option>
                         </select>
                         <span asp-validation-for="SolutionMode" class="text-danger small"></span>
                     </div>
+        
+                    <!-- Campos con validación individual -->
                     <div id="passwordField" class="mb-3 d-none">
                         <label class="form-label">Password</label>
                         <input asp-for="Password" class="form-control" placeholder="Enter password" />
@@ -141,9 +141,8 @@
                     </div>
                     <div id="releaseDateField" class="mb-3 d-none">
                         <label class="form-label">Release Time</label>
-                        <input asp-for="ReleaseDate" type="datetime-local"
-                               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
-                               class="form-control" />
+                        <input type="datetime-local" asp-for="ReleaseDate" class="form-control" 
+                               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
                         <span asp-validation-for="ReleaseDate" class="text-danger small"></span>
                     </div>
                 </div>
@@ -158,7 +157,7 @@
                     </div>
 
                     <div class="btn-group w-100 mb-3" role="group">
-                        <button type="button" class="btn btn-outline-dark active" onclick="toggleAssociation('level')">
+                        <button type="button" class="btn btn-outline-dark" onclick="toggleAssociation('level')">
                             <i class="bi bi-layers me-2"></i>By Level
                         </button>
                         <button type="button" class="btn btn-outline-dark" onclick="toggleAssociation('product')">
@@ -167,7 +166,7 @@
                     </div>
 
                     <!-- Level Association -->
-                    <div id="levelAssociation">
+                    <div id="levelAssociation" class="d-none">
                         <label class="form-label">Select Tier</label>
                         <div class="row g-3">
                             @foreach (var level in ViewBag.ProductLevels as IEnumerable<SelectListItem>)
@@ -230,7 +229,7 @@
                     <h5 class="card-title mb-4"><i class="bi bi-image me-2"></i>Challenge Images</h5>
                     <div class="border border-2 border-dashed rounded-3 p-4 text-center position-relative" id="dropZone"
                          ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
-                        <input type="file" name="images" id="images" multiple
+                        <input type="file" name="imageFiles" id="images" multiple
                                class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
                                accept="image/*" onchange="handleFileSelect(event)" />
                         <div class="space-y-2" id="uploadPrompt">
@@ -256,6 +255,7 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
     <script>
         // State management
         let selectedTierCard = null;
@@ -284,9 +284,11 @@
             const levelSection = document.getElementById('levelAssociation');
             const productSection = document.getElementById('productAssociation');
 
+            // Reset button states
             document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
+            // Show/hide sections
             levelSection.classList.toggle('d-none', type !== 'level');
             productSection.classList.toggle('d-none', type !== 'product');
 
@@ -307,6 +309,11 @@
             validateAssociation();
         }
 
+                document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('SolutionMode').value = "";
+            toggleUnlockFields();
+        });
+
         // Unlock fields management
         function toggleUnlockFields() {
             const mode = document.getElementById('SolutionMode').value;
@@ -318,30 +325,51 @@
 
             validateSolutionMode();
         }
-
         // Validation functions
-        function validateAssociation() {
+        function validateAssociation(event) {
             const levelValue = document.getElementById('ProductLevel').value;
             const productValue = document.getElementById('ProductId').value;
             const errorElement = document.getElementById('association-error');
 
-            const bothSelected = levelValue && productValue;
-            const noneSelected = !levelValue && !productValue;
+            // Sólo se valida si se está intentando enviar el formulario
+            if (event.type === 'submit') {
+                const bothSelected = levelValue && productValue;
+                const noneSelected = !levelValue && !productValue;
 
-            errorElement.classList.toggle('d-none', !(bothSelected || noneSelected));
+                // Muestra u oculta el error dependiendo de la selección
+                errorElement.classList.toggle('d-none', !(bothSelected || noneSelected));
 
-            if (bothSelected) {
-                errorElement.querySelector('.error-text').textContent = "You can't select both association types";
-            } else if (noneSelected) {
-                errorElement.querySelector('.error-text').textContent = "You must select one association type";
+                if (bothSelected) {
+                    errorElement.querySelector('.error-text').textContent = "You can't select both association types";
+                } else if (noneSelected) {
+                    errorElement.querySelector('.error-text').textContent = "You must select one association type";
+                }
+
+                // Si no se selecciona ni un nivel ni un producto o si se seleccionan ambos, se bloquea el envío del formulario
+                return !(bothSelected || noneSelected);
             }
 
-            return !bothSelected && !noneSelected;
+            // Si no es un envío del formulario, no se valida todavía
+            return true;
         }
 
-               function validateSolutionMode() {
+        // Agregar el evento de validación al enviar el formulario
+        document.getElementById('challengeForm').addEventListener('submit', function(event) {
+            if (!validateAssociation(event)) {
+                event.preventDefault();  // Impide el envío si hay un error
+            }
+        });
+
+        function validateSolutionMode() {
             const mode = document.getElementById('SolutionMode').value;
             const errorElement = document.getElementById('solution-error');
+
+            // No mostrar error si no se ha seleccionado un método de desbloqueo
+            if (!mode) {
+                errorElement.classList.add('d-none');
+                return true;
+            }
+
             let isValid = true;
             let errorMessage = '';
 
@@ -349,15 +377,16 @@
                 const password = document.getElementById('Password').value;
                 isValid = password.trim() !== '';
                 errorMessage = 'Password is required';
-            } else if (mode === 'TimeBased') {
+            } 
+            else if (mode === 'TimeBased') {
                 const releaseDateInput = document.getElementById('ReleaseDate');
                 const releaseDate = new Date(releaseDateInput.value);
                 const now = new Date();
 
                 isValid = releaseDateInput.value !== '' && releaseDate > now;
-                errorMessage = isValid ? '' : 'Se requiere una fecha futura válida';
+                errorMessage = isValid ? '' : 'A valid future date is required';
 
-                // Actualizar el valor del modelo
+                // Update the model value
                 const formattedDate = releaseDate.toISOString().slice(0, 16);
                 document.getElementById('ReleaseDate').value = formattedDate;
             }
@@ -368,7 +397,7 @@
         }
 
         // Form submission handler
-        document.getElementById('challengeForm').addEventListener('submit', function(e) {
+        document.getElementById('challengeForm').addEventListener('submit', function (e) {
             const isAssociationValid = validateAssociation();
             const isSolutionValid = validateSolutionMode();
 
@@ -384,6 +413,18 @@
             }
         });
 
+        // Enable/disable release date field based on mode
+        document.querySelector("form").addEventListener("submit", function () {
+            const mode = document.getElementById("SolutionMode").value;
+            const releaseField = document.getElementById("ReleaseDate");
+
+            if (mode === "TimeBased") {
+                releaseField.disabled = false;
+            } else {
+                releaseField.disabled = true;
+            }
+        });
+
         // File handling
         function handleFileSelect(event) {
             const files = event.target.files;
@@ -394,11 +435,6 @@
             prompt.classList.toggle('d-none', files.length > 0);
 
             Array.from(files).slice(0, 5).forEach(file => {
-                if (file.size > 2 * 1024 * 1024) {
-                    alert(`File ${file.name} exceeds 2MB limit`);
-                    return;
-                }
-
                 const reader = new FileReader();
                 reader.onload = e => {
                     const img = document.createElement('img');
@@ -425,11 +461,15 @@
         }
 
         // Initialization
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize unlock fields
             toggleUnlockFields();
-            validateAssociation();
 
-            // Initialize existing selections
+            // Initialize association sections (hidden by default)
+            document.getElementById('levelAssociation').classList.add('d-none');
+            document.getElementById('productAssociation').classList.add('d-none');
+
+            // Initialize existing selections (if any)
             if (document.getElementById('ProductLevel').value) {
                 const tierCard = document.querySelector(`[data-tier="${document.getElementById('ProductLevel').value}"]`);
                 if (tierCard) selectTier(tierCard);

@@ -45,7 +45,7 @@ namespace Vestigio.Models
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
         // Media
-        public ICollection<Image> Images { get; set; } = new List<Image>();
+        public ICollection<Image>? Images { get; set; } = new List<Image>();
 
         // Associations
         [Display(Name = "Product Level")]
@@ -65,7 +65,7 @@ namespace Vestigio.Models
 
         [Display(Name = "Access Password")]
         [StringLength(50, ErrorMessage = "Password cannot exceed 50 characters")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         [Display(Name = "Release Date")]
         [DataType(DataType.DateTime)]

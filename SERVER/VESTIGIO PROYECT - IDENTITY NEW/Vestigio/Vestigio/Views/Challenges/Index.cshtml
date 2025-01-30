@@ -198,6 +198,62 @@
         align-items: center; /* Vertical center */
         height: 100%;
     }
+
+    .password-display {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .password-hover {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 10;
+        white-space: nowrap;
+    }
+
+    .password-display:hover .password-hover {
+        opacity: 1;
+        visibility: visible;
+        top: 110%;
+    }
+
+    .hover-scale {
+        transition: transform 0.2s ease;
+    }
+
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+
+    .bi-clipboard {
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+        .bi-clipboard:hover {
+            opacity: 0.8;
+        }
+
+    .solution-detail {
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background-color: #f8fafc;
+        min-width: 160px;
+        font-size: 0.9em;
+    }
+
+    .bi-key, .bi-calendar3 {
+        font-size: 0.95em;
+        vertical-align: -1px;
+    }
+
+    .text-muted.small {
+        letter-spacing: 0.5px;
+    }
 </style>
 
 <div class="container">
@@ -319,19 +375,19 @@
 
         <div class="table-container mb-5">
             <table class="table table-hover table-custom">
-                <thead class="text-white text-center">
-                    <tr>
-                        <th style="width: 70px;"><i class="bi bi-power"></i></th>
-                        <th style="width: 15%;">Title</th>
-                        <th style="width: 10%;">Rarity</th>
-                        <th style="width: 10%;">Exp & Coins</th>
-                        <th style="width: 7.5%;">Creation Date</th>
-                        <th style="width: 7.5%;">Release Date</th>
-                        <th style="width: 10%;">Solution Mode</th>
-                        <th style="width: 150px;">Preview</th>
-                        <th style="width: 100px;">Actions</th>
-                    </tr>
-                </thead>
+            <thead class="text-white text-center">
+                <tr>
+                    <th style="width: 70px;"><i class="bi bi-power"></i></th>
+                    <th style="width: 15%;">Title</th>
+                    <th style="width: 10%;">Rarity</th>
+                    <th style="width: 10%;">Exp & Coins</th>
+                    <th style="width: 7.5%;">Creation Date</th>
+                    <th style="width: 12%;">Solution Mode</th>
+                    <th style="width: 12%;">Linked To</th>
+                    <th style="width: 150px;">Preview</th>
+                    <th style="width: 100px;">Actions</th>
+                </tr>
+            </thead>
             <tbody>
                 @if (Model.Any())
                 {
@@ -362,17 +418,73 @@
                             </td>
 
                             <td class="text-center">
-                                <span class="badge">@item.ExpPoints Exp</span>
-                                <span class="badge">@item.Coins Coins</span>
+                                <div class="d-flex flex-column gap-2">
+                                    <span class="badge bg-primary p-1 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-star h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold">@item.ExpPoints</span>
+                                    </span>
+                                    <span class="badge bg-warning p-1 d-flex align-items-center justify-content-center">
+                                        <i style="color:black" class="bi bi-coin h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold text-dark">@item.Coins</span>
+                                    </span>
+                                </div>
                             </td>
 
                             <td class="text-center">@item.CreationDate.ToString("dd-MM-yyyy")</td>
-                            <td class="text-center">@item.ReleaseDate?.ToString("dd-MM-yyyy")</td>
 
                             <td class="text-center">
-                                <span class="badge @(item.SolutionMode == SolutionMode.Password ? "bg-success" : "bg-warning")">
+                                <div class="d-flex flex-column gap-2">
+                                    <!-- Encabezado -->
+                                    <div class="badge @(item.SolutionMode == SolutionMode.Password ? "bg-success" : "bg-warning") px-3 py-2">
+                                        @if (item.SolutionMode == SolutionMode.Password)
+                                        {
+                                            <i class="bi bi-shield h5 py-1 me-2 m-0"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-clock h5 py-1 me-2 m-0"></i>
+                                        }
                                         @item.SolutionMode
-                                </span>
+                                    </div>
+
+                                    <!-- Detalle -->
+                                        @if (item.SolutionMode == SolutionMode.Password)
+                                        {
+                                            <span class="badge bg-success p-1 d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-key h5 py-1 me-2 m-0"></i>
+                                                <span class="m-0 fw-bold">@item.Password</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning p-1 d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-calendar3 h5 py-1 me-2 m-0"></i>
+                                                <span class="m-0 fw-bold">@item.ReleaseDate?.ToString("dd MMM yyyy HH:mm")</span>
+                                            </span>
+                                        }
+                                </div>
+                            </td>
+
+                            <td class="text-center">
+                                @if (item.ProductId != null)
+                                {
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@item.ProductId"
+                                       class="badge bg-info text-decoration-none">
+                                        <i class="bi bi-box-seam me-2"></i>Product #@item.ProductId
+                                    </a>
+                                }
+                                else if (item.ProductLevel != null)
+                                {
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-bar-chart-line me-2"></i>Level @item.ProductLevel
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">None</span>
+                                }
                             </td>
 
                             <td>
@@ -380,25 +492,35 @@
                                 {
                                     var imageList = item.Images.ToList();
                                     <div class="carousel-container">
-                                        <div id="carousel-@item.Id" class="carousel slide" data-bs-ride="carousel">
+                                        <div id="carousel-@item.Id" class="carousel slide" data-bs-interval="false">
                                             <div class="carousel-inner">
                                                 @for (int i = 0; i < imageList.Count; i++)
                                                 {
                                                     <div class="carousel-item @(i == 0 ? "active" : "")">
-                                                        <img src="@imageList[i].Url" class="d-block w-100">
+                                                        <img src="@imageList[i].Url" class="d-block w-100"
+                                                             alt="Challenge image @(i + 1)" style="height: 200px; object-fit: cover;">
                                                     </div>
                                                 }
                                             </div>
                                             @if (imageList.Count > 1)
                                             {
-                                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
+                                                <button class="carousel-control-prev" type="button"
+                                                        data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
                                                     <span class="carousel-control-prev-icon"></span>
                                                 </button>
-                                                <button class="carousel-control-next" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="next">
+                                                <button class="carousel-control-next" type="button"
+                                                        data-bs-target="#carousel-@item.Id" data-bs-slide="next">
                                                     <span class="carousel-control-next-icon"></span>
                                                 </button>
                                             }
                                         </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center text-muted py-3">
+                                        <i class="bi bi-image fs-4"></i>
+                                        <div class="small">No images</div>
                                     </div>
                                 }
                             </td>

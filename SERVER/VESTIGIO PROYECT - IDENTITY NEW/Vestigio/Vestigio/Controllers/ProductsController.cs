@@ -125,90 +125,90 @@ namespace Vestigio.Controllers
             return View();
         }
 
-            // POST: Products/Create/5
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Create(
-                [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")] 
-                Product product,
-                List<int> categoryIds, // Cambiar a List<int> para recibir los IDs de las categorías
-                Dictionary<string, int> sizes, // Cambiar a Dictionary para recibir tamaños y stock
-                List<IFormFile> imageFiles) // Cambiar a List<IFormFile> para recibir las imágenes
+        // POST: Products/Create/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(
+            [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")] 
+            Product product,
+            List<int> categoryIds, // Cambiar a List<int> para recibir los IDs de las categorías
+            Dictionary<string, int> sizes, // Cambiar a Dictionary para recibir tamaños y stock
+            List<IFormFile> imageFiles) // Cambiar a List<IFormFile> para recibir las imágenes
+        {
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    try
+                    // Procesar las categorías seleccionadas
+                    if (categoryIds != null && categoryIds.Any())
                     {
-                        // Procesar las categorías seleccionadas
-                        if (categoryIds != null && categoryIds.Any())
+                        foreach (var categoryId in categoryIds)
                         {
-                            foreach (var categoryId in categoryIds)
-                            {
 
-                                product.ProductCategories.Add(new ProductCategory
+                            product.ProductCategories.Add(new ProductCategory
+                            {
+                                CategoryId = categoryId,
+                                ProductId = product.Id // Esto se asignará automáticamente al guardar el producto
+                            });
+                        }
+                    }
+
+                    // Procesar los tamaños y stock
+                    if (sizes != null && sizes.Any())
+                    {
+                        foreach (var size in sizes)
+                        {
+                            if (ClothingSizes.Sizes.ContainsKey(size.Key))
+                            {
+                                product.Sizes.Add(new ProductSize
                                 {
-                                    CategoryId = categoryId,
+                                    Size = size.Key,
+                                    Stock = size.Value,
                                     ProductId = product.Id // Esto se asignará automáticamente al guardar el producto
                                 });
                             }
-                        }
-
-                        // Procesar los tamaños y stock
-                        if (sizes != null && sizes.Any())
-                        {
-                            foreach (var size in sizes)
+                            else
                             {
-                                if (ClothingSizes.Sizes.ContainsKey(size.Key))
-                                {
-                                    product.Sizes.Add(new ProductSize
-                                    {
-                                        Size = size.Key,
-                                        Stock = size.Value,
-                                        ProductId = product.Id // Esto se asignará automáticamente al guardar el producto
-                                    });
-                                }
-                                else
-                                {
-                                    ModelState.AddModelError("Sizes", $"Invalid size: {size.Key}");
-                                    return ViewWithErrors(product);
-                                }
+                                ModelState.AddModelError("Sizes", $"Invalid size: {size.Key}");
+                                return ViewWithErrors(product);
                             }
                         }
-
-                        // Guardar el producto en la base de datos
-                        _context.Products.Add(product);
-
-                        await _context.SaveChangesAsync();
-
-                        // Procesar las imágenes (si hay)
-                        if (imageFiles != null && imageFiles.Any())
-                        {
-                            await SaveImages(imageFiles, product.Id);
-                        }
-
-                        return RedirectToAction(nameof(Index));
                     }
-                    catch (Exception ex)
+
+                    // Guardar el producto en la base de datos
+                    _context.Products.Add(product);
+
+                    await _context.SaveChangesAsync();
+
+                    // Procesar las imágenes (si hay)
+                    if (imageFiles != null && imageFiles.Any())
                     {
-                        // Log the exception (puedes usar un logger aquí)
-                        ModelState.AddModelError(string.Empty, "An error occurred while creating the product.");
-                        return ViewWithErrors(product);
+                        await SaveImages(imageFiles, product.Id);
                     }
+
+                    return RedirectToAction(nameof(Index));
                 }
-
-                return ViewWithErrors(product);
+                catch (Exception ex)
+                {
+                    // Log the exception (puedes usar un logger aquí)
+                    ModelState.AddModelError(string.Empty, "An error occurred while creating the product.");
+                    return ViewWithErrors(product);
+                }
             }
 
-            private IActionResult ViewWithErrors(Product product)
-            {
-                // Recargar los datos necesarios en la vista
-                ViewBag.Categories = _context.Categories
-                    .Select(c => new { Value = c.Id, Text = c.Name }).ToList();
+            return ViewWithErrors(product);
+        }
 
-                ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
+        private IActionResult ViewWithErrors(Product product)
+        {
+            // Recargar los datos necesarios en la vista
+            ViewBag.Categories = _context.Categories
+                .Select(c => new { Value = c.Id, Text = c.Name }).ToList();
 
-                return View(product);
-            }
+            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
+
+            return View(product);
+        }
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
