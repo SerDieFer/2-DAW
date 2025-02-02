@@ -15,12 +15,16 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Vestigio.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/css/administration.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/info.css" asp-append-version="true" />
 </head>
 <style>
     :root {
-     --primary-color: #222222;
+        --primary-color: #222222;
         --secondary-color: #404040;
-    --accent-color: #d7d7d7;
+        --accent-color: #d7d7d7;
+        --background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     }
 
     /* Estilos generales */
@@ -30,7 +34,7 @@
 
     /* Navbar moderna */
     .bg-gradient-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--background);
     }
 
     .navbar-brand {

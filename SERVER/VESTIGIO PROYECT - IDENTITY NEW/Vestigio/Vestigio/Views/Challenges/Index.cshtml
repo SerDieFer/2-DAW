@@ -14,249 +14,14 @@
     var minExp = ViewData["minExp"] != null ? (int)ViewData["minExp"] : (int?)null;
     var maxExp = ViewData["maxExp"] != null ? (int)ViewData["maxExp"] : (int?)null;
 
-    var startDate = ViewData["startDate"] != null ? (DateTime?)ViewData["startDate"] : null;
-    var endDate = ViewData["endDate"] != null ? (DateTime?)ViewData["endDate"] : null;
+    var startDate = ViewData["startDate"] != null ? (string)ViewData["startDate"] : null;
+    var endDate = ViewData["endDate"] != null ? (string)ViewData["endDate"] : null;
 
-    var startReleaseDate = ViewData["startReleaseDate"] != null ? (DateTime?)ViewData["startReleaseDate"] : null;
-    var endReleaseDate = ViewData["endReleaseDate"] != null ? (DateTime?)ViewData["endReleaseDate"] : null;
+    var startReleaseDate = ViewData["startReleaseDate"] != null ? (string)ViewData["startReleaseDate"] : null;
+    var endReleaseDate = ViewData["endReleaseDate"] != null ? (string)ViewData["endReleaseDate"] : null;
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --primary-color: #222222;
-        --secondary-color: #404040;
-        --accent-color: #d7d7d7;
-        --light-bg: #F6F6F6;
-    }
-
-    body {
-        font-family: 'Poppins', sans-serif;
-        background: var(--light-bg);
-    }
-
-    .table-hover tbody tr {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-        .table-hover tbody tr:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-    .btn-primary {
-        background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
-        border: none;
-        padding: 8px 20px;
-        border-radius: 8px;
-    }
-
-    .filter-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .product-image-container {
-        border-radius: 12px;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .table-container {
-        overflow-x: auto;
-        border-radius: 15px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-    }
-
-    .table-custom {
-        min-width: 1200px;
-        margin-bottom: 0;
-    }
-
-        .table-custom th,
-        .table-custom td {
-            vertical-align: middle !important;
-            padding: 1rem !important;
-            white-space: nowrap;
-        }
-
-        .table-custom thead th {
-            border-bottom: 2px solid var(--accent-color);
-        }
-
-    .pagination .page-item.active .page-link {
-        background: var(--secondary-color);
-        border-color: var(--secondary-color);
-    }
-
-    .action-buttons {
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        padding: 1rem;
-        border-radius: 12px;
-        margin-top: 1rem;
-    }
-
-    .rarity-indicator {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 8px;
-    }
-
-    .table-container {
-        overflow-x: auto;
-        border-radius: 15px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-        padding: 0 10px; /* Añade padding para compensar el hover */
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE/Edge */
-    }
-
-        /* Oculta la scrollbar en navegadores WebKit */
-        .table-container::-webkit-scrollbar {
-            display: none;
-        }
-
-    .table-custom {
-        min-width: 1200px;
-        margin-bottom: 0;
-        transform: translateX(-10px); /* Compensa el padding del contenedor */
-        width: calc(100% + 20px);
-    }
-
-    .table-hover tbody tr:hover {
-        transform: translateX(5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        margin-right: -5px; /* Compensa el movimiento para evitar scroll */
-    }
-
-    .carousel-inner {
-        width: 200px; /* Ancho fijo para la imagen */
-        margin: 0 auto;
-        border-radius: 8px;
-        overflow: hidden;
-        background: #f8f9fa;
-    }
-
-    .carousel-item img {
-        width: 100%;
-        height: 200px; /* Altura fija */
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .carousel-control-prev {
-        left: -20px !important; /* Posición fuera del contenedor */
-    }
-
-    .carousel-control-next {
-        right: -20px !important; /* Posición fuera del contenedor */
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        top: 50%;
-        transform: translateY(-50%);
-        opacity: 0.9;
-        transition: all 0.3s ease;
-    }
-
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-        width: 1.5rem;
-        height: 1.5rem;
-        background-size: 100% 100%;
-        filter: invert(50%);
-    }
-
-    .carousel-control-prev:hover,
-    .carousel-control-next:hover {
-        opacity: 1;
-        transform: translateY(-50%) scale(1.05);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-
-    /* Product name alignment */
-    .product-name-cell {
-        text-align: center !important;
-        vertical-align: middle !important;
-    }
-
-    .product-name-content {
-        display: flex;
-        justify-content: center; /* Horizontal center */
-        align-items: center; /* Vertical center */
-        height: 100%;
-    }
-
-    .password-display {
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .password-hover {
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        z-index: 10;
-        white-space: nowrap;
-    }
-
-    .password-display:hover .password-hover {
-        opacity: 1;
-        visibility: visible;
-        top: 110%;
-    }
-
-    .hover-scale {
-        transition: transform 0.2s ease;
-    }
-
-        .hover-scale:hover {
-            transform: scale(1.05);
-        }
-
-    .bi-clipboard {
-        cursor: pointer;
-        transition: opacity 0.2s ease;
-    }
-
-        .bi-clipboard:hover {
-            opacity: 0.8;
-        }
-
-    .solution-detail {
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        background-color: #f8fafc;
-        min-width: 160px;
-        font-size: 0.9em;
-    }
-
-    .bi-key, .bi-calendar3 {
-        font-size: 0.95em;
-        vertical-align: -1px;
-    }
-
-    .text-muted.small {
-        letter-spacing: 0.5px;
-    }
-</style>
-
-<div class="container">
+<div class="container" id="administration-index">
     <h1 class="text-center mb-4 display-4 fw-600" style="color: var(--primary-color);">
         Challenge Management
         <hr class="mx-auto" style="width: 120px; height: 3px; background: var(--secondary-color); opacity: 1;">
@@ -274,7 +39,7 @@
                     <label class="form-label small text-uppercase text-muted fw-500">Challenge Name</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        <input type="text" name="searchTitle" class="form-control"  value="@searchTitle">
+                        <input type="text" name="searchTitle" class="form-control" value="@searchTitle">
                     </div>
                 </div>
 
@@ -330,15 +95,13 @@
                     </select>
                 </div>
 
-                <!-- Filter by Date -->
+                <!-- Filter by Creation Date -->
                 <div class="col-md-4">
                     <label class="form-label small text-uppercase text-muted fw-500">Creation Date Range</label>
                     <div class="input-group">
-                            <input type="date" name="endDate" class="form-control"
-                                   value="@endDate?.ToString("yyyy-MM-dd")">
+                        <input type="date" class="form-control" id="startDate" name="startDate" value="@startDate">
                         <span class="input-group-text">-</span>
-                            <input type="date" name="endDate" class="form-control"
-                                   value="@endDate?.ToString("yyyy-MM-dd")">
+                        <input type="date" class="form-control" id="endDate" name="endDate" value="@endDate">
                     </div>
                 </div>
 
@@ -346,18 +109,16 @@
                 <div class="col-md-4">
                     <label class="form-label small text-uppercase text-muted fw-500">Release Date Range</label>
                     <div class="input-group">
-                        <input type="date" name="startReleaseDate" class="form-control"
-                                value="@startReleaseDate?.ToString("yyyy-MM-dd")">
+                        <input type="date" class="form-control" id="startReleaseDate" name="startReleaseDate" value="@startReleaseDate">
                         <span class="input-group-text">-</span>
-                        <input type="date" name="endReleaseDate" class="form-control"
-                                value="@endReleaseDate?.ToString("yyyy-MM-dd")">
+                        <input type="date" class="form-control" id="endReleaseDate" name="endReleaseDate" value="@endReleaseDate">
                     </div>
                 </div>
 
             </div>
 
             <!-- Row 3 -->
-            <div class="action-buttons d-flex justify-content-between align-items-center mt-3">
+            <div class="action-buttons d-flex justify-content-between align-items-center mt-4">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-light px-4">
                         <i class="bi bi-funnel me-2"></i>Apply Filters
@@ -381,9 +142,9 @@
                     <th style="width: 15%;">Title</th>
                     <th style="width: 10%;">Rarity</th>
                     <th style="width: 10%;">Exp & Coins</th>
-                    <th style="width: 7.5%;">Creation Date</th>
                     <th style="width: 12%;">Solution Mode</th>
                     <th style="width: 12%;">Linked To</th>
+                    <th style="width: 7.5%;">Creation Date</th>
                     <th style="width: 150px;">Preview</th>
                     <th style="width: 100px;">Actions</th>
                 </tr>
@@ -409,7 +170,7 @@
                             </td>
    
                             <td class="text-center">
-                                <div class="d-flex align-items-center">
+                                <div class="d-flex align-items-center justify-content-center">
                                     <div class="rarity-indicator" style="background-color: @GetRarityColor(item.RarityLevel);"></div>
                                     <span style="color: @GetRarityColor(item.RarityLevel)">
                                         @item.RarityName (@item.RarityLevel)
@@ -419,47 +180,47 @@
 
                             <td class="text-center">
                                 <div class="d-flex flex-column gap-2">
-                                    <span class="badge bg-primary p-1 d-flex align-items-center justify-content-center">
+                                    <span class="badge bg-primary bg-gradient p-1 d-flex align-items-center justify-content-center">
                                         <i class="bi bi-star h5 py-1 me-2 m-0"></i>
                                         <span class="m-0 fw-bold">@item.ExpPoints</span>
                                     </span>
-                                    <span class="badge bg-warning p-1 d-flex align-items-center justify-content-center">
+                                    <span class="badge bg-warning bg-gradient p-1 d-flex align-items-center justify-content-center">
                                         <i style="color:black" class="bi bi-coin h5 py-1 me-2 m-0"></i>
                                         <span class="m-0 fw-bold text-dark">@item.Coins</span>
                                     </span>
                                 </div>
                             </td>
 
-                            <td class="text-center">@item.CreationDate.ToString("dd-MM-yyyy")</td>
-
                             <td class="text-center">
                                 <div class="d-flex flex-column gap-2">
                                     <!-- Encabezado -->
-                                    <div class="badge @(item.SolutionMode == SolutionMode.Password ? "bg-success" : "bg-warning") px-3 py-2">
+                                    <span class="badge py-1 px-4 d-flex align-items-center justify-content-center bg-gradient @(item.SolutionMode == SolutionMode.Password ? "bg-success" : "bg-warning")">
                                         @if (item.SolutionMode == SolutionMode.Password)
                                         {
                                             <i class="bi bi-shield h5 py-1 me-2 m-0"></i>
+                                            <span class="m-0 fw-bold">@item.SolutionMode</span>
                                         }
                                         else
                                         {
-                                            <i class="bi bi-clock h5 py-1 me-2 m-0"></i>
+                                            <i style="color:black" class="bi bi-clock h5 py-1 me-2 m-0"></i>
+                                            <span class="text-black m-0 fw-bold">@item.SolutionMode</span>
                                         }
-                                        @item.SolutionMode
-                                    </div>
+                                        
+                                    </span>
 
                                     <!-- Detalle -->
                                         @if (item.SolutionMode == SolutionMode.Password)
                                         {
-                                            <span class="badge bg-success p-1 d-flex align-items-center justify-content-center">
+                                        <span class="badge bg-success bg-gradient py-1 px-4 d-flex align-items-center justify-content-center">
                                                 <i class="bi bi-key h5 py-1 me-2 m-0"></i>
                                                 <span class="m-0 fw-bold">@item.Password</span>
                                             </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-warning p-1 d-flex align-items-center justify-content-center">
-                                                <i class="bi bi-calendar3 h5 py-1 me-2 m-0"></i>
-                                                <span class="m-0 fw-bold">@item.ReleaseDate?.ToString("dd MMM yyyy HH:mm")</span>
+                                        <span class="badge bg-warning bg-gradient py-1 px-4 d-flex align-items-center justify-content-center">
+                                            <i style="color:black" class="bi bi-calendar3 h5 py-1 me-2 m-0"></i>
+                                            <span class="m-0 fw-bold text-dark">@item.ReleaseDate?.ToString("dd/MM/yyyy HH:mm")</span>
                                             </span>
                                         }
                                 </div>
@@ -471,14 +232,17 @@
                                     <a asp-controller="Products"
                                        asp-action="Details"
                                        asp-route-id="@item.ProductId"
-                                       class="badge bg-info text-decoration-none">
-                                        <i class="bi bi-box-seam me-2"></i>Product #@item.ProductId
+                                       class="badge bg-info bg-gradient text-decoration-none py-1 px-3 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-box-seam h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold">Product #@item.ProductId</span>
                                     </a>
                                 }
                                 else if (item.ProductLevel != null)
                                 {
-                                    <span class="badge bg-primary">
-                                        <i class="bi bi-bar-chart-line me-2"></i>Level @item.ProductLevel
+                                    <span class="badge bg-info bg-gradient text-decoration-none py-1 px-3 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-bar-chart-line h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold">Level @item.ProductLevel</span>
+                                        
                                     </span>
                                 }
                                 else
@@ -487,7 +251,9 @@
                                 }
                             </td>
 
-                            <td>
+                            <td class="text-center">@item.CreationDate.ToString("dd-MM-yyyy")</td>
+
+                            <td class="w-100">
                                 @if (item.Images?.Any() == true)
                                 {
                                     var imageList = item.Images.ToList();

@@ -1,0 +1,193 @@
+﻿#administration-index :root {
+    --primary-color: #222222;
+    --secondary-color: #404040;
+    --accent-color: #d7d7d7;
+    --light-bg: #F6F6F6;
+}
+
+#administration-index body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--light-bg);
+}
+
+#administration-index .table-hover tbody tr {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    #administration-index .table-hover tbody tr:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+#administration-index .btn-primary {
+    background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+}
+
+#administration-index .filter-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+#administration-index .product-image-container {
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+#administration-index .table-container {
+    overflow-x: auto;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+}
+
+#administration-index .table-custom {
+    min-width: 1200px;
+    margin-bottom: 0;
+}
+
+    #administration-index .table-custom th,
+    #administration-index .table-custom td {
+        vertical-align: middle !important;
+        padding: 1rem !important;
+        white-space: nowrap;
+    }
+
+    #administration-index .table-custom thead th {
+        border-bottom: 2px solid var(--accent-color);
+    }
+
+#administration-index .pagination .page-item.active .page-link {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+#administration-index .action-buttons {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+#administration-index .rarity-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+#administration-index .table-container {
+    overflow-x: auto;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+    padding: 0 10px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+    #administration-index .table-container::-webkit-scrollbar {
+        display: none;
+    }
+
+#administration-index .table-custom {
+    min-width: 1200px;
+    margin-bottom: 0;
+    transform: translateX(-10px);
+    width: calc(100% + 20px);
+}
+
+#administration-index .table-hover tbody tr:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-right: -5px;
+}
+
+#administration-index .carousel-inner {
+    width: 200px
+    margin: 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+#administration-index .carousel-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+#administration-index .carousel-control-prev {
+    left: -20px !important;
+}
+
+#administration-index .carousel-control-next {
+    right: -20px !important;
+}
+
+#administration-index .carousel-control-prev,
+#administration-index .carousel-control-next {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+#administration-index .carousel-control-prev-icon,
+#administration-index .carousel-control-next-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    background-size: 100% 100%;
+    filter: invert(50%);
+}
+
+#administration-index .carousel-control-prev:hover,
+#administration-index .carousel-control-next:hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+#administration-index .product-name-cell {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+#administration-index .product-name-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#administration-index .hover-scale {
+    transition: transform 0.2s ease;
+}
+
+    #administration-index .hover-scale:hover {
+        transform: scale(1.05);
+    }
+
+
+#administration-index .solution-detail {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background-color: #f8fafc;
+    min-width: 160px;
+    font-size: 0.9em;
+}
+
+#administration-index .text-muted.small {
+    letter-spacing: 0.5px;
+}

@@ -107,12 +107,12 @@ namespace Vestigio.Controllers
             ViewData["minCoins"] = minCoins;
             ViewData["maxCoins"] = maxCoins;
             ViewData["isActive"] = isActive;
-            ViewData["startDate"] = startDate?.ToString("yyyy-MM-dd");
-            ViewData["endDate"] = endDate?.ToString("yyyy-MM-dd");
+            ViewData["startDate"] = startDate?.ToString("dd-MM-yyyy");
+            ViewData["endDate"] = endDate?.ToString("dd-MM-yyyy");
             ViewData["minExp"] = minExp;
             ViewData["maxExp"] = maxExp;
-            ViewData["startReleaseDate"] = startReleaseDate?.ToString("yyyy-MM-dd");
-            ViewData["endReleaseDate"] = endReleaseDate?.ToString("yyyy-MM-dd");
+            ViewData["startReleaseDate"] = startReleaseDate?.ToString("dd-MM-yyyy");
+            ViewData["endReleaseDate"] = endReleaseDate?.ToString("dd-MM-yyyy");
             ViewData["pageSize"] = pageSize;
 
             ViewData["SolutionModes"] = new SelectList(Enum.GetValues(typeof(SolutionMode)));

@@ -9,200 +9,26 @@
     var selectedCategoryId = ViewData["categoryId"] != null ? (int)ViewData["categoryId"] : 0;
     var isActive = ViewData["isActive"] != null ? (bool?)ViewData["isActive"] : null;
     var stockLessThan = ViewData["minStock"] != null ? (int?)ViewData["minStock"] : null;
-    var startDate = ViewData["startDate"] != null ? (DateTime?)ViewData["startDate"] : null;
-    var endDate = ViewData["endDate"] != null ? (DateTime?)ViewData["endDate"] : null;
+    var startDate = ViewData["startDate"] != null ? (string)ViewData["startDate"] : null;
+    var endDate = ViewData["endDate"] != null ? (string)ViewData["endDate"] : null;
+    var minStock = ViewData["minStock"] != null ? (int)ViewData["minStock"] : (int?)null;
+    var maxStock = ViewData["maxStock"] != null ? (int)ViewData["maxStock"] : (int?)null;
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --primary-color: #222222;
-        --secondary-color: #404040;
-        --accent-color: #d7d7d7;
-        --light-bg: #F6F6F6;
-    }
-
-    body {
-        font-family: 'Poppins', sans-serif;
-        background: var(--light-bg);
-    }
-
-    .table-hover tbody tr {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-        .table-hover tbody tr:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-
-    .btn-primary {
-        background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
-        border: none;
-        padding: 8px 20px;
-        border-radius: 8px;
-    }
-
-    .filter-card {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .product-image-container {
-        border-radius: 12px;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .table-container {
-        overflow-x: auto;
-        border-radius: 15px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-    }
-
-    .table-custom {
-        min-width: 1200px;
-        margin-bottom: 0;
-    }
-
-        .table-custom th,
-        .table-custom td {
-            vertical-align: middle !important;
-            padding: 1rem !important;
-            white-space: nowrap;
-        }
-
-        .table-custom thead th {
-            border-bottom: 2px solid var(--accent-color);
-        }
-
-    .pagination .page-item.active .page-link {
-        background: var(--secondary-color);
-        border-color: var(--secondary-color);
-    }
-
-    .action-buttons {
-        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        padding: 1rem;
-        border-radius: 12px;
-        margin-top: 1rem;
-    }
-
-    .rarity-indicator {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 8px;
-    }
-
-    .table-container {
-        overflow-x: auto;
-        border-radius: 15px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.05);
-        padding: 0 10px; /* Añade padding para compensar el hover */
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE/Edge */
-    }
-
-    /* Oculta la scrollbar en navegadores WebKit */
-    .table-container::-webkit-scrollbar {
-        display: none;
-    }
-
-    .table-custom {
-        min-width: 1200px;
-        margin-bottom: 0;
-        transform: translateX(-10px); /* Compensa el padding del contenedor */
-        width: calc(100% + 20px);
-    }
-
-    .table-hover tbody tr:hover {
-        transform: translateX(5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        margin-right: -5px; /* Compensa el movimiento para evitar scroll */
-    }
-
-    .carousel-inner {
-        width: 200px; /* Ancho fijo para la imagen */
-        margin: 0 auto;
-        border-radius: 8px;
-        overflow: hidden;
-        background: #f8f9fa;
-    }
-
-    .carousel-item img {
-        width: 100%;
-        height: 200px; /* Altura fija */
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .carousel-control-prev {
-        left: -20px !important; /* Posición fuera del contenedor */
-    }
-
-    .carousel-control-next {
-        right: -20px !important; /* Posición fuera del contenedor */
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 50%;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        top: 50%;
-        transform: translateY(-50%);
-        opacity: 0.9;
-        transition: all 0.3s ease;
-    }
-
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-        width: 1.5rem;
-        height: 1.5rem;
-        background-size: 100% 100%;
-        filter: invert(50%);
-    }
-
-    .carousel-control-prev:hover,
-    .carousel-control-next:hover {
-        opacity: 1;
-        transform: translateY(-50%) scale(1.05);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-
-    /* Product name alignment */
-    .product-name-cell {
-        text-align: center !important;
-        vertical-align: middle !important;
-    }
-
-    .product-name-content {
-        display: flex;
-        justify-content: center; /* Horizontal center */
-        align-items: center; /* Vertical center */
-        height: 100%;
-    }
-</style>
-
-<div class="container">
+<div class="container" id="administration-index">
     <h1 class="text-center mb-4 display-4 fw-600" style="color: var(--primary-color);">
         Product Management
         <hr class="mx-auto" style="width: 120px; height: 3px; background: var(--secondary-color); opacity: 1;">
     </h1>
 
-    <!-- Filtros -->
+    <!-- Filters -->
     <div class="filter-card">
         <form method="get" action="@Url.Action("Index")">
+
+            <!-- Row 1 -->
             <div class="row filter-rows g-4">
 
+                <!-- Filter by Name -->
                 <div class="col-md-3">
                     <label class="form-label small text-uppercase text-muted fw-500">Product Name</label>
                     <div class="input-group">
@@ -211,6 +37,7 @@
                     </div>
                 </div>
 
+                <!-- Filter by Category -->
                 <div class="col-md-3">
                     <label class="form-label small text-uppercase text-muted fw-500">Category</label>
                     <select name="categoryId" class="form-select">
@@ -222,51 +49,60 @@
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <!-- Filter by Status -->
+                <div class="col-md-3">
                     <label class="form-label small text-uppercase text-muted fw-500">Status</label>
                     <select name="isActive" class="form-select">
-                        <option value="">All</option>
+                        <option value="">Any Status</option>
                         <option value="true" selected="@(isActive == true)">Active</option>
                         <option value="false" selected="@(isActive == false)">Inactive</option>
                     </select>
                 </div>
 
-                <div class="col-md-2">
+                <!-- Filter by Level -->
+                <div class="col-md-3">
                     <label class="form-label small text-uppercase text-muted fw-500">Rarity Level</label>
                     <input type="number" name="rarityLevel" class="form-control"
                            min="1" max="10" placeholder="1-10" value="@rarityLevel">
                 </div>
-
-                <div class="col-md-2">
-                    <label class="form-label small text-uppercase text-muted fw-500">Stock</label>
-                    <input type="number" name="minStock" class="form-control" value="@ViewData["minStock"]">
-                </div>
             </div>
 
-            <div class="row filter-rows g-4 mt-2">
+            <!-- Row 2 -->
+            <div class="row g-3 mt-1">
+
+                <!-- Filter by Price -->
                 <div class="col-md-4">
                     <label class="form-label small text-uppercase text-muted fw-500">Price Range</label>
                     <div class="input-group">
-                        <input type="number" name="minPrice" class="form-control" placeholder="Min" value="@minPrice">
+                        <input type="number" name="minPrice" class="form-control" placeholder="Min" min="1" value="@minPrice">
                         <span class="input-group-text">-</span>
-                        <input type="number" name="maxPrice" class="form-control" placeholder="Max" value="@maxPrice">
+                        <input type="number" name="maxPrice" class="form-control" placeholder="Max" min="1" value="@maxPrice">
                     </div>
                 </div>
 
+                <!-- Filter by Stock -->
                 <div class="col-md-4">
-                    <label class="form-label small text-uppercase text-muted fw-500">Start Date</label>
-                    <input type="date" name="startDate" class="form-control"
-                           value="@startDate?.ToString("yyyy-MM-dd")">
+                    <label class="form-label small text-uppercase text-muted fw-500">Stock Range</label>
+                    <div class="input-group">
+                        <input type="number" name="minStock" class="form-control" placeholder="Min" min="1" value="@minStock">
+                        <span class="input-group-text">-</span>
+                        <input type="number" name="maxStock" class="form-control" placeholder="Max" min="1" value="@maxStock">
+                    </div>
                 </div>
 
+                <!-- Filter by Creatio Date -->
                 <div class="col-md-4">
-                    <label class="form-label small text-uppercase text-muted fw-500">End Date</label>
-                    <input type="date" name="endDate" class="form-control"
-                           value="@endDate?.ToString("yyyy-MM-dd")">
+                    <label class="form-label small text-uppercase text-muted fw-500">Creation Date Range</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" id="startDate" name="startDate" value="@startDate">
+                        <span class="input-group-text">-</span>
+                        <input type="date" class="form-control" id="endDate" name="endDate" value="@endDate">
+                    </div>
                 </div>
             </div>
 
-            <div class="action-buttons d-flex justify-content-between align-items-center mt-3">
+            <!-- Row 3 -->
+            <div class="action-buttons d-flex justify-content-between align-items-center mt-4">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-light px-4">
                         <i class="bi bi-funnel me-2"></i>Apply Filters
@@ -279,6 +115,7 @@
                     <i class="bi bi-plus-circle me-2"></i>New Product
                 </a>
             </div>
+
         </form>
     </div>
 
@@ -289,11 +126,11 @@
                 <tr>
                     <th style="width: 70px;"><i class="bi bi-power"></i></th>
                     <th style="width: 15%;">Product</th>
-                    <th style="width: 15%;">Price</th>
-                    <th style="width: 15%;">Stock</th>
                     <th style="width: 10%;">Rarity</th>
-                    <th style="width: 15%;">Categories</th>
-                    <th style="width: 7.5%;">Created</th>
+                    <th style="width: 10%;">Price</th>
+                    <th style="width: 12%;">Categories</th>
+                    <th style="width: 12%;">Stock</th>
+                    <th style="width: 7.5%;">Creation Date</th>
                     <th style="width: 150px;">Preview</th>
                     <th style="width: 100px;">Actions</th>
                 </tr>
@@ -314,31 +151,49 @@
                                 <h6 class="mb-0 fw-500">@item.Name</h6>
                             </div>
                         </td>
-                        <td class="text-center">@item.Price.ToString("C")</td>
                         <td class="text-center">
-                            <span class="badge @(item.TotalStock > 10 ? "bg-success" : "bg-warning")">
-                                @item.TotalStock in stock
-                            </span>
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center justify-content-center">
                                 <div class="rarity-indicator" style="background-color: @GetRarityColor(item.RarityLevel);"></div>
                                 <span style="color: @GetRarityColor(item.RarityLevel)">
                                     @item.RarityName (@item.RarityLevel)
                                 </span>
                             </div>
                         </td>
+
+                        <td class="text-center">@item.Price.ToString("C")</td>
+
                         <td class="text-center">
                             @if (item.ProductCategories?.Any() == true)
                             {
-                                @foreach (var cat in item.ProductCategories)
-                                {
-                                    <span class="badge bg-light text-dark me-1">@cat.Category.Name</span>
-                                }
+                                <div class="d-flex flex-column gap-2">
+                                    @foreach (var cat in item.ProductCategories)
+                                    {
+                                        <span class="badge bg-secondary bg-gradient text-decoration-none py-3 d-flex align-items-center justify-content-center">
+                                            <span class="m-0 fw-bold">@cat.Category.Name</span>
+                                        </span>
+                                    }
+                                 </div>
                             }
                         </td>
+
+                        <td class="text-center">
+                            <div class="d-flex flex-column gap-2">
+                                <span class="badge py-1 px-4 d-flex align-items-center justify-content-center bg-gradient @(item.TotalStock > 10 ? "bg-success" : "bg-warning")">
+                                    @if (item.TotalStock > 10)
+                                    {
+                                        <i class="bi bi-bag-fill h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold">@item.TotalStock in stock</span>
+                                    }
+                                    else
+                                    {
+                                        <i style="color:black" class="bi bi-bag-fill h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold text-black">@item.TotalStock in stock</span>
+                                    }
+                                </span>
+                            </div>
+                        </td>
                         <td class="text-center">@item.CreationDate.ToString("dd-MM-yyyy")</td>
-                        <td>
+                        <td class="w-100">
                             @if (item.Images?.Any() == true)
                             {
                                 var imageList = item.Images.ToList();
@@ -348,16 +203,19 @@
                                             @for (int i = 0; i < imageList.Count; i++)
                                             {
                                                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                                                    <img src="@imageList[i].Url" class="d-block w-100">
+                                                    <img src="@imageList[i].Url" class="d-block w-100"
+                                                    alt="Product image @(i + 1)" style="height: 200px; object-fit: cover;">
                                                 </div>
                                             }
                                         </div>
                                         @if (imageList.Count > 1)
                                         {
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
+                                            <button class="carousel-control-prev" type="button"
+                                                    data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
                                                 <span class="carousel-control-prev-icon"></span>
                                             </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#carousel-@item.Id" data-bs-slide="next">
+                                            <button class="carousel-control-next" type="button"
+                                                    data-bs-target="#carousel-@item.Id" data-bs-slide="next">
                                                 <span class="carousel-control-next-icon"></span>
                                             </button>
                                         }

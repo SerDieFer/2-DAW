@@ -27,7 +27,7 @@ namespace Vestigio.Controllers
         // GET: Products
         public async Task<IActionResult> Index(
             string searchName, decimal? minPrice, decimal? maxPrice, int? pageNumber,
-            int? rarityLevel, int? categoryId, bool? isActive, int? minStock,
+            int? rarityLevel, int? categoryId, bool? isActive, int? minStock, int? maxStock,
             DateTime? startDate, DateTime? endDate, int pageSize = 5)
         {
             // BASE QUERY
@@ -50,6 +50,9 @@ namespace Vestigio.Controllers
 
             if (minStock.HasValue)
                 productsQuery = productsQuery.Where(p => p.Sizes.Sum(ps => ps.Stock) >= minStock.Value);
+
+            if (maxStock.HasValue)
+                productsQuery = productsQuery.Where(p => p.Sizes.Sum(ps => ps.Stock) <= maxStock.Value);
 
             if (rarityLevel.HasValue)
                 productsQuery = productsQuery.Where(p => p.RarityLevel == rarityLevel.Value);
@@ -85,8 +88,9 @@ namespace Vestigio.Controllers
             ViewData["categoryId"] = categoryId ?? 0;
             ViewData["isActive"] = isActive;
             ViewData["minStock"] = minStock;
-            ViewData["startDate"] = startDate;
-            ViewData["endDate"] = endDate;
+            ViewData["maxStock"] = maxStock;
+            ViewData["startDate"] = startDate?.ToString("dd-MM-yyyy"); ;
+            ViewData["endDate"] = endDate?.ToString("dd-MM-yyyy"); ;
 
             return View(paginatedList);
         }
@@ -190,7 +194,6 @@ namespace Vestigio.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception (puedes usar un logger aquí)
                     ModelState.AddModelError(string.Empty, "An error occurred while creating the product.");
                     return ViewWithErrors(product);
                 }
