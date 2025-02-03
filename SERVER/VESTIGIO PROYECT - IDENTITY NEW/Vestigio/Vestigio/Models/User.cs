@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using Vestigio.Utilities;
 
 namespace Vestigio.Models
 {
@@ -30,7 +31,22 @@ namespace Vestigio.Models
         public ICollection<Order>? Orders { get; set; }
 
         [Display(Name = "Challenges Solved")]
-        public ICollection<ChallengeResolution>? ChallengesResolutions { get; set; }
+        public ICollection<ChallengeResolution>? ChallengesResolutions { get; set; } = new List<ChallengeResolution>();
+
+
+        // PRODUCT UNLOCKING RELATIONS
+        public ICollection<UserUnlockedProduct> UnlockedProducts { get; set; } = new List<UserUnlockedProduct>();
+        public ICollection<UserUnlockedProductByLevel> UnlockedProductLevels { get; set; } = new List<UserUnlockedProductByLevel>();
+
+        // METHOD TO ADD EXP TO THE USER
+        public void GainExp(int exp)
+        {
+            ExpPoints += exp;
+            while (Level < 10 && ExpPoints >= LevelsNaming.GetExpRequiredForLevel(Level + 1))
+            {
+                Level++;
+            }
+        }
 
     }
 }

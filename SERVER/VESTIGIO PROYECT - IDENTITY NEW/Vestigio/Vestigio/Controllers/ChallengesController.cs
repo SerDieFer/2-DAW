@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace Vestigio.Controllers
     {
         private readonly VestigioDbContext _context;
 
-        public ChallengesController(VestigioDbContext context, IWebHostEnvironment hostingEnvironment)
+        public ChallengesController(VestigioDbContext context)
         {
             _context = context;
         }

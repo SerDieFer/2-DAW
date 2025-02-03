@@ -7,8 +7,10 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
-
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -17,7 +19,6 @@
     <link rel="stylesheet" href="~/Vestigio.styles.css" asp-append-version="true" />
 
     <link rel="stylesheet" href="~/css/administration.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/info.css" asp-append-version="true" />
 </head>
 <style>
     :root {
@@ -127,8 +128,7 @@
 
 </style>
 <body class="d-flex flex-column flex-grow-1">
-
-    <!-- NAVBAR MODERNO -->
+<!-- NAVBAR MODERNO -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary py-3 shadow-sm">
     <div class="container">
         <!-- Logo y nombre visible -->
@@ -190,6 +190,12 @@
                 <!-- Pedidos (visible para todos los usuarios autenticados) -->
                 @if (User.IsInRole("User"))
                 {
+                    <li class="nav-item mx-2">
+                        <a class="nav-link hover-underline" asp-controller="Showcases" asp-action="Index">
+                            <i class="bi bi-cart-check me-1"></i>
+                            Escaparate
+                        </a>
+                    </li>
                     <li class="nav-item mx-2">
                         <a class="nav-link hover-underline" asp-controller="Orders" asp-action="Index">
                             <i class="bi bi-cart-check me-1"></i>

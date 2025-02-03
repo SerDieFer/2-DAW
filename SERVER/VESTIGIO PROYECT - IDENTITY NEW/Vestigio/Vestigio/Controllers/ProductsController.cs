@@ -11,6 +11,7 @@ using Vestigio.Utilities;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Vestigio.Controllers
 {
@@ -18,10 +19,12 @@ namespace Vestigio.Controllers
     public class ProductsController : Controller
     {
         private readonly VestigioDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public ProductsController(VestigioDbContext context)
+        public ProductsController(VestigioDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Products

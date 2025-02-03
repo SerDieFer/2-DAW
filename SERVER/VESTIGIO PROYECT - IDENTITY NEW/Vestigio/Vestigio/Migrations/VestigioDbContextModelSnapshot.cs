@@ -499,6 +499,58 @@ namespace Vestigio.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Vestigio.Models.UserUnlockedProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UnlockedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserUnlockedProduct");
+                });
+
+            modelBuilder.Entity("Vestigio.Models.UserUnlockedProductByLevel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UnlockedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserUnlockedProductByLevel");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -656,6 +708,36 @@ namespace Vestigio.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Vestigio.Models.UserUnlockedProduct", b =>
+                {
+                    b.HasOne("Vestigio.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Vestigio.Models.User", "User")
+                        .WithMany("UnlockedProducts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Vestigio.Models.UserUnlockedProductByLevel", b =>
+                {
+                    b.HasOne("Vestigio.Models.User", "User")
+                        .WithMany("UnlockedProductLevels")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Vestigio.Models.Category", b =>
                 {
                     b.Navigation("ProductCategories");
@@ -689,6 +771,10 @@ namespace Vestigio.Migrations
                     b.Navigation("ChallengesResolutions");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("UnlockedProductLevels");
+
+                    b.Navigation("UnlockedProducts");
                 });
 #pragma warning restore 612, 618
         }
