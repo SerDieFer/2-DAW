@@ -150,7 +150,7 @@
                 <li class="nav-item mx-2">
                     <a class="nav-link hover-underline" asp-controller="Home" asp-action="Index">
                         <i class="bi bi-house-door me-1"></i>
-                        Inicio
+                        Home
                     </a>
                 </li>
 
@@ -160,7 +160,7 @@
                     <li class="nav-item mx-2">
                         <a class="nav-link hover-underline" asp-controller="Products" asp-action="Index">
                             <i class="bi bi-box-seam me-1"></i>
-                            Productos
+                            Products
                         </a>
                     </li>
 
@@ -174,14 +174,14 @@
                     <li class="nav-item mx-2">
                         <a class="nav-link hover-underline" asp-controller="Orders" asp-action="Index">
                             <i class="bi bi-list-task me-1"></i>
-                            Pedidos
+                            Orders
                         </a>
                     </li>
 
                     <li class="nav-item mx-2">
                         <a class="nav-link hover-underline" asp-controller="Categories" asp-action="Index">
                             <i class="bi bi-diagram-3 me-1"></i>
-                            Categorías
+                            Categories
                         </a>
                     </li>
 
@@ -191,15 +191,15 @@
                 @if (User.IsInRole("User"))
                 {
                     <li class="nav-item mx-2">
-                        <a class="nav-link hover-underline" asp-controller="Showcases" asp-action="Index">
+                        <a class="nav-link hover-underline" asp-controller="Showcase" asp-action="Index">
                             <i class="bi bi-cart-check me-1"></i>
-                            Escaparate
+                            Showcase
                         </a>
                     </li>
                     <li class="nav-item mx-2">
                         <a class="nav-link hover-underline" asp-controller="Orders" asp-action="Index">
                             <i class="bi bi-cart-check me-1"></i>
-                            Mis Pedidos
+                            My Orders
                         </a>
                     </li>
                 }

@@ -48,7 +48,7 @@ namespace Vestigio.Data
                 .Property(od => od.Price)
                 .HasPrecision(9, 2);
 
-            // SET UP COMPOUND KEY FOR CHALLENGE RESOLUTION (A CHALLENGE CAN ONLY BE SOLVED ONCE PER USER)
+            // COMPOUND KEY FOR CHALLENGE RESOLUTION (A CHALLENGE CAN ONLY BE SOLVED ONCE PER USER)
             modelBuilder.Entity<ChallengeResolution>()
                 .HasIndex(cr => new { cr.UserId, cr.ChallengeId })
                 .IsUnique();
@@ -79,18 +79,22 @@ namespace Vestigio.Data
                 .HasOne(pc => pc.Category)
                 .WithMany(c => c.ProductCategories)
                 .HasForeignKey(pc => pc.CategoryId);
-                    
 
-            // RELATION: PRODUCT - PRODUCT SIZE (1:N)
-            modelBuilder.Entity<ProductSize>()
-                .HasOne(ps => ps.Product)
-                .WithMany(p => p.Sizes)
-                .HasForeignKey(ps => ps.ProductId)
-                  .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A PRODUCT IS DELETED.
+            modelBuilder.Entity<ProductSize>(entity =>
+            {
+                // Clave primaria
+                entity.HasKey(ps => ps.Id);
 
-            // Product-Size relationship
-            modelBuilder.Entity<ProductSize>()
-                .HasKey(ps => new { ps.ProductId, ps.Size });
+                // Índice único para ProductId + Size
+                entity.HasIndex(ps => new { ps.ProductId, ps.Size })
+                      .IsUnique();
+
+                // Relación con Product
+                entity.HasOne(ps => ps.Product)
+                      .WithMany(p => p.Sizes)
+                      .HasForeignKey(ps => ps.ProductId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
 
             // RELATION: CHALLENGE - PRODUCT (1:1 OR 1:N)
             modelBuilder.Entity<Challenge>()
@@ -126,6 +130,10 @@ namespace Vestigio.Data
                 .HasForeignKey(i => i.ChallengeId)
                 .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A CHALLENGE IS DELETED.
 
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.ProductSize)
+                .WithMany(ps => ps.OrderDetails)
+                .HasForeignKey(od => od.ProductSizeId);
 
             base.OnModelCreating(modelBuilder);
         }

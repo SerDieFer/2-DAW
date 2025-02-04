@@ -13,11 +13,11 @@ namespace Vestigio.Models
         [StringLength(10)]
         public string Size { get; set; }
 
-        // METHOD TO CHECK IF SELECTED SIZE IS VALID
-        public bool IsValidSize()
-        {
-            return ClothingSizes.Sizes.ContainsKey(Size);
-        }
+        //// METHOD TO CHECK IF SELECTED SIZE IS VALID
+        //public bool IsValidSize()
+        //{
+        //    return ClothingSizes.Sizes.ContainsKey(Size);
+        //}
 
         [Required(ErrorMessage = "Stock is required")]
         [Range(0, int.MaxValue, ErrorMessage = "Stock cannot be negative")]
@@ -29,6 +29,10 @@ namespace Vestigio.Models
         // RELATIONSHIP WITH PRODUCT
         public int ProductId { get; set; }
         public Product Product { get; set; }
+
+        // RELATIONSHIP WITH ORDER DETAILS
+
+        public ICollection<OrderDetail> OrderDetails { get; set; }
 
         // METHOD TO UPDATE STOCK AND DEACTIVATE IF NECESSARY
         public void UpdateStock(int quantity)

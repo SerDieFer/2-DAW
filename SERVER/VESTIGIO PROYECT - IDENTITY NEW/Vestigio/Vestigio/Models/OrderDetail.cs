@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Vestigio.Models
 {
@@ -12,6 +13,8 @@ namespace Vestigio.Models
         [Required]
         public int ProductId { get; set; }
 
+        public int ProductSizeId { get; set; }
+
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
         public int Quantity { get; set; }
@@ -23,5 +26,9 @@ namespace Vestigio.Models
         // RELATIONS
         public Order Order { get; set; }
         public Product Product { get; set; }
+
+        [ForeignKey("ProductSizeId")]
+        public ProductSize ProductSize { get; set; }
+
     }
 }

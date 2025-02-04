@@ -333,6 +333,9 @@ namespace Vestigio.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductSizeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -341,6 +344,8 @@ namespace Vestigio.Migrations
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductSizeId");
 
                     b.ToTable("OrderDetails", (string)null);
                 });
@@ -398,23 +403,30 @@ namespace Vestigio.Migrations
 
             modelBuilder.Entity("Vestigio.Models.ProductSize", b =>
                 {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Size")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.HasKey("ProductId", "Size");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId", "Size")
+                        .IsUnique();
 
                     b.ToTable("ProductSize", (string)null);
                 });
@@ -673,9 +685,17 @@ namespace Vestigio.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Vestigio.Models.ProductSize", "ProductSize")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("ProductSizeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+
+                    b.Navigation("ProductSize");
                 });
 
             modelBuilder.Entity("Vestigio.Models.ProductCategory", b =>
@@ -764,6 +784,11 @@ namespace Vestigio.Migrations
                     b.Navigation("ProductCategories");
 
                     b.Navigation("Sizes");
+                });
+
+            modelBuilder.Entity("Vestigio.Models.ProductSize", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("Vestigio.Models.User", b =>
