@@ -5,42 +5,77 @@
 
     @if (Model?.OrderDetails?.Any() == true)
     {
-        <div class="row">
-            <div class="col-md-8">
+        <div class="row g-4">
+            <div class="col-lg-8">
                 @foreach (var item in Model.OrderDetails)
                 {
-                    <div class="card mb-3">
+                    <div class="card shadow-sm mb-3">
                         <div class="card-body">
-                            <h5>@item.Product.Name</h5>
-                            <div class="row">
+                            <div class="row g-3 align-items-center">
+                                <!-- Imagen del Producto -->
+                                <div class="col-md-3">
+                                    @if (item.Product.Images?.Any() == true)
+                                    {
+                                        <img src="@item.Product.Images.First().Url"
+                                             class="img-fluid rounded-3"
+                                             alt="@item.Product.Name"
+                                             style="height: 100px; object-fit: contain;">
+                                    }
+                                </div>
+
+                                <!-- Información del Producto -->
                                 <div class="col-md-6">
-                                    <form asp-action="ChangeSize" method="post">
-                                        <input type="hidden" name="orderDetailId" value="@item.Id" />
-                                        <select name="newProductSizeId"
-                                                class="form-select"
-                                                onchange="this.form.submit()"
-                                                asp-items="@(new SelectList(item.Product.ProductSizes.Where(ps => ps.IsActive && ps.Stock >= item.Quantity), "Id", "Size"))">
-                                        </select>
-                                    </form>
+                                    <h5 class="mb-2">@item.Product.Name</h5>
+                                    <div class="d-flex gap-3 align-items-center">
+                                        <!-- Selector de Talla -->
+                                        <form asp-action="ChangeSize" method="post" class="flex-grow-1">
+                                            <input type="hidden" name="orderDetailId" value="@item.Id" />
+                                            <select name="newProductSizeId"
+                                                    class="form-select"
+                                                    onchange="this.form.submit()"
+                                                    asp-items="@(new SelectList(item.Product.ProductSizes
+                                                        .Where(ps => ps.IsActive && ps.Stock >= item.Quantity),
+                                                        "Id", "Size", item.ProductSizeId))">
+                                            </select>
+                                        </form>
+                                    </div>
+                                    <small class="text-muted d-block mt-2">
+                                        Stock disponible: @item.ProductSize.Stock unidades
+                                    </small>
                                 </div>
-                                <div class="col-md-4">
-                                    <form asp-action="UpdateQuantity" method="post">
-                                        <input type="hidden" name="orderDetailId" value="@item.Id" />
-                                        <div class="input-group">
-                                            <input type="number"
-                                                   name="newQuantity"
-                                                   value="@item.Quantity"
-                                                   min="1"
-                                                   max="@item.ProductSize.Stock"
-                                                   class="form-control">
-                                            <button type="submit" class="btn btn-primary">Actualizar</button>
+
+                                <!-- Controles de Cantidad y Precio -->
+                                <div class="col-md-3">
+                                    <div class="d-flex flex-column gap-2">
+                                        <form asp-action="UpdateQuantity" method="post">
+                                            <input type="hidden" name="orderDetailId" value="@item.Id" />
+                                            <div class="input-group">
+                                                <input type="text"
+                                                       name="newQuantity"
+                                                       value="@item.Quantity"
+                                                       min="1"
+                                                       max="@item.ProductSize.Stock"
+                                                       class="form-control text-center"
+                                                       onchange="this.form.submit()">
+                                                <button type="submit" class="btn btn-outline-dark">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                        <div class="text-end">
+                                            <span class="h5">@item.Price.ToString("C")</span>
+                                            <small class="text-muted d-block">@item.Product.Price.ToString("C") c/u</small>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
-                                <div class="col-md-2">
+
+                                <!-- Botón de Eliminar -->
+                                <div class="col-md-1 text-end">
                                     <form asp-action="RemoveFromCart" method="post">
                                         <input type="hidden" name="orderDetailId" value="@item.Id" />
-                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                        <button type="submit" class="btn btn-link text-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
                                     </form>
                                 </div>
                             </div>
@@ -48,13 +83,21 @@
                     </div>
                 }
             </div>
-            <div class="col-md-4">
-                <div class="card">
+
+            <!-- Resumen del Pedido -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <h5 class="card-title">Resumen</h5>
-                        <p>Total: @Model.OrderDetails.Sum(od => od.Price).ToString("C")</p>
-                        <form asp-action="Checkout" method="post">
-                            <button type="submit" class="btn btn-success w-100">Finalizar Compra</button>
+                        <h5 class="card-title mb-4">Resumen del Pedido</h5>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Subtotal:</span>
+                            <span>@Model.OrderDetails.Sum(od => od.Price).ToString("C")</span>
+                        </div>
+                        <hr>
+                        <form asp-action="ConfirmOrder" method="post">
+                            <button type="submit" class="btn btn-dark w-100 py-3">
+                                <i class="fas fa-check-circle me-2"></i>Finalizar Compra
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -63,6 +106,12 @@
     }
     else
     {
-        <div class="alert alert-info">Tu carrito está vacío</div>
+        <div class="alert alert-info text-center py-4">
+            <i class="fas fa-shopping-cart fa-3x mb-3"></i>
+            <h4>Tu carrito está vacío</h4>
+            <a asp-controller="Showcase" asp-action="Index" class="btn btn-dark mt-3">
+                Explorar Desafíos
+            </a>
+        </div>
     }
 </div>

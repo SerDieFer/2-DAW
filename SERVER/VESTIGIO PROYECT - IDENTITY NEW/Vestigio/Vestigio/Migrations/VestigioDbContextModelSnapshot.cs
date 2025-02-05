@@ -422,6 +422,12 @@ namespace Vestigio.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId", "Size")
