@@ -79,12 +79,19 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
             .AddDefaultUI()
             .AddEntityFrameworkStores<VestigioDbContext>();
 
-
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddHealthChecks();
-
 builder.Services.AddMvc();
+
+// Configuración de la sesión
+// Se utiliza DistributedMemoryCache para almacenar la sesión en memoria.
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Expiración de la sesión
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -104,10 +111,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-app.UseAuthentication(); // Asegúrate de que esto esté antes de UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
-
-
+app.UseSession(); // Uso de la sesión
 
 app.MapRazorPages();
 

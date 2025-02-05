@@ -6,9 +6,6 @@ namespace Vestigio.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        public string UserId { get; set; }
-
         [Display(Name = "Creation Date")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -17,8 +14,11 @@ namespace Vestigio.Models
         [Required]
         public string Status { get; set; }
 
-        // RELATIONS
+        // RELATION WITH USER
+        [Required]
+        public string UserId { get; set; }
         public User User { get; set; }
+
         public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

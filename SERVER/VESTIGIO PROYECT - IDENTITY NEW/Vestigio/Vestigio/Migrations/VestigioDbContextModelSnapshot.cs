@@ -417,8 +417,7 @@ namespace Vestigio.Migrations
 
                     b.Property<string>("Size")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
@@ -720,7 +719,7 @@ namespace Vestigio.Migrations
             modelBuilder.Entity("Vestigio.Models.ProductSize", b =>
                 {
                     b.HasOne("Vestigio.Models.Product", "Product")
-                        .WithMany("Sizes")
+                        .WithMany("ProductSizes")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -783,7 +782,7 @@ namespace Vestigio.Migrations
 
                     b.Navigation("ProductCategories");
 
-                    b.Navigation("Sizes");
+                    b.Navigation("ProductSizes");
                 });
 
             modelBuilder.Entity("Vestigio.Models.ProductSize", b =>

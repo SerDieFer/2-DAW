@@ -174,7 +174,7 @@
                                             <div class="col-7">
                                                 <select class="form-select size-select" name="sizes[0].Key" required>
                                                     <option value="" disabled selected>Select size</option>
-                                                    @foreach (var size in (List<string>)ViewData["Sizes"])
+                                                    @foreach (var size in (List<string>)ViewData["ProductSizes"])
                                                     {
                                                         <option value="@size">@size</option>
                                                     }
@@ -270,7 +270,7 @@
 
         // Gestión de Tallas
         let sizeCounter = 1;
-        const allSizes = @Html.Raw(Json.Serialize(ViewData["Sizes"]));
+        const allSizes = @Html.Raw(Json.Serialize(ViewData["ProductSizes"]));
 
         function updateSizeOptions() {
             const selectedSizes = new Set();

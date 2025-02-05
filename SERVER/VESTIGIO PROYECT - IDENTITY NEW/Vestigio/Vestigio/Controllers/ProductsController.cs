@@ -37,7 +37,7 @@ namespace Vestigio.Controllers
             var productsQuery = _context.Products
                 .Include(p => p.ProductCategories)
                     .ThenInclude(pc => pc.Category)
-                .Include(p => p.Sizes)
+                .Include(p => p.ProductSizes)
                 .Include(p => p.Images)
                 .AsQueryable();
 
@@ -52,10 +52,10 @@ namespace Vestigio.Controllers
                 productsQuery = productsQuery.Where(p => p.Price <= maxPrice.Value);
 
             if (minStock.HasValue)
-                productsQuery = productsQuery.Where(p => p.Sizes.Sum(ps => ps.Stock) >= minStock.Value);
+                productsQuery = productsQuery.Where(p => p.ProductSizes.Sum(ps => ps.Stock) >= minStock.Value);
 
             if (maxStock.HasValue)
-                productsQuery = productsQuery.Where(p => p.Sizes.Sum(ps => ps.Stock) <= maxStock.Value);
+                productsQuery = productsQuery.Where(p => p.ProductSizes.Sum(ps => ps.Stock) <= maxStock.Value);
 
             if (rarityLevel.HasValue)
                 productsQuery = productsQuery.Where(p => p.RarityLevel == rarityLevel.Value);
@@ -109,7 +109,7 @@ namespace Vestigio.Controllers
             var product = await _context.Products
                 .Include(p => p.ProductCategories)
                     .ThenInclude(pc => pc.Category)
-                .Include(p => p.Sizes)
+                .Include(p => p.ProductSizes)
                 .Include(p => p.Images)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -128,7 +128,7 @@ namespace Vestigio.Controllers
             // Pasar las categorías correctamente formateadas para JS
             ViewBag.Categories = categories.Select(c => new { Value = c.Id, Text = c.Name }).ToList();
 
-            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
+            ViewData["ProductSizes"] = ClothingSizes.Sizes.Keys.ToList();
             return View();
         }
 
@@ -167,7 +167,7 @@ namespace Vestigio.Controllers
                         {
                             if (ClothingSizes.Sizes.ContainsKey(size.Key))
                             {
-                                product.Sizes.Add(new ProductSize
+                                product.ProductSizes.Add(new ProductSize
                                 {
                                     Size = size.Key,
                                     Stock = size.Value,
@@ -176,7 +176,7 @@ namespace Vestigio.Controllers
                             }
                             else
                             {
-                                ModelState.AddModelError("Sizes", $"Invalid size: {size.Key}");
+                                ModelState.AddModelError("ProductSizes", $"Invalid size: {size.Key}");
                                 return ViewWithErrors(product);
                             }
                         }
@@ -211,7 +211,7 @@ namespace Vestigio.Controllers
             ViewBag.Categories = _context.Categories
                 .Select(c => new { Value = c.Id, Text = c.Name }).ToList();
 
-            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
+            ViewData["ProductSizes"] = ClothingSizes.Sizes.Keys.ToList();
 
             return View(product);
         }
@@ -226,7 +226,7 @@ namespace Vestigio.Controllers
 
             var product = await _context.Products
                 .Include(p => p.ProductCategories)
-                .Include(p => p.Sizes)
+                .Include(p => p.ProductSizes)
                 .Include(p => p.Images)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -236,9 +236,9 @@ namespace Vestigio.Controllers
             }
 
             ViewData["Categories"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
-            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
+            ViewData["ProductSizes"] = ClothingSizes.Sizes.Keys.ToList();
             ViewData["SelectedCategories"] = product.ProductCategories.Select(pc => pc.CategoryId).ToList();
-            ViewData["SelectedSizes"] = product.Sizes.ToDictionary(ps => ps.Size, ps => ps.Stock);
+            ViewData["SelectedSizes"] = product.ProductSizes.ToDictionary(ps => ps.Size, ps => ps.Stock);
 
             return View(product);
         }
@@ -264,7 +264,7 @@ namespace Vestigio.Controllers
                     // Obtener el producto existente con sus relaciones
                     var existingProduct = await _context.Products
                         .Include(p => p.ProductCategories)
-                        .Include(p => p.Sizes)
+                        .Include(p => p.ProductSizes)
                         .FirstOrDefaultAsync(p => p.Id == id);
 
                     if (existingProduct == null)
@@ -287,10 +287,10 @@ namespace Vestigio.Controllers
                     }
 
                     // Actualizar tamaños y stock
-                    existingProduct.Sizes.Clear(); // Eliminar tamaños existentes
+                    existingProduct.ProductSizes.Clear(); // Eliminar tamaños existentes
                     foreach (var size in sizes)
                     {
-                        existingProduct.Sizes.Add(new ProductSize
+                        existingProduct.ProductSizes.Add(new ProductSize
                         {
                             ProductId = product.Id, // Asignar el ID del producto
                             Size = size.Key, // Asignar el tamaño
@@ -321,7 +321,7 @@ namespace Vestigio.Controllers
 
             // Si el modelo no es válido, recargar los datos necesarios en la vista
             ViewData["Categories"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
-            ViewData["Sizes"] = ClothingSizes.Sizes.Keys.ToList();
+            ViewData["ProductSizes"] = ClothingSizes.Sizes.Keys.ToList();
             return View(product);
         }
 
@@ -336,7 +336,7 @@ namespace Vestigio.Controllers
             var product = await _context.Products
                 .Include(p => p.ProductCategories)
                     .ThenInclude(pc => pc.Category)
-                .Include(p => p.Sizes)
+                .Include(p => p.ProductSizes)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)

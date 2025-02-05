@@ -8,14 +8,6 @@ namespace Vestigio.Models
         public int Id { get; set; }
 
         [Required]
-        public int OrderId { get; set; }
-
-        [Required]
-        public int ProductId { get; set; }
-
-        public int ProductSizeId { get; set; }
-
-        [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1.")]
         public int Quantity { get; set; }
 
@@ -23,11 +15,19 @@ namespace Vestigio.Models
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
 
-        // RELATIONS
+        // RELATION WITH ORDER
+        [Required]
+        public int OrderId { get; set; }
         public Order Order { get; set; }
+
+        // RELATION WITH PRODUCT
+        [Required]
+        public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        [ForeignKey("ProductSizeId")]
+        // RELATION WITH PRODUCT SIZE
+        [Required]
+        public int ProductSizeId { get; set; }
         public ProductSize ProductSize { get; set; }
 
     }

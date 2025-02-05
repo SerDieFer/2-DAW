@@ -91,7 +91,7 @@ namespace Vestigio.Data
 
                 // Relación con Product
                 entity.HasOne(ps => ps.Product)
-                      .WithMany(p => p.Sizes)
+                      .WithMany(p => p.ProductSizes)
                       .HasForeignKey(ps => ps.ProductId)
                       .OnDelete(DeleteBehavior.Cascade);
             });

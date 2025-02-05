@@ -6,7 +6,6 @@
 }
 
 <div class="container py-5">
-    <!-- Tabs Navigation -->
     <ul class="nav nav-pills mb-4 justify-content-center" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="challenges-tab" data-bs-toggle="pill" data-bs-target="#challenges" type="button" role="tab">
@@ -23,15 +22,13 @@
         }
     </ul>
 
-    <!-- Tabs Content -->
     <div class="tab-content" id="pills-tabContent">
-        <!-- Challenges Tab -->
+        <!-- Desafíos -->
         <div class="tab-pane fade show active" id="challenges" role="tabpanel">
             <div class="row g-4">
                 @foreach (var challenge in Model)
                 {
-                    var isUnlocked = challenge.RarityLevel <= userLevel &&
-                    (challenge.SolutionMode != SolutionMode.TimeBased || challenge.IsPublic);
+                    var isUnlocked = challenge.RarityLevel <= userLevel && (challenge.SolutionMode != SolutionMode.TimeBased || challenge.IsPublic);
                     var isSolved = solvedChallenges?.Contains(challenge.Id) == true;
 
                     <div class="col-md-6 col-lg-4">
@@ -91,7 +88,7 @@
             </div>
         </div>
 
-        <!-- Products Tab -->
+        <!-- Productos -->
         @if (unlockedProducts?.Any() == true)
         {
             <div class="tab-pane fade" id="products" role="tabpanel">
@@ -122,7 +119,7 @@
                                         <button class="btn btn-outline-primary"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#productModal-@product.Id"
-                                        @(product.Sizes.Any(s => s.Stock > 0 && s.IsActive) ? "" : "disabled")>
+                                        @(product.ProductSizes.Any(s => s.Stock > 0 && s.IsActive) ? "" : "disabled")>
                                             <i class="fas fa-shopping-cart"></i>
                                         </button>
                                     </div>
@@ -138,48 +135,46 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            @if (product.Sizes.Any(s => s.Stock > 0 && s.IsActive))
+                                            @if (product.ProductSizes.Any(s => s.Stock > 0 && s.IsActive))
                                             {
-                                                foreach (var size in product.Sizes.Where(s => s.Stock > 0 && s.IsActive))
-                                                {
-                                                    <form asp-controller="Showcases" asp-action="Purchase" method="post" class="mb-4">
-                                                        <input type="hidden" name="productSizeId" value="@size.Id" />
+                                                <form asp-action="AddToCart" method="post">
+                                                    <div class="mb-3">
+                                                        <label for="productSizeId" class="form-label">Selecciona talla</label>
+                                                        <select name="productSizeId" class="form-select mb-3" required>
+                                                            <option value="">Selecciona talla</option>
+                                                            @foreach (var size in product.ProductSizes.Where(s => s.IsActive && s.Stock > 0))
+                                                            {
+                                                                <option value="@size.Id" data-stock="@size.Stock">
+                                                                    Talla @size.Size - @(size.Stock > 0 ? $"{size.Stock} disponibles" : "Agotado")
+                                                                </option>
+                                                            }
+                                                        </select>
+                                                    </div>
 
-                                                        <div class="row align-items-center">
-                                                            <div class="col-md-5">
-                                                                <h6 class="mb-0">Talla @size.Size</h6>
-                                                                <small class="text-muted">Disponibles: @size.Stock</small>
-                                                            </div>
-
-                                                            <div class="col-md-4">
-                                                                <input type="number"
-                                                                       name="quantity"
-                                                                       class="form-control"
-                                                                       min="1"
-                                                                       max="@size.Stock"
-                                                                       value="1"
-                                                                       required>
-                                                            </div>
-
-                                                            <div class="col-md-3">
-                                                                <button type="submit" class="btn btn-primary w-100">
-                                                                    <i class="fas fa-cart-plus me-2"></i>Comprar
-                                                                </button>
-                                                            </div>
+                                                    <div class="mb-3">
+                                                        <label for="quantity" class="form-label">Cantidad</label>
+                                                        <div class="input-group">
+                                                            <input type="number"
+                                                                   name="quantity"
+                                                                   class="form-control"
+                                                                   min="1"
+                                                                   value="1"
+                                                                   id="quantity"
+                                                                   required>
                                                         </div>
-                                                    </form>
+                                                    </div>
 
-                                                    @if (!size.Equals(product.Sizes.Last()))
-                                                    {
-                                                        <hr class="my-3">
-                                                    }
-                                                }
+                                                    <div class="d-flex justify-content-center">
+                                                        <button type="submit" class="btn btn-primary w-100">
+                                                            <i class="fas fa-cart-plus me-2"></i> Comprar
+                                                        </button>
+                                                    </div>
+                                                </form>
                                             }
                                             else
                                             {
                                                 <div class="alert alert-warning mb-0">
-                                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                                    Producto agotado
+                                                    <i class="fas fa-exclamation-triangle me-2"></i> Producto agotado
                                                 </div>
                                             }
                                         </div>

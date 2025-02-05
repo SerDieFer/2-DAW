@@ -46,14 +46,17 @@ namespace Vestigio.Models
         // ------------------------------------------------------------------------------------------------------ //
 
         // RELATIONSHIP WITH SIZES (1:N)
-        public ICollection<ProductSize> Sizes { get; set; } = new List<ProductSize>();
+        public ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
+
+        // METHOD TO GET THE PRODUCT'S TOTAL STOCK FROM ALL SIZES
+        public int TotalStock => ProductSizes.Sum(s => s.Stock);
 
         // METHOD TO ADD SIZE WITH STOCK
         public void AddSize(string size, int stock)
         {
             if (ClothingSizes.Sizes.ContainsKey(size))
             {
-                Sizes.Add(new ProductSize { Size = size, Stock = stock });
+                ProductSizes.Add(new ProductSize { Size = size, Stock = stock });
             }
             else
             {
@@ -64,7 +67,7 @@ namespace Vestigio.Models
         // METHOD TO UPDATE STOCK FOR A SPECIFIC SIZE
         public void UpdateSizeStock(string size, int quantity)
         {
-            var productSize = Sizes.FirstOrDefault(s => s.Size == size);
+            var productSize = ProductSizes.FirstOrDefault(s => s.Size == size);
             if (productSize != null)
             {
                 productSize.UpdateStock(quantity);
@@ -78,14 +81,11 @@ namespace Vestigio.Models
         // RELATIONSHIP WITH CATEGORIES (MANY-TO-MANY)
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
 
-        // METHOD TO GET THE PRODUCT'S TOTAL STOCK FROM ALL SIZES
-        public int TotalStock => Sizes.Sum(s => s.Stock);
-
         [Display(Name = "Order Details")]
-        public ICollection<OrderDetail>? OrderDetails { get; set; }
+        public ICollection<OrderDetail>? OrderDetails { get; set; } = new List<OrderDetail>();
 
         [Display(Name = "Product Images")]
-        public ICollection<Image>? Images { get; set; } = new List<Image>(); // 1:N RELATIONSHIP
+        public ICollection<Image>? Images { get; set; } = new List<Image>();
 
         [Display(Name = "Associated Challenges")]
         public ICollection<Challenge>? Challenges { get; set; } = new List<Challenge>();

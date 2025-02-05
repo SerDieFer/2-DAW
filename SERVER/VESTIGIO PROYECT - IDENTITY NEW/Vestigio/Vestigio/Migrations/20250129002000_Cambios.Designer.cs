@@ -647,7 +647,7 @@ namespace Vestigio.Migrations
             modelBuilder.Entity("Vestigio.Models.ProductSize", b =>
                 {
                     b.HasOne("Vestigio.Models.Product", "Product")
-                        .WithMany("Sizes")
+                        .WithMany("ProductSizes")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -680,7 +680,7 @@ namespace Vestigio.Migrations
 
                     b.Navigation("ProductCategories");
 
-                    b.Navigation("Sizes");
+                    b.Navigation("ProductSizes");
                 });
 
             modelBuilder.Entity("Vestigio.Models.User", b =>

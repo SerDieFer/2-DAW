@@ -88,11 +88,11 @@
                     <div class="d-flex justify-content-between align-items-end mb-3">
                         <h3 class="h4 fw-semibold mb-0">Sizes</h3>
                         <div class="text-muted fs-6">
-                            Total Stock: <span class="fw-bold text-primary">@Model.Sizes.Sum(s => s.Stock)</span>
+                            Total Stock: <span class="fw-bold text-primary">@Model.ProductSizes.Sum(s => s.Stock)</span>
                         </div>
                     </div>
                     <div class="d-flex flex-wrap gap-3">
-                        @foreach (var size in Model.Sizes)
+                        @foreach (var size in Model.ProductSizes)
                         {
                             var sizeInfo = Vestigio.Utilities.ClothingSizes.GetSizeDescription(size.Size);
 
