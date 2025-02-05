@@ -1,6 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Vestigio.Data
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@inject VestigioDbContext _context
 
 <div class="d-flex align-items-center gap-3">
     @if (SignInManager.IsSignedIn(User))
@@ -11,10 +14,20 @@
         <!-- Carrito solo para usuarios normales -->
         @if (!isAdmin)
         {
+            var userId = UserManager.GetUserId(User);
+            var cartItemCount = await _context.Orders
+            .Where(o => o.UserId == userId && o.Status == "Pendiente")
+            .SelectMany(o => o.OrderDetails)
+            .CountAsync();
+
             <a class="text-body position-relative cart-icon" asp-controller="Cart" asp-action="Index">
-                <span class="position-absolute badge rounded-pill bg-danger cart-badge">
-                    X
-                </span>
+                @if (cartItemCount > 0)
+                {
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        @cartItemCount
+                        <span class="visually-hidden">productos en el carrito</span>
+                    </span>
+                }
                 <i class="bi bi-cart3 text-white fs-5"></i>
             </a>
 
@@ -24,9 +37,9 @@
         <!-- Menú de usuario -->
         <div class="dropdown user-menu">
             <a class="btn btn-link d-flex align-items-center p-0 gap-2 text-decoration-none"
-               href="#" role="button" id="userMenu"
-               data-bs-toggle="dropdown" aria-expanded="false"
-               aria-label="Menú de usuario">
+                href="#" role="button" id="userMenu"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-label="Menú de usuario">
                 <i class="bi bi-person-circle fs-4 text-white"></i>
                 <span class="user-name text-truncate" style="max-width: 300px;">
                     @User.Identity?.Name
@@ -38,14 +51,14 @@
                 <!-- Opciones comunes -->
                 <li>
                     <a class="dropdown-item d-flex align-items-center gap-2 py-2"
-                       asp-area="Identity" asp-page="/Account/Manage/Index">
+                        asp-area="Identity" asp-page="/Account/Manage/Index">
                         <i class="bi bi-person-gear"></i>
                         My Profile
                     </a>
                 </li>
                 <li>
                     <form method="post" asp-area="Identity" asp-page="/Account/Logout"
-                          asp-route-returnUrl="@Url.Action("Index", "Home")">
+                            asp-route-returnUrl="@Url.Action("Index", "Home")">
                         <button type="submit"
                                 class="dropdown-item d-flex align-items-center gap-2 py-2 w-100">
                             <i class="bi bi-box-arrow-right"></i>
@@ -55,7 +68,7 @@
                 </li>
             </ul>
         </div>
-    }
+        }
     else
     {
         <!-- Botones de autenticación -->
@@ -81,7 +94,7 @@
             transform: translateY(-2px);
         }
 
-    .cart-badge {
+    .badge {
         top: -8px;
         right: -10px;
         font-size: 0.65rem;

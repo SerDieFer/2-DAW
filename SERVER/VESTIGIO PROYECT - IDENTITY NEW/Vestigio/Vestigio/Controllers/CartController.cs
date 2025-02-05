@@ -17,50 +17,32 @@ public class CartController : Controller
         _userManager = userManager;
     }
 
-    // Muestra el carrito (pedido pendiente)
     public async Task<IActionResult> Index()
     {
-        // Obtener el ID del pedido pendiente desde la sesión
-        int? orderId = HttpContext.Session.GetInt32("CartOrderId");
-        Order order = null;
+        var userId = _userManager.GetUserId(User);
+        var order = await _context.Orders
+            .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+            .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.ProductSize)
+            .FirstOrDefaultAsync(o => o.UserId == userId && o.Status == "Pendiente");
 
-        if (orderId.HasValue)
-        {
-            // Buscar el pedido pendiente
-            order = await _context.Orders
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Product)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.ProductSize)
-                .FirstOrDefaultAsync(o => o.Id == orderId.Value && o.Status == "Pendiente");
-        }
-
-        // Si no existe un pedido pendiente, mostramos un mensaje
         if (order == null)
         {
             TempData["ErrorMessage"] = "No tienes un carrito activo.";
             return RedirectToAction("Index", "Showcase");
         }
 
-        // Enviar el pedido a la vista
-        ViewBag.CartOrder = order;
         return View(order);
     }
 
-    // Eliminar un producto del carrito
     [HttpPost]
     public async Task<IActionResult> RemoveFromCart(int orderDetailId)
     {
-        int? orderId = HttpContext.Session.GetInt32("CartOrderId");
-        if (!orderId.HasValue)
-        {
-            TempData["ErrorMessage"] = "No hay carrito activo.";
-            return RedirectToAction("Index");
-        }
-
+        var userId = _userManager.GetUserId(User);
         var order = await _context.Orders
             .Include(o => o.OrderDetails)
-            .FirstOrDefaultAsync(o => o.Id == orderId.Value && o.Status == "Pendiente");
+            .FirstOrDefaultAsync(o => o.UserId == userId && o.Status == "Pendiente");
 
         if (order == null)
         {
@@ -71,9 +53,18 @@ public class CartController : Controller
         var detail = order.OrderDetails.FirstOrDefault(od => od.Id == orderDetailId);
         if (detail != null)
         {
-            order.OrderDetails.Remove(detail);  // Eliminar de la colección OrderDetails
-            _context.OrderDetails.Remove(detail);  // Eliminar de la base de datos
-            await _context.SaveChangesAsync();  // Guardar cambios
+            // Restaurar stock
+            var productSize = await _context.ProductSizes.FindAsync(detail.ProductSizeId);
+            if (productSize != null)
+            {
+                productSize.UpdateStock(detail.Quantity);
+                await _context.SaveChangesAsync();
+            }
+
+            order.OrderDetails.Remove(detail);
+            _context.OrderDetails.Remove(detail);
+            await _context.SaveChangesAsync();
+
             TempData["SuccessMessage"] = "Producto removido del carrito.";
         }
         else
@@ -91,8 +82,8 @@ public class CartController : Controller
         try
         {
             var detail = await _context.OrderDetails
-                .Include(od => od.ProductSize)  // Incluyendo ProductSize
-                .ThenInclude(ps => ps.Product) // Incluyendo el Product relacionado
+                .Include(od => od.ProductSize)
+                .ThenInclude(ps => ps.Product)
                 .FirstOrDefaultAsync(od => od.Id == orderDetailId);
 
             if (detail == null)
@@ -120,24 +111,18 @@ public class CartController : Controller
                 return RedirectToAction("Index");
             }
 
-            var stockDifference = newQuantity - detail.Quantity;
-
-            // Verificar si hay suficiente stock
+            int stockDifference = newQuantity - detail.Quantity;
             if (detail.ProductSize.Stock < stockDifference)
             {
                 TempData["ErrorMessage"] = "Stock insuficiente para actualizar la cantidad";
                 return RedirectToAction("Index");
             }
 
-            // Actualizar el stock y la cantidad
-            detail.ProductSize.Stock -= stockDifference;
+            // Usar UpdateStock para ajustar el stock
+            detail.ProductSize.UpdateStock(-stockDifference);
             detail.Quantity = newQuantity;
+            detail.Price = detail.ProductSize.Product.Price * newQuantity;
 
-            // Verificación de producto antes de acceder al precio
-            decimal price = detail.ProductSize.Product.Price;  // Esto debería estar seguro ahora
-            detail.Price = price * newQuantity;
-
-            // Guardar cambios y confirmar la transacción
             await _context.SaveChangesAsync();
             await transaction.CommitAsync();
 
@@ -147,8 +132,7 @@ public class CartController : Controller
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            // Capturamos y mostramos el detalle del error
-            TempData["ErrorMessage"] = $"Error al actualizar la cantidad: {ex.Message}\n{ex.StackTrace}";
+            TempData["ErrorMessage"] = $"Error al actualizar la cantidad: {ex.Message}";
             return RedirectToAction("Index");
         }
     }
@@ -165,19 +149,22 @@ public class CartController : Controller
                 .FirstOrDefaultAsync(od => od.Id == orderDetailId);
 
             var newSize = await _context.ProductSizes
+                .Include(ps => ps.Product)
                 .FirstOrDefaultAsync(ps => ps.Id == newProductSizeId);
 
-            if (detail == null || newSize == null || newSize.Stock < detail.Quantity)
+            if (detail == null || newSize == null ||
+                newSize.Stock < detail.Quantity ||
+                detail.ProductId != newSize.ProductId) // Validar mismo producto
             {
                 TempData["ErrorMessage"] = "No se puede cambiar la talla";
                 return RedirectToAction("Index");
             }
 
             // Restaurar stock talla anterior
-            detail.ProductSize.Stock += detail.Quantity;
+            detail.ProductSize.UpdateStock(detail.Quantity);
 
             // Actualizar nueva talla
-            newSize.Stock -= detail.Quantity;
+            newSize.UpdateStock(-detail.Quantity);
             detail.ProductSizeId = newSize.Id;
 
             await _context.SaveChangesAsync();
@@ -194,35 +181,59 @@ public class CartController : Controller
         }
     }
 
-    // Confirmar la compra
     [HttpPost]
-    public async Task<IActionResult> Checkout()
+    [Authorize]
+    public async Task<IActionResult> ConfirmOrder()
     {
-        int? orderId = HttpContext.Session.GetInt32("CartOrderId");
-        if (!orderId.HasValue)
+        using var transaction = await _context.Database.BeginTransactionAsync();
+        try
         {
-            TempData["ErrorMessage"] = "No hay carrito activo.";
-            return RedirectToAction("Index");
+            var userId = _userManager.GetUserId(User);
+            if (userId == null) return Redirect("/Identity/Account/Login");
+
+            var order = await _context.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.ProductSize)
+                .FirstOrDefaultAsync(o => o.UserId == userId && o.Status == "Pendiente");
+
+            if (order == null || !order.OrderDetails.Any())
+            {
+                TempData["ErrorMessage"] = "No tienes productos en el carrito";
+                return RedirectToAction("Index", "Cart");
+            }
+
+            // Verificar stock antes de confirmar
+            foreach (var detail in order.OrderDetails)
+            {
+                if (detail.Quantity > detail.ProductSize.Stock)
+                {
+                    TempData["ErrorMessage"] = $"Stock insuficiente para {detail.ProductSize.Product.Name}. Disponible: {detail.ProductSize.Stock}";
+                    return RedirectToAction("Index", "Cart");
+                }
+            }
+
+            // Restar stock
+            foreach (var detail in order.OrderDetails)
+            {
+                detail.ProductSize.UpdateStock(-detail.Quantity);
+            }
+
+            // Cambiar estado de la orden a "Confirmada"
+            order.Status = "Confirmada";
+            //order.ConfirmationDate = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            TempData["SuccessMessage"] = "Compra confirmada";
+            return RedirectToAction("Index", "Orders");
         }
-
-        var order = await _context.Orders
-            .Include(o => o.OrderDetails)
-            .FirstOrDefaultAsync(o => o.Id == orderId.Value && o.Status == "Pendiente");
-
-        if (order == null)
+        catch (Exception ex)
         {
-            TempData["ErrorMessage"] = "Pedido no encontrado.";
-            return RedirectToAction("Index");
+            await transaction.RollbackAsync();
+            TempData["ErrorMessage"] = "Error al procesar la compra";
+            return RedirectToAction("Index", "Cart");
         }
-
-        // Cambiar el estado del pedido a "Confirmado"
-        order.Status = "Confirmado";
-        await _context.SaveChangesAsync();
-
-        // Eliminar el carrito de la sesión
-        HttpContext.Session.Remove("CartOrderId");
-
-        TempData["SuccessMessage"] = "Compra confirmada.";
-        return RedirectToAction("Index");
     }
+
 }

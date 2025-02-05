@@ -128,25 +128,25 @@
 
         // METHOD TO UNLOCK REWARDS TO THE USER
         private void UnlockRewards(User user, Challenge challenge)
+        {
+            if (challenge.ProductId.HasValue)
             {
-                if (challenge.ProductId.HasValue)
+                if (!user.UnlockedProducts.Any(up => up.ProductId == challenge.ProductId.Value))
                 {
-                    if (!user.UnlockedProducts.Any(up => up.ProductId == challenge.ProductId.Value))
-                    {
-                        user.UnlockedProducts
-                            .Add(new UserUnlockedProduct { ProductId = challenge.ProductId.Value });
-                    }
-                }
-                else if (challenge.ProductLevel.HasValue)
-                {
-                    if (!user.UnlockedProductLevels
-                        .Any(ul => ul.Level == challenge.ProductLevel.Value))
-                    {
-                        user.UnlockedProductLevels
-                            .Add(new UserUnlockedProductByLevel { Level = challenge.ProductLevel.Value });
-                    }
+                    user.UnlockedProducts
+                        .Add(new UserUnlockedProduct { ProductId = challenge.ProductId.Value });
                 }
             }
+            else if (challenge.ProductLevel.HasValue)
+            {
+                if (!user.UnlockedProductLevels
+                    .Any(ul => ul.Level == challenge.ProductLevel.Value))
+                {
+                    user.UnlockedProductLevels
+                        .Add(new UserUnlockedProductByLevel { Level = challenge.ProductLevel.Value });
+                }
+            }
+        }
 
         [HttpPost]
         [Authorize]
@@ -155,38 +155,39 @@
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Obtener el ProductSize y su producto asociado
+                var userId = _userManager.GetUserId(User);
+                if (userId == null) return Redirect("/Identity/Account/Login");
+
                 var productSize = await _context.ProductSizes
                     .Include(ps => ps.Product)
                     .FirstOrDefaultAsync(ps => ps.Id == productSizeId);
 
-                // Validación: Verificar que el producto esté disponible y que el stock sea suficiente
-                if (productSize == null || !productSize.IsActive || productSize.Stock < quantity)
+                if (productSize == null || !productSize.IsActive || productSize.Product == null || !productSize.Product.IsActive)
                 {
-                    TempData["ErrorMessage"] = "Stock insuficiente o producto no disponible";
+                    TempData["ErrorMessage"] = "Producto no disponible";
                     return RedirectToAction("Index");
                 }
 
-                // Actualizar stock inmediatamente
-                productSize.Stock -= quantity;
-                await _context.SaveChangesAsync();
+                // Obtener orden pendiente del usuario
+                var order = await _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .FirstOrDefaultAsync(o => o.UserId == userId && o.Status == "Pendiente");
 
-                // Obtener el ID del pedido (carrito) pendiente desde la sesión
-                int? orderId = HttpContext.Session.GetInt32("CartOrderId");
-                Order order = null;
+                // Calcular cantidad existente en el carrito
+                int existingQuantityInCart = order?.OrderDetails
+                    .Where(od => od.ProductSizeId == productSizeId)
+                    .Sum(od => od.Quantity) ?? 0;
 
-                if (orderId.HasValue)
+                int totalDesired = existingQuantityInCart + quantity;
+                if (totalDesired > productSize.Stock)
                 {
-                    // Intentar obtener el pedido pendiente
-                    order = await _context.Orders
-                        .Include(o => o.OrderDetails)
-                        .FirstOrDefaultAsync(o => o.Id == orderId.Value && o.Status == "Pendiente");
+                    TempData["ErrorMessage"] = $"Stock insuficiente. Disponible: {productSize.Stock}";
+                    return RedirectToAction("Index");
                 }
 
+                // Crear orden si no existe
                 if (order == null)
                 {
-                    // Si no existe un pedido pendiente, creamos uno nuevo
-                    var userId = _userManager.GetUserId(User);
                     order = new Order
                     {
                         UserId = userId,
@@ -194,52 +195,28 @@
                         Status = "Pendiente",
                         OrderDetails = new List<OrderDetail>()
                     };
-
                     _context.Orders.Add(order);
                     await _context.SaveChangesAsync();
-
-                    // Guardamos el ID del pedido en la sesión
-                    HttpContext.Session.SetInt32("CartOrderId", order.Id);
                 }
 
-                // Verificar si el producto ya existe en el carrito
+                // Agregar o actualizar detalle sin modificar stock
                 var existingDetail = order.OrderDetails.FirstOrDefault(od => od.ProductSizeId == productSizeId);
                 if (existingDetail != null)
                 {
-                    // Si ya existe, actualizar la cantidad solo si hay suficiente stock
-                    if (existingDetail.Quantity + quantity <= productSize.Stock)
-                    {
-                        existingDetail.Quantity += quantity;
-                        existingDetail.Price = productSize.Product.Price * existingDetail.Quantity;
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "No hay suficiente stock disponible para la cantidad solicitada.";
-                        return RedirectToAction("Index", "Cart");
-                    }
+                    existingDetail.Quantity += quantity;
+                    existingDetail.Price = productSize.Product.Price * existingDetail.Quantity;
                 }
                 else
                 {
-                    // Si no existe, agregar un nuevo detalle
-                    if (quantity <= productSize.Stock)
+                    order.OrderDetails.Add(new OrderDetail
                     {
-                        var orderDetail = new OrderDetail
-                        {
-                            ProductSizeId = productSizeId,
-                            ProductId = productSize.Product.Id,
-                            Quantity = quantity,
-                            Price = productSize.Product.Price * quantity
-                        };
-                        order.OrderDetails.Add(orderDetail);
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "No hay suficiente stock disponible para la cantidad solicitada.";
-                        return RedirectToAction("Index", "Cart");
-                    }
+                        ProductSizeId = productSizeId,
+                        ProductId = productSize.Product.Id,
+                        Quantity = quantity,
+                        Price = productSize.Product.Price * quantity
+                    });
                 }
 
-                // Guardar los cambios
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
