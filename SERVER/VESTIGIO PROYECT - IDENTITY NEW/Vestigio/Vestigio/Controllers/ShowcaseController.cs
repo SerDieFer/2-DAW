@@ -1,70 +1,80 @@
-﻿    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using Vestigio.Data;
-    using Vestigio.Models;
-    using Vestigio.Utilities;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Vestigio.Data;
+using Vestigio.Models;
+using Vestigio.Utilities;
 
-    namespace Vestigio.Controllers
+namespace Vestigio.Controllers
+{
+    public class ShowcaseController : Controller
     {
-        [Authorize(Roles = "User")]
-        public class ShowcaseController : Controller
-        {
-            private readonly VestigioDbContext _context;
-            private readonly UserManager<User> _userManager;
+        private readonly VestigioDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-            public ShowcaseController(VestigioDbContext context, UserManager<User> userManager)
-            {
-                _context = context;
-                _userManager = userManager;
-            }
+        public ShowcaseController(VestigioDbContext context, UserManager<User> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
 
         public async Task<IActionResult> Index()
         {
-            var user = await _userManager.Users
-                .Include(u => u.ChallengesResolutions)
-                .Include(u => u.UnlockedProducts)
-                .Include(u => u.UnlockedProductLevels)
-                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
-
-            if (user == null) return NotFound();
-
-            // Forzar inicialización si es necesario
-            user.Level = user.Level < 1 ? 1 : user.Level;
-
-            // Cargar desafíos
+            // Cargar los desafíos que estarán visibles para todos
             var challenges = await _context.Challenges
                 .Include(c => c.Product)
                 .Where(c => c.IsActive)
                 .ToListAsync();
 
-            // Cargar productos desbloqueados
-            var unlockedProductIds = user.UnlockedProducts.Select(up => up.ProductId).ToList();
-            var unlockedLevels = user.UnlockedProductLevels.Select(ul => ul.Level).ToList();
+            // Valores por defecto para la vista
+            int userLevel = 1;
 
-            var unlockedProducts = await _context.Products
-                .Include(p => p.Images)
-                .Include(p => p.ProductSizes)
-                .Where(p => p.IsActive &&
-                    (unlockedProductIds.Contains(p.Id) || unlockedLevels.Contains(p.RarityLevel)))
-                .ToListAsync();
+            // Si el usuario está autenticado, se cargan datos específicos
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.Users
+                    .Include(u => u.ChallengesResolutions)
+                    .Include(u => u.UnlockedProducts)
+                    .Include(u => u.UnlockedProductLevels)
+                    .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
 
-            // Pasar datos a la vista mediante ViewBag
-            ViewBag.UserLevel = user.Level;
-            ViewBag.SolvedChallenges = user.ChallengesResolutions?.Select(cr => cr.ChallengeId).ToList() ?? new List<int>();
-            ViewBag.UnlockedProducts = unlockedProducts;
+                if (user != null)
+                {
+                    user.Level = user.Level < 1 ? 1 : user.Level;
+                    userLevel = user.Level;
+
+                    // Cargar productos desbloqueados
+                    var unlockedProductIds = user.UnlockedProducts.Select(up => up.ProductId).ToList();
+                    var unlockedLevels = user.UnlockedProductLevels.Select(ul => ul.Level).ToList();
+
+                    var unlockedProducts = await _context.Products
+                        .Include(p => p.Images)
+                        .Include(p => p.ProductSizes)
+                        .Where(p => p.IsActive &&
+                            (unlockedProductIds.Contains(p.Id) || unlockedLevels.Contains(p.RarityLevel)))
+                        .ToListAsync();
+
+                    ViewBag.SolvedChallenges = user.ChallengesResolutions?.Select(cr => cr.ChallengeId).ToList() ?? new List<int>();
+                    ViewBag.UnlockedProducts = unlockedProducts;
+                    ViewBag.UserLevel = userLevel;
+                }
+            }
+
             ViewBag.Challenges = challenges;
 
             return View(challenges);
         }
 
-
-        // ------------------------ CHALLENGE RESOLUTION METHODS -----------------------------
-
         [HttpPost]
         public async Task<IActionResult> SolveChallenge(int challengeId, string password)
         {
+            // Si el usuario no está autenticado, redirigir a login o registro
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("/Identity/Account/Login");
+            }
+
             var user = await _userManager.Users
                 .Include(u => u.ChallengesResolutions)
                 .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
@@ -99,13 +109,11 @@
 
             // Guardar cambios
             _context.ChallengeResolutions.Add(resolution);
-
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "¡Desafío resuelto!";
             return RedirectToAction(nameof(Index));
         }
-
 
         private bool ValidateChallengeAttempt(User user, Challenge challenge, string password)
         {
@@ -126,27 +134,24 @@
             return true;
         }
 
-        // METHOD TO UNLOCK REWARDS TO THE USER
+        // Método para desbloquear recompensas al usuario
         private void UnlockRewards(User user, Challenge challenge)
+        {
+            if (challenge.ProductId.HasValue)
             {
-                if (challenge.ProductId.HasValue)
+                if (!user.UnlockedProducts.Any(up => up.ProductId == challenge.ProductId.Value))
                 {
-                    if (!user.UnlockedProducts.Any(up => up.ProductId == challenge.ProductId.Value))
-                    {
-                        user.UnlockedProducts
-                            .Add(new UserUnlockedProduct { ProductId = challenge.ProductId.Value });
-                    }
-                }
-                else if (challenge.ProductLevel.HasValue)
-                {
-                    if (!user.UnlockedProductLevels
-                        .Any(ul => ul.Level == challenge.ProductLevel.Value))
-                    {
-                        user.UnlockedProductLevels
-                            .Add(new UserUnlockedProductByLevel { Level = challenge.ProductLevel.Value });
-                    }
+                    user.UnlockedProducts.Add(new UserUnlockedProduct { ProductId = challenge.ProductId.Value });
                 }
             }
+            else if (challenge.ProductLevel.HasValue)
+            {
+                if (!user.UnlockedProductLevels.Any(ul => ul.Level == challenge.ProductLevel.Value))
+                {
+                    user.UnlockedProductLevels.Add(new UserUnlockedProductByLevel { Level = challenge.ProductLevel.Value });
+                }
+            }
+        }
 
         [HttpPost]
         [Authorize]
@@ -155,38 +160,38 @@
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Obtener el ProductSize y su producto asociado
+                var userId = _userManager.GetUserId(User);
+                if (userId == null) return Redirect("/Identity/Account/Login");
+
                 var productSize = await _context.ProductSizes
                     .Include(ps => ps.Product)
                     .FirstOrDefaultAsync(ps => ps.Id == productSizeId);
 
-                // Validación: Verificar que el producto esté disponible y que el stock sea suficiente
-                if (productSize == null || !productSize.IsActive || productSize.Stock < quantity)
+                // Validación de stock actualizado
+                if (productSize.Stock < quantity)
                 {
-                    TempData["ErrorMessage"] = "Stock insuficiente o producto no disponible";
+                    TempData["ErrorMessage"] = $"Stock insuficiente. Disponible: {productSize.Stock}";
                     return RedirectToAction("Index");
                 }
 
-                // Actualizar stock inmediatamente
-                productSize.Stock -= quantity;
-                await _context.SaveChangesAsync();
+                var order = await _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .FirstOrDefaultAsync(o => o.UserId == userId && o.Status == "Pendiente");
 
-                // Obtener el ID del pedido (carrito) pendiente desde la sesión
-                int? orderId = HttpContext.Session.GetInt32("CartOrderId");
-                Order order = null;
+                // Calcular cantidad existente en el carrito
+                int existingQuantity = order?.OrderDetails
+                    .Where(od => od.ProductSizeId == productSizeId)
+                    .Sum(od => od.Quantity) ?? 0;
 
-                if (orderId.HasValue)
+                if (existingQuantity + quantity > productSize.Stock)
                 {
-                    // Intentar obtener el pedido pendiente
-                    order = await _context.Orders
-                        .Include(o => o.OrderDetails)
-                        .FirstOrDefaultAsync(o => o.Id == orderId.Value && o.Status == "Pendiente");
+                    TempData["ErrorMessage"] = $"Límite de stock alcanzado. Disponible: {productSize.Stock - existingQuantity}";
+                    return RedirectToAction("Index");
                 }
 
+                // Crear orden si no existe
                 if (order == null)
                 {
-                    // Si no existe un pedido pendiente, creamos uno nuevo
-                    var userId = _userManager.GetUserId(User);
                     order = new Order
                     {
                         UserId = userId,
@@ -194,65 +199,38 @@
                         Status = "Pendiente",
                         OrderDetails = new List<OrderDetail>()
                     };
-
                     _context.Orders.Add(order);
                     await _context.SaveChangesAsync();
-
-                    // Guardamos el ID del pedido en la sesión
-                    HttpContext.Session.SetInt32("CartOrderId", order.Id);
                 }
 
-                // Verificar si el producto ya existe en el carrito
+                // Agregar o actualizar detalle sin modificar stock
                 var existingDetail = order.OrderDetails.FirstOrDefault(od => od.ProductSizeId == productSizeId);
                 if (existingDetail != null)
                 {
-                    // Si ya existe, actualizar la cantidad solo si hay suficiente stock
-                    if (existingDetail.Quantity + quantity <= productSize.Stock)
-                    {
-                        existingDetail.Quantity += quantity;
-                        existingDetail.Price = productSize.Product.Price * existingDetail.Quantity;
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "No hay suficiente stock disponible para la cantidad solicitada.";
-                        return RedirectToAction("Index", "Cart");
-                    }
+                    existingDetail.Quantity += quantity;
+                    existingDetail.Price = productSize.Product.Price * existingDetail.Quantity;
                 }
                 else
                 {
-                    // Si no existe, agregar un nuevo detalle
-                    if (quantity <= productSize.Stock)
+                    order.OrderDetails.Add(new OrderDetail
                     {
-                        var orderDetail = new OrderDetail
-                        {
-                            ProductSizeId = productSizeId,
-                            ProductId = productSize.Product.Id,
-                            Quantity = quantity,
-                            Price = productSize.Product.Price * quantity
-                        };
-                        order.OrderDetails.Add(orderDetail);
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "No hay suficiente stock disponible para la cantidad solicitada.";
-                        return RedirectToAction("Index", "Cart");
-                    }
+                        ProductSizeId = productSizeId,
+                        ProductId = productSize.Product.Id,
+                        Quantity = quantity,
+                        Price = productSize.Product.Price * quantity
+                    });
                 }
 
-                // Guardar los cambios
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-
                 TempData["SuccessMessage"] = "Producto agregado al carrito";
-                return RedirectToAction("Index", "Cart");
             }
-            catch (Exception ex)
+            catch
             {
                 await transaction.RollbackAsync();
                 TempData["ErrorMessage"] = "Error al procesar la solicitud";
-                return RedirectToAction("Index");
             }
+            return RedirectToAction("Index");
         }
-
     }
 }

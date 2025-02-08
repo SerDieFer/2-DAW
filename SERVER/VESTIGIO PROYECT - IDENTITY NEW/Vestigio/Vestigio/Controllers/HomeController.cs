@@ -15,7 +15,7 @@ namespace Vestigio.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Showcase");
         }
 
         public IActionResult Privacy()

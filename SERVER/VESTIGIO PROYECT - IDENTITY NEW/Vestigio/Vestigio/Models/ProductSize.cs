@@ -18,6 +18,9 @@ namespace Vestigio.Models
             return ClothingSizes.Sizes.ContainsKey(Size);
         }
 
+        [Timestamp]
+        public byte[] Version { get; set; }
+
         [Required(ErrorMessage = "Stock is required")]
         [Range(0, int.MaxValue, ErrorMessage = "Stock cannot be negative")]
         public int Stock { get; set; }
@@ -25,7 +28,11 @@ namespace Vestigio.Models
         // METHOD TO UPDATE STOCK AND DEACTIVATE IF NECESSARY
         public void UpdateStock(int quantity)
         {
+            if (Stock + quantity < 0)
+                throw new InvalidOperationException("Stock no puede ser negativo");
+
             Stock += quantity;
+
             if (Stock <= 0)
             {
                 Stock = 0; // ENSURE STOCK DOES NOT GO NEGATIVE

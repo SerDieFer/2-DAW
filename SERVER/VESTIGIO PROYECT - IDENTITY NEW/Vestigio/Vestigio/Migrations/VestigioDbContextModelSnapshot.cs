@@ -286,7 +286,7 @@ namespace Vestigio.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Image", (string)null);
                 });
 
             modelBuilder.Entity("Vestigio.Models.Order", b =>
@@ -327,8 +327,8 @@ namespace Vestigio.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(9, 2)
-                        .HasColumnType("decimal(9,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -347,7 +347,7 @@ namespace Vestigio.Migrations
 
                     b.HasIndex("ProductSizeId");
 
-                    b.ToTable("OrderDetails", (string)null);
+                    b.ToTable("OrderDetail", (string)null);
                 });
 
             modelBuilder.Entity("Vestigio.Models.Product", b =>
@@ -375,8 +375,8 @@ namespace Vestigio.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(9, 2)
-                        .HasColumnType("decimal(9,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("RarityLevel")
                         .HasColumnType("int");
@@ -421,6 +421,12 @@ namespace Vestigio.Migrations
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("Version")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
@@ -647,12 +653,12 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.Challenge", "Challenge")
                         .WithMany("Images")
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Vestigio.Models.Product", "Product")
                         .WithMany("Images")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Challenge");
 
@@ -675,19 +681,19 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Vestigio.Models.Product", "Product")
                         .WithMany("OrderDetails")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Vestigio.Models.ProductSize", "ProductSize")
                         .WithMany("OrderDetails")
                         .HasForeignKey("ProductSizeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -721,7 +727,7 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.Product", "Product")
                         .WithMany("ProductSizes")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Product");

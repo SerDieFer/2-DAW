@@ -148,9 +148,9 @@
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <!-- Inicio (visible para todos) -->
                 <li class="nav-item mx-2">
-                    <a class="nav-link hover-underline" asp-controller="Home" asp-action="Index">
+                    <a class="nav-link hover-underline" asp-controller="Showcase" asp-action="Index">
                         <i class="bi bi-house-door me-1"></i>
-                        Home
+                        Showcase
                     </a>
                 </li>
 
@@ -185,23 +185,6 @@
                         </a>
                     </li>
 
-                }
-
-                <!-- Pedidos (visible para todos los usuarios autenticados) -->
-                @if (User.IsInRole("User"))
-                {
-                    <li class="nav-item mx-2">
-                        <a class="nav-link hover-underline" asp-controller="Showcase" asp-action="Index">
-                            <i class="bi bi-cart-check me-1"></i>
-                            Showcase
-                        </a>
-                    </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link hover-underline" asp-controller="Orders" asp-action="Index">
-                            <i class="bi bi-cart-check me-1"></i>
-                            My Orders
-                        </a>
-                    </li>
                 }
             </ul>
 

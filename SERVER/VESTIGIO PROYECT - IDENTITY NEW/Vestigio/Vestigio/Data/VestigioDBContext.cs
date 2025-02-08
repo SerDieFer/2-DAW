@@ -19,6 +19,7 @@ namespace Vestigio.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Image> Images { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // SINGULAR NAME TABLE
@@ -28,12 +29,12 @@ namespace Vestigio.Data
             modelBuilder.Entity<Challenge>().ToTable("Challenge");
             modelBuilder.Entity<ChallengeResolution>().ToTable("ChallengeResolution");
             modelBuilder.Entity<Order>().ToTable("Order");
-            modelBuilder.Entity<OrderDetail>().ToTable("OrderDetails");
-            modelBuilder.Entity<Image>().ToTable("Images");
+            modelBuilder.Entity<OrderDetail>().ToTable("OrderDetail");
+            modelBuilder.Entity<Image>().ToTable("Image");
             modelBuilder.Entity<ProductSize>().ToTable("ProductSize");
             modelBuilder.Entity<ProductCategory>().ToTable("ProductCategory");
 
-            // DISABLE CASCADING DELETION IN ALL RELATIONSHIPS 
+            // DISABLE CASCADING DELETION IN ALL RELATIONSHIPS
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
@@ -42,11 +43,11 @@ namespace Vestigio.Data
             // SET DECIMAL PRECISION
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
-                .HasPrecision(9, 2);
+                .HasPrecision(10, 2);
 
             modelBuilder.Entity<OrderDetail>()
                 .Property(od => od.Price)
-                .HasPrecision(9, 2);
+                .HasPrecision(10, 2);
 
             // COMPOUND KEY FOR CHALLENGE RESOLUTION (A CHALLENGE CAN ONLY BE SOLVED ONCE PER USER)
             modelBuilder.Entity<ChallengeResolution>()
@@ -57,13 +58,15 @@ namespace Vestigio.Data
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.OrderDetails)
                 .WithOne(od => od.Order)
-                .HasForeignKey(od => od.OrderId);
+                .HasForeignKey(od => od.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // RELATION: PRODUCT - ORDER DETAILS (1:N)
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.OrderDetails)
                 .WithOne(od => od.Product)
-                .HasForeignKey(od => od.ProductId);
+                .HasForeignKey(od => od.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // RELATION: PRODUCT - PRODUCT CATEGORY (MANY-TO-MANY)
             modelBuilder.Entity<ProductCategory>()
@@ -73,67 +76,22 @@ namespace Vestigio.Data
                 .HasOne(pc => pc.Product)
                 .WithMany(p => p.ProductCategories)
                 .HasForeignKey(pc => pc.ProductId)
-                    .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A PRODUCT IS DELETED.
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProductCategory>()
                 .HasOne(pc => pc.Category)
                 .WithMany(c => c.ProductCategories)
                 .HasForeignKey(pc => pc.CategoryId);
 
-            modelBuilder.Entity<ProductSize>(entity =>
-            {
-                // Clave primaria
-                entity.HasKey(ps => ps.Id);
-
-                // Índice único para ProductId + Size
-                entity.HasIndex(ps => new { ps.ProductId, ps.Size })
-                      .IsUnique();
-
-                // Relación con Product
-                entity.HasOne(ps => ps.Product)
-                      .WithMany(p => p.ProductSizes)
-                      .HasForeignKey(ps => ps.ProductId)
-                      .OnDelete(DeleteBehavior.Cascade);
-            });
-
-            // RELATION: CHALLENGE - PRODUCT (1:1 OR 1:N)
-            modelBuilder.Entity<Challenge>()
-                .HasOne(c => c.Product)
-                .WithMany(p => p.Challenges)
-                .HasForeignKey(c => c.ProductId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // RELATION: USER - ORDERS (1:N)
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.User)
-                .WithMany(u => u.Orders)
-                .HasForeignKey(o => o.UserId);
-
-            // RELATION: USER - CHALLENGE RESOLUTION (1:N)
-            modelBuilder.Entity<ChallengeResolution>()
-                .HasOne(cr => cr.User)
-                .WithMany(u => u.ChallengesResolutions)
-                .HasForeignKey(cr => cr.UserId);
-
-            // RELATION: PRODUCT - IMAGE (1:N)
-            modelBuilder.Entity<Image>()
-                .HasOne(i => i.Product)
-                .WithMany(p => p.Images)
-                .HasForeignKey(i => i.ProductId)
-                .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A PRODUCT IS DELETED.
-
-            // RELATION: CHALLENGE - IMAGE (1:N)
-            modelBuilder.Entity<Image>()
-                .HasOne(i => i.Challenge)
-                .WithMany(c => c.Images)
-                .HasForeignKey(i => i.ChallengeId)
-                .OnDelete(DeleteBehavior.Cascade); // CASCADE DELETES IMAGES WHEN A CHALLENGE IS DELETED.
+            modelBuilder.Entity<ProductSize>()
+                .HasIndex(ps => new { ps.ProductId, ps.Size })
+                .IsUnique();
 
             modelBuilder.Entity<OrderDetail>()
                 .HasOne(od => od.ProductSize)
                 .WithMany(ps => ps.OrderDetails)
-                .HasForeignKey(od => od.ProductSizeId);
+                .HasForeignKey(od => od.ProductSizeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }
