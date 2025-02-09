@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Vestigio.Models.Order>
+
+@{
+    ViewData["Title"] = "Mis Pedidos";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Mis Pedidos</h1>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="row">
+        @foreach (var order in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title">Pedido #@order.Id</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <strong>Fecha:</strong> @order.CreationDate.ToString("dd/MM/yyyy")<br />
+                                <strong>Estado:</strong> @order.OrderStatus.StatusName
+                            </small>
+                        </p>
+                        <a href="@Url.Action("Details", "UserOrders", new { id = order.Id })" class="btn btn-outline-dark btn-sm">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,60 +1,101 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @using Vestigio.Data
+@using Vestigio.Utilities
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 @inject VestigioDbContext _context
 
-<div class="user-nav-container">
-    @if (SignInManager.IsSignedIn(User))
-    {
-        var user = await UserManager.GetUserAsync(User);
-        var isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+@{
+    var userSignedIn = SignInManager.IsSignedIn(User);
+    var user = userSignedIn ? await UserManager.GetUserAsync(User) : null;
+    var isAdmin = user != null && await UserManager.IsInRoleAsync(user, "Admin");
 
-        <!-- Carrito mejorado -->
+    int userLevel = user?.Level ?? 1;
+    double levelProgress = user?.LevelProgress ?? 0;
+    int userExp = user?.ExpPoints ?? 0;
+}
+
+<div class="user-nav-container gap-3">
+    @if (userSignedIn)
+    {
+
+        <!-- Carrito -->
         @if (!isAdmin)
         {
-            var userId = UserManager.GetUserId(User);
-            var cartItemCount = await _context.Orders
-            .Where(o => o.UserId == userId && o.Status == "Pendiente")
-            .SelectMany(o => o.OrderDetails)
-            .CountAsync();
+            // Se obtiene el ID del pedido actual desde la sesión
+            var currentOrderId = Context.Session.GetInt32("CurrentOrderId");
+            int cartItemCount = 0;
+
+            if (currentOrderId.HasValue)
+            {
+                // Se cuenta solo los detalles del pedido con ese ID y que esté en estado pendiente (OrderStatusId == 1)
+                cartItemCount = await _context.Orders
+                .Where(o => o.Id == currentOrderId.Value && o.OrderStatusId == 1)
+                .SelectMany(o => o.OrderDetails)
+                .CountAsync();
+            }
 
             <div class="cart-wrapper">
                 <a class="cart-button" asp-controller="Cart" asp-action="Index" aria-label="Carrito de compras">
-                    <i class="bi bi-cart3"></i>
+                    <i class="bi bi-cart3 fs-3"></i>
                     @if (cartItemCount > 0)
                     {
                         <span class="cart-badge">@cartItemCount</span>
                     }
                 </a>
-                <div class="level-indicator">
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar"
-                             style="width: @((user.Level % 100))%"
-                             aria-valuenow="@user.Level"
-                             aria-valuemin="0"
-                             aria-valuemax="100">
-                        </div>
-                    </div>
-                    <span class="level-text">Lv. @user.Level</span>
-                </div>
             </div>
         }
 
-        <!-- Menú de usuario premium -->
+        <!-- Menú de usuario -->
         <div class="user-dropdown">
-            <button class="user-avatar" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="user-info">
+            <button class="user-avatar py-2 w-100 d-flex justify-content-center align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="user-info d-flex flex-row gap-3 w-100 justify-content-center align-items-center">
+                    <i class="bi bi-person-circle fs-3 text-white"></i>
                     <span class="user-name">@User.Identity?.Name</span>
-                    <span class="user-role">@(isAdmin ? "Admin" : "User")</span>
                 </div>
             </button>
 
-            <ul class="dropdown-menu">
+            <!-- Encabezado con información de usuario -->
+            <ul class="dropdown-menu w-100">
                 <li class="dropdown-header">
-                    <span class="welcome-message">Welcome, @user.Nickname!</span>
+                    <div class="user-menu-header d-flex align-content-center justify-content-between gap-2 p-2">
+                        <span class="fw-bolder text-white">@user.Nickname</span>
+                        <span>Role - <span class="user-role fw-bold">@(isAdmin ? "Admin" : "User")</span></span>
+                    </div>
                 </li>
+
+                <!-- Nivel y progreso de nivel -->
+                @if (!isAdmin)
+                {
+                    <li class="level-container mb-4">
+                        <div class="level-indicator d-flex align-items-center justify-content-center text-center gap-2">
+                            <span class="level-percent text-white fw-bold">@levelProgress%</span>
+                            <div class="progress flex-grow-1" style="height: 10px; max-width: 200px;">
+                                <div class="progress-bar" role="progressbar"
+                                     style="width: @levelProgress.ToString("0")%;"
+                                     aria-valuenow="@levelProgress"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                            <span class="level-text fw-bold">
+                                @if (userLevel == 10)
+                                {
+                                    <span>Max Level</span>
+                                }
+                                else
+                                {
+                                    <span>Level @userLevel</span>
+                                }
+                            </span>
+                        </div>
+                    </li>
+                }
+
+                <li><hr class="dropdown-divider"></li>
+
+                <!-- Opciones de menú -->
                 <li>
                     <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
                         <i class="bi bi-person-circle"></i>
@@ -64,8 +105,8 @@
                 @if (!isAdmin)
                 {
                     <li>
-                        <a class="dropdown-item" asp-controller="Orders" asp-action="Index">
-                            <i class="bi bi-person-circle"></i>
+                        <a class="dropdown-item" asp-controller="UserOrders" asp-action="Index">
+                            <i class="bi bi-box-seam"></i>
                             My Orders
                         </a>
                     </li>
@@ -75,7 +116,7 @@
                     <form method="post" asp-area="Identity" asp-page="/Account/Logout">
                         <button type="submit" class="dropdown-item logout-button">
                             <i class="bi bi-box-arrow-right"></i>
-                            Cerrar Sesión
+                            Logout
                         </button>
                     </form>
                 </li>
@@ -84,7 +125,7 @@
     }
     else
     {
-        <!-- Botones de autenticación modernos -->
+        <!-- Botones de autenticación -->
         <div class="auth-buttons">
             <a class="btn auth-btn login-btn" asp-area="Identity" asp-page="/Account/Login">
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -100,9 +141,10 @@
 
 <style>
     :root {
-        --primary-color: #6366f1;
-        --primary-hover: #4f46e5;
-        --accent-color: #f59e0b;
+        --primary-color: #222222;
+        --secondary-color: #404040;
+        --accent-color: #d7d7d7;
+        --background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         --dark-bg: #1a1a1a;
         --light-text: #f8fafc;
         --border-radius: 12px;
@@ -111,7 +153,6 @@
     .user-nav-container {
         display: flex;
         align-items: center;
-        gap: 1.5rem;
     }
 
     /* Estilos mejorados para el carrito */
@@ -136,9 +177,9 @@
 
     .cart-badge {
         position: absolute;
-        top: -8px;
-        right: -8px;
-        background: var(--accent-color);
+        top: -2px;
+        right: -2px;
+        background: #ef4444 !important;
         color: white;
         font-size: 0.75rem;
         min-width: 20px;
@@ -152,8 +193,9 @@
 
     /* Indicador de nivel mejorado */
     .level-indicator {
-        background: rgba(255,255,255,0.1);
-        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        margin: 0rem 1rem;
         border-radius: var(--border-radius);
         display: flex;
         align-items: center;
@@ -170,6 +212,7 @@
     .progress-bar {
         background: var(--accent-color);
         transition: width 0.3s ease;
+        height:
     }
 
     .level-text {
@@ -178,9 +221,10 @@
         font-weight: 500;
     }
 
-    /* Menú de usuario premium */
+    /* Menú de usuario */
     .user-dropdown {
-        position: relative;
+        position:relative;
+        width:300px;
     }
 
     .user-avatar {
@@ -221,12 +265,11 @@
 
     .user-role {
         color: var(--accent-color);
-        font-size: 0.8rem;
         font-weight: 400;
     }
 
     .dropdown-menu {
-        background: var(--dark-bg);
+        background: var(--background);
         border: 1px solid rgba(255,255,255,0.1);
         border-radius: var(--border-radius);
         padding: 0.5rem;
@@ -247,6 +290,8 @@
         .dropdown-item:hover {
             background: var(--primary-color);
             padding-left: 1.25rem;
+            font-weight:bold;
+            color:white;
         }
 
     .dropdown-header {

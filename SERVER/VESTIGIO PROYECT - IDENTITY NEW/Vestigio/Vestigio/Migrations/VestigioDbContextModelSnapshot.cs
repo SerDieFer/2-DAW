@@ -300,15 +300,16 @@ namespace Vestigio.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OrderStatusId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderStatusId");
 
                     b.HasIndex("UserId");
 
@@ -348,6 +349,23 @@ namespace Vestigio.Migrations
                     b.HasIndex("ProductSizeId");
 
                     b.ToTable("OrderDetail", (string)null);
+                });
+
+            modelBuilder.Entity("Vestigio.Models.OrderStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("StatusName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderStatus", (string)null);
                 });
 
             modelBuilder.Entity("Vestigio.Models.Product", b =>
@@ -464,6 +482,9 @@ namespace Vestigio.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
+                    b.Property<double>("LevelProgress")
+                        .HasColumnType("float");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -513,7 +534,7 @@ namespace Vestigio.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("Vestigio.Models.UserUnlockedProduct", b =>
@@ -573,7 +594,7 @@ namespace Vestigio.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -582,7 +603,7 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -591,7 +612,7 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -600,13 +621,13 @@ namespace Vestigio.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Vestigio.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -615,7 +636,7 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -632,9 +653,9 @@ namespace Vestigio.Migrations
             modelBuilder.Entity("Vestigio.Models.ChallengeResolution", b =>
                 {
                     b.HasOne("Vestigio.Models.Challenge", "Challenge")
-                        .WithMany()
+                        .WithMany("Resolutions")
                         .HasForeignKey("ChallengeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Vestigio.Models.User", "User")
@@ -667,11 +688,19 @@ namespace Vestigio.Migrations
 
             modelBuilder.Entity("Vestigio.Models.Order", b =>
                 {
+                    b.HasOne("Vestigio.Models.OrderStatus", "OrderStatus")
+                        .WithMany()
+                        .HasForeignKey("OrderStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Vestigio.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("OrderStatus");
 
                     b.Navigation("User");
                 });
@@ -771,6 +800,8 @@ namespace Vestigio.Migrations
             modelBuilder.Entity("Vestigio.Models.Challenge", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("Resolutions");
                 });
 
             modelBuilder.Entity("Vestigio.Models.Order", b =>

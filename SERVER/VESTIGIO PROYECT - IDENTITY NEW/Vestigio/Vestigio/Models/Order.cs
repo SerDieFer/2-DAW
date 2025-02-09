@@ -11,14 +11,16 @@ namespace Vestigio.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CreationDate { get; set; }
 
-        [Required]
-        public string Status { get; set; }
+        // RELATION WITH ORDER STATUS
+        public int OrderStatusId { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
         // RELATION WITH USER
         [Required]
         public string UserId { get; set; }
         public User User { get; set; }
 
+        // RELATION WITH ORDER DETAILS
         public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }

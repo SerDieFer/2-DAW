@@ -26,16 +26,20 @@ namespace Vestigio.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
+            // Solo se elimina la variable de sesión para desvincular el carrito actual
+            HttpContext.Session.Remove("CurrentOrderId");
+
+            // Se cierra la sesión del usuario
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
             }
             else
             {
-                // This needs to be a redirect so that the browser performs a new
-                // request and the identity for the user gets updated.
+                // Se redirige para que el navegador haga una nueva solicitud y se actualice el estado de la identidad
                 return RedirectToPage("/Index");
             }
         }

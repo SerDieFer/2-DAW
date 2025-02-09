@@ -10,20 +10,22 @@ namespace Vestigio.Models
 
         [Display(Name = "Level")]
         [Range(1, int.MaxValue, ErrorMessage = "Level must be at least 1.")]
-        public int Level { get; set; }
+        public int Level { get; set; } = 1;
 
         [Display(Name = "Experience Points")]
         [Range(0, int.MaxValue, ErrorMessage = "Experience points cannot be negative.")]
-        public int ExpPoints { get; set; }
+        public int ExpPoints { get; set; } = 0;
+
+        public double LevelProgress { get; set; } = 0;
 
         [Display(Name = "Vestigios")]
         [Range(0, int.MaxValue, ErrorMessage = "Coins cannot be negative.")]
-        public int Coins { get; set; }
+        public int Coins { get; set; } = 0;
 
         [Display(Name = "Enrollment Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
-        public DateTime RegistrationDate { get; set; }
+        public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
 
         // RELATIONS
@@ -38,15 +40,32 @@ namespace Vestigio.Models
         public ICollection<UserUnlockedProduct> UnlockedProducts { get; set; } = new List<UserUnlockedProduct>();
         public ICollection<UserUnlockedProductByLevel> UnlockedProductLevels { get; set; } = new List<UserUnlockedProductByLevel>();
 
-        // METHOD TO ADD EXP TO THE USER
-        public void GainExp(int exp)
+        // Este método se encarga de actualizar la EXP y el nivel
+        public void GainExp(int expGained)
         {
-            ExpPoints += exp;
-            while (Level < 10 && ExpPoints >= LevelsNaming.GetExpRequiredForLevel(Level + 1))
+            ExpPoints += expGained;
+
+            // Calcular el nuevo nivel
+            int newLevel = 1;
+            while (LevelsNaming.GetExpRequiredForLevel(newLevel + 1) <= ExpPoints)
             {
-                Level++;
+                newLevel++;
+            }
+            Level = newLevel;
+
+            // Calcular el progreso del nivel en función de la experiencia total acumulada
+            int nextLevelExp = LevelsNaming.GetExpRequiredForLevel(Level + 1);
+
+            if (nextLevelExp > 0) // Si hay un siguiente nivel
+            {
+                LevelProgress = (double)ExpPoints / nextLevelExp * 100;
+                LevelProgress = Math.Max(0, Math.Min(100, LevelProgress)); // Asegurar que esté entre 0% y 100%
+            }
+            else
+            {
+                // Si no hay un siguiente nivel (nivel máximo alcanzado)
+                LevelProgress = 100;
             }
         }
-
     }
 }

@@ -12,11 +12,13 @@ namespace Vestigio.Controllers
     {
         private readonly VestigioDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public ShowcaseController(VestigioDbContext context, UserManager<User> userManager)
+        public ShowcaseController(VestigioDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _context = context;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> Index()
@@ -69,7 +71,6 @@ namespace Vestigio.Controllers
         [HttpPost]
         public async Task<IActionResult> SolveChallenge(int challengeId, string password)
         {
-            // Si el usuario no está autenticado, redirigir a login o registro
             if (!User.Identity.IsAuthenticated)
             {
                 return Redirect("/Identity/Account/Login");
@@ -79,9 +80,22 @@ namespace Vestigio.Controllers
                 .Include(u => u.ChallengesResolutions)
                 .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
 
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Usuario no encontrado.";
+                return RedirectToAction("Index");
+            }
+
+            // Obtener el desafío
             var challenge = await _context.Challenges
                 .Include(c => c.Product)
                 .FirstOrDefaultAsync(c => c.Id == challengeId);
+
+            if (challenge == null)
+            {
+                TempData["ErrorMessage"] = "Desafío no encontrado.";
+                return RedirectToAction("Index");
+            }
 
             // Validar si el desafío puede ser resuelto
             if (!ValidateChallengeAttempt(user, challenge, password))
@@ -100,14 +114,27 @@ namespace Vestigio.Controllers
                 PointsEarned = challenge.ExpPoints
             };
 
-            // Actualizar el usuario
-            user.Coins += challenge.Coins;
+            // Actualizar la EXP y el nivel del usuario
+            // Esto maneja la subida de nivel y el progreso automáticamente
             user.GainExp(challenge.ExpPoints);
+
+            // Actualizar al usuario en la base de datos
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (!updateResult.Succeeded)
+            {
+                var errors = string.Join(", ", updateResult.Errors.Select(e => e.Description));
+                TempData["ErrorMessage"] = $"Error al actualizar el usuario: {errors}";
+                return RedirectToAction("Index");
+            }
+
+            // Refrescar la cookie de autenticación
+            await _signInManager.RefreshSignInAsync(user);
 
             // Desbloquear recompensas
             UnlockRewards(user, challenge);
 
-            // Guardar cambios
+            // Guardar resolución del desafío
             _context.ChallengeResolutions.Add(resolution);
             await _context.SaveChangesAsync();
 
@@ -163,44 +190,52 @@ namespace Vestigio.Controllers
                 var userId = _userManager.GetUserId(User);
                 if (userId == null) return Redirect("/Identity/Account/Login");
 
+                // Verificar si existe un pedido activo en la sesión actual
+                if (!HttpContext.Session.TryGetValue("CurrentOrderId", out byte[] orderIdBytes))
+                {
+                    // Crear nuevo pedido si no existe
+                    var newOrder = new Order
+                    {
+                        UserId = userId,
+                        CreationDate = DateTime.Now,
+                        OrderStatusId = 1,
+                        OrderDetails = new List<OrderDetail>()
+                    };
+                    _context.Orders.Add(newOrder);
+                    await _context.SaveChangesAsync();
+
+                    // Guardar el ID del pedido en la sesión
+                    HttpContext.Session.SetInt32("CurrentOrderId", newOrder.Id);
+                }
+
+                // Obtener el ID del pedido actual desde la sesión
+                var currentOrderId = HttpContext.Session.GetInt32("CurrentOrderId").Value;
+
+                // Cargar el producto y validar stock
                 var productSize = await _context.ProductSizes
                     .Include(ps => ps.Product)
                     .FirstOrDefaultAsync(ps => ps.Id == productSizeId);
 
-                // Validación de stock actualizado
                 if (productSize.Stock < quantity)
                 {
                     TempData["ErrorMessage"] = $"Stock insuficiente. Disponible: {productSize.Stock}";
                     return RedirectToAction("Index");
                 }
 
+                // Cargar el pedido actual
                 var order = await _context.Orders
                     .Include(o => o.OrderDetails)
-                    .FirstOrDefaultAsync(o => o.UserId == userId && o.Status == "Pendiente");
+                    .FirstOrDefaultAsync(o => o.Id == currentOrderId);
 
                 // Calcular cantidad existente en el carrito
-                int existingQuantity = order?.OrderDetails
+                int existingQuantity = order.OrderDetails
                     .Where(od => od.ProductSizeId == productSizeId)
-                    .Sum(od => od.Quantity) ?? 0;
+                    .Sum(od => od.Quantity);
 
                 if (existingQuantity + quantity > productSize.Stock)
                 {
                     TempData["ErrorMessage"] = $"Límite de stock alcanzado. Disponible: {productSize.Stock - existingQuantity}";
                     return RedirectToAction("Index");
-                }
-
-                // Crear orden si no existe
-                if (order == null)
-                {
-                    order = new Order
-                    {
-                        UserId = userId,
-                        CreationDate = DateTime.Now,
-                        Status = "Pendiente",
-                        OrderDetails = new List<OrderDetail>()
-                    };
-                    _context.Orders.Add(order);
-                    await _context.SaveChangesAsync();
                 }
 
                 // Agregar o actualizar detalle sin modificar stock

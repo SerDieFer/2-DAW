@@ -208,16 +208,15 @@ namespace Vestigio.Controllers
         }
 
         // POST: Challenges/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-            int id,
-            [Bind("Id,IsActive,Title,Description,ExpPoints,Coins,RarityLevel," +
-            "CreationDate,ProductLevel,ProductId,SolutionMode,Password,ReleaseDate")]
-            Challenge challenge,
-            List<IFormFile> imageFiles)
+        int id,
+        [Bind("Id,IsActive,Title,Description,ExpPoints,Coins,RarityLevel," +
+        "CreationDate,ProductLevel,ProductId,SolutionMode,Password,ReleaseDate")]
+        Challenge challenge,
+        List<IFormFile> imageFiles,
+        List<int>? deleteImageIds)
         {
             if (id != challenge.Id) return NotFound();
 
@@ -227,13 +226,38 @@ namespace Vestigio.Controllers
             {
                 try
                 {
-                    // Cargar entidad existente
                     var existingChallenge = await _context.Challenges
                         .Include(c => c.Images)
                         .FirstOrDefaultAsync(c => c.Id == id);
 
+                    // Eliminar imágenes seleccionadas
+                    if (deleteImageIds != null)
+                    {
+                        foreach (var imageId in deleteImageIds)
+                        {
+                            var image = existingChallenge.Images.FirstOrDefault(i => i.Id == imageId);
+                            if (image != null)
+                            {
+                                // Eliminar archivo físico
+                                var imagePath = Path.Combine(
+                                    Directory.GetCurrentDirectory(),
+                                    "wwwroot",
+                                    image.Url.TrimStart('/'));
+
+                                if (System.IO.File.Exists(imagePath))
+                                {
+                                    System.IO.File.Delete(imagePath);
+                                }
+
+                                _context.Images.Remove(image);
+                            }
+                        }
+                    }
+
+                    // Actualizar propiedades
                     _context.Entry(existingChallenge).CurrentValues.SetValues(challenge);
 
+                    // Guardar nuevas imágenes
                     await SaveImages(imageFiles, challenge.Id);
 
                     await _context.SaveChangesAsync();
@@ -274,13 +298,36 @@ namespace Vestigio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var challenge = await _context.Challenges.FindAsync(id);
+            var challenge = await _context.Challenges
+                .Include(c => c.Resolutions)
+                .Include(c => c.Images)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (challenge != null)
             {
+                // Eliminar resoluciones primero
+                _context.ChallengeResolutions.RemoveRange(challenge.Resolutions);
+
+                // Eliminar imágenes del desafío
+                foreach (var image in challenge.Images.ToList())
+                {
+                    var imagePath = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        image.Url.TrimStart('/'));
+
+                    if (System.IO.File.Exists(imagePath))
+                    {
+                        System.IO.File.Delete(imagePath);
+                    }
+                    _context.Images.Remove(image);
+                }
+
+                // Eliminar el desafío
                 _context.Challenges.Remove(challenge);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -291,29 +338,36 @@ namespace Vestigio.Controllers
 
         private void ValidateChallenge(Challenge challenge)
         {
-            // Validación de modo de solución
             if (challenge.SolutionMode == SolutionMode.Password)
             {
                 if (string.IsNullOrWhiteSpace(challenge.Password))
+                {
                     ModelState.AddModelError("Password", "The password is required!");
-                
-                challenge.ReleaseDate = null;
+                }
+                challenge.ReleaseDate = null; // Limpiar campo no relevante
             }
             else if (challenge.SolutionMode == SolutionMode.TimeBased)
             {
                 if (!challenge.ReleaseDate.HasValue)
+                {
                     ModelState.AddModelError("ReleaseDate", "The release date is required!");
+                }
                 else if (challenge.ReleaseDate <= DateTime.Now)
-                    ModelState.AddModelError("ReleaseDate", "The release date must be in the future! ");
-                
-                challenge.Password = null;
+                {
+                    ModelState.AddModelError("ReleaseDate", "The release date must be in the future!");
+                }
+                challenge.Password = null; // Limpiar campo no relevante
             }
 
             // Validación de asociación
             if (challenge.ProductLevel.HasValue && challenge.ProductId.HasValue)
-                ModelState.AddModelError("", "Select only one association method!");
+            {
+                ModelState.AddModelError("ProductLevel", "Select only one association method!");
+            }
             else if (!challenge.ProductLevel.HasValue && !challenge.ProductId.HasValue)
-                ModelState.AddModelError("", "You must select an association method!");
+            {
+                ModelState.AddModelError("ProductLevel", "You must select an association method!");
+            }
         }
 
         private void PrepareDropdowns()
@@ -340,9 +394,9 @@ namespace Vestigio.Controllers
             if (!Directory.Exists(imageDirectory)) Directory.CreateDirectory(imageDirectory);
 
             int imageCount = _context.Images.Count(i => i.ChallengeId == challengeId);
-
             foreach (var file in imageFiles)
             {
+                // Usar GUID para nombres únicos
                 var uniqueFileName = $"challenge{challengeId}-image{++imageCount}{Path.GetExtension(file.FileName)}";
                 var imagePath = Path.Combine(imageDirectory, uniqueFileName);
 

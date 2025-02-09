@@ -17,11 +17,14 @@ namespace Vestigio.Data
         public DbSet<Challenge> Challenges { get; set; }
         public DbSet<ChallengeResolution> ChallengeResolutions { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Image> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder); // Importante para IdentityDbContext
+
             // SINGULAR NAME TABLE
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Product>().ToTable("Product");
@@ -30,6 +33,7 @@ namespace Vestigio.Data
             modelBuilder.Entity<ChallengeResolution>().ToTable("ChallengeResolution");
             modelBuilder.Entity<Order>().ToTable("Order");
             modelBuilder.Entity<OrderDetail>().ToTable("OrderDetail");
+            modelBuilder.Entity<OrderStatus>().ToTable("OrderStatus");
             modelBuilder.Entity<Image>().ToTable("Image");
             modelBuilder.Entity<ProductSize>().ToTable("ProductSize");
             modelBuilder.Entity<ProductCategory>().ToTable("ProductCategory");
@@ -54,12 +58,11 @@ namespace Vestigio.Data
                 .HasIndex(cr => new { cr.UserId, cr.ChallengeId })
                 .IsUnique();
 
-            // RELATION: ORDER - ORDER DETAILS (1:N)
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.OrderDetails)
-                .WithOne(od => od.Order)
-                .HasForeignKey(od => od.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Challenge>()
+               .HasMany(c => c.Resolutions)
+               .WithOne(r => r.Challenge)
+               .HasForeignKey(r => r.ChallengeId)
+               .OnDelete(DeleteBehavior.Cascade);
 
             // RELATION: PRODUCT - ORDER DETAILS (1:N)
             modelBuilder.Entity<Product>()
@@ -93,7 +96,26 @@ namespace Vestigio.Data
                 .HasForeignKey(od => od.ProductSizeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            base.OnModelCreating(modelBuilder);
+            // RELATION: ORDER - ORDER STATUS (1:N)
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.OrderStatus)
+                .WithMany()
+                .HasForeignKey(o => o.OrderStatusId);
+
+            // RELATION: ORDER - USER (1:N)
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.User)
+                .WithMany(u => u.Orders)
+                .HasForeignKey(o => o.UserId);
+
+            // RELATION: ORDER - ORDER DETAILS (1:N)
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.OrderDetails)
+                .WithOne(od => od.Order)
+                .HasForeignKey(od => od.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }

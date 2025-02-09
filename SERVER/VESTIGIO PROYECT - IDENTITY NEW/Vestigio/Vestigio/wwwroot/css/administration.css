@@ -109,7 +109,8 @@
 }
 
 #administration-index .carousel-inner {
-    width: 200px
+    max-width: 200px;
+    width: 100%;
     margin: 0 auto;
     border-radius: 8px;
     overflow: hidden;
@@ -118,7 +119,7 @@
 
 #administration-index .carousel-item img {
     width: 100%;
-    height: 200px;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     transition: transform 0.3s ease;
 }

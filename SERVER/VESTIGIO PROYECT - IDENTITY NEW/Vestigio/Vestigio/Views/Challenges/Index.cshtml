@@ -263,8 +263,8 @@
                                                 @for (int i = 0; i < imageList.Count; i++)
                                                 {
                                                     <div class="carousel-item @(i == 0 ? "active" : "")">
-                                                        <img src="@imageList[i].Url" class="d-block w-100"
-                                                             alt="Challenge image @(i + 1)" style="height: 200px; object-fit: cover;">
+                                                        <img src="@imageList[i].Url" class="d-block h-100 w-100"
+                                                             alt="Challenge image @(i + 1)">
                                                     </div>
                                                 }
                                             </div>
@@ -329,7 +329,7 @@
     <!-- Paginación -->
     @if (Model.TotalPages > 1)
     {
-        <nav class="d-flex justify-content-center mt-4">
+        <nav class="d-flex justify-content-center pb-5 mb-5">
             <ul class="pagination pagination-lg">
                 <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
                     <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">

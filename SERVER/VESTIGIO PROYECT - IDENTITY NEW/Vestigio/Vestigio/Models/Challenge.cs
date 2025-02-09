@@ -4,7 +4,7 @@ using Vestigio.Utilities;
 
 namespace Vestigio.Models
 {
-    public class Challenge : IValidatableObject
+    public class Challenge
     {
         // PROPERTIES
         // =====================================================================
@@ -76,45 +76,8 @@ namespace Vestigio.Models
                               ReleaseDate.HasValue &&
                               DateTime.UtcNow >= ReleaseDate.Value.ToUniversalTime();
 
-        // VALIDATION
-        // =====================================================================
-        public IEnumerable<ValidationResult> Validate(ValidationContext context)
-        {
-            if (SolutionMode == SolutionMode.TimeBased && ReleaseDate.HasValue)
-            {
-                if (ReleaseDate <= DateTime.UtcNow)
-                {
-                    yield return new ValidationResult("La fecha de lanzamiento debe ser futura",
-                        new[] { nameof(ReleaseDate) });
-                }
-            }
-
-            // Validación de método de desbloqueo
-            if (SolutionMode == SolutionMode.Password && string.IsNullOrWhiteSpace(Password))
-            {
-                yield return new ValidationResult("Se requiere una contraseña para el modo de desbloqueo con contraseña.",
-                    new[] { nameof(Password) });
-            }
-
-            if (SolutionMode == SolutionMode.TimeBased && !ReleaseDate.HasValue)
-            {
-                yield return new ValidationResult("Se requiere una fecha de lanzamiento para el modo de desbloqueo por tiempo.",
-                    new[] { nameof(ReleaseDate) });
-            }
-
-            // Validación de asociación de producto/nivel de rareza
-            if (ProductLevel.HasValue && ProductId.HasValue)
-            {
-                yield return new ValidationResult("No puedes asignar un producto específico y un nivel de rareza al mismo tiempo. Debes elegir solo uno.",
-                    new[] { nameof(ProductLevel), nameof(ProductId) });
-            }
-
-            if (!ProductLevel.HasValue && !ProductId.HasValue)
-            {
-                yield return new ValidationResult("Debes seleccionar al menos un método de asociación: un nivel de rareza o un producto específico.",
-                    new[] { nameof(ProductLevel), nameof(ProductId) });
-            }
-        }
+        [Display(Name = "Resolutions")]
+        public ICollection<ChallengeResolution> Resolutions { get; set; } = new List<ChallengeResolution>();
     }
 
     public enum SolutionMode
