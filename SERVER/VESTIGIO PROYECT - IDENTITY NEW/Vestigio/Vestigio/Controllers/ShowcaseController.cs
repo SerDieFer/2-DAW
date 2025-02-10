@@ -26,6 +26,7 @@ namespace Vestigio.Controllers
             // Cargar los desafíos que estarán visibles para todos
             var challenges = await _context.Challenges
                 .Include(c => c.Product)
+                .Include(p => p.Images)
                 .Where(c => c.IsActive)
                 .ToListAsync();
 

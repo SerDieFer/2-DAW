@@ -1,86 +1,216 @@
 ﻿@model List<Challenge>
 @{
     var userLevel = (int?)ViewBag.UserLevel ?? 1;
-    var solvedChallenges = ViewBag.SolvedChallenges as List<int>;
-    var unlockedProducts = ViewBag.UnlockedProducts as List<Product>;
+    var solvedChallenges = ViewBag.SolvedChallenges as List<int> ?? new List<int>();
+    var unlockedProducts = ViewBag.UnlockedProducts as List<Product> ?? new List<Product>();
 }
 
-<div class="container py-5">
-    <ul class="nav nav-pills mb-4 justify-content-center" id="pills-tab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="challenges-tab" data-bs-toggle="pill" data-bs-target="#challenges" type="button" role="tab">
-                Desafíos <span class="badge bg-primary ms-2">@Model.Count</span>
-            </button>
-        </li>
-        @if (unlockedProducts?.Any() == true)
-        {
+<div class="showcase-container">
+    <div class="nav-container mb-5">
+        <ul class="nav nav-pills d-inline-flex mx-auto" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="products-tab" data-bs-toggle="pill" data-bs-target="#products" type="button" role="tab">
-                    Colección <span class="badge bg-success ms-2">@unlockedProducts.Count</span>
+                <button class="nav-link active text-uppercase"
+                        id="challenges-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#challenges"
+                        type="button"
+                        role="tab">
+                    Challenges
+                    <span class="badge ms-2">@Model.Count</span>
                 </button>
             </li>
-        }
-    </ul>
+            @if (unlockedProducts.Any())
+            {
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-uppercase"
+                            id="products-tab"
+                            data-bs-toggle="pill"
+                            data-bs-target="#products"
+                            type="button"
+                            role="tab">
+                        Collection
+                        <span class="badge ms-2">@unlockedProducts.Count</span>
+                    </button>
+                </li>
+            }
+        </ul>
+    </div>
 
-    <div class="tab-content" id="pills-tabContent">
-        <!-- Desafíos -->
+    <div class="tab-content">
+        <!-- Challenges Section -->
         <div class="tab-pane fade show active" id="challenges" role="tabpanel">
             <div class="row g-4">
                 @foreach (var challenge in Model)
                 {
-                    var isUnlocked = challenge.RarityLevel <= userLevel && (challenge.SolutionMode != SolutionMode.TimeBased || challenge.IsPublic);
-                    var isSolved = solvedChallenges?.Contains(challenge.Id) == true;
+                    var isUnlocked = challenge.RarityLevel <= userLevel &&
+                    (challenge.SolutionMode != SolutionMode.TimeBased || challenge.IsPublic);
+                    var isSolved = solvedChallenges.Contains(challenge.Id);
 
                     <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm @(!isUnlocked ? "opacity-50" : "")">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <span class="badge bg-primary">Nv. @challenge.RarityLevel</span>
+                        <div class="challenge-card @(!isUnlocked ? "locked" : "") @(isSolved ? "solved" : "")">
+                            <div class="challenge-image">
+                                @if (challenge.Images != null && challenge.Images.Any())
+                                {
+                                    <img src="@challenge.Images.First().Url" alt="@challenge.Title" class="img-fluid">
+                                }
+                                else
+                                {
+                                    <div class="placeholder-image"></div>
+                                }
+                            </div>
+                            <div class="challenge-card-inner">
+                                <div class="challenge-header">
+                                    <div class="rarity-badge" data-level="@challenge.RarityLevel">
+                                        <div class="rarity-icon">
+                                            <i class="fas fa-crown"></i>
+                                        </div>
+                                        <div class="rarity-info">
+                                            <span class="rarity-level">Level @challenge.RarityLevel</span>
+                                            <span class="rarity-name">@challenge.RarityName</span>
+                                        </div>
+                                    </div>
                                     @if (isSolved)
                                     {
-                                        <i class="fas fa-check-circle text-success fs-5"></i>
+                                        <div class="solved-badge">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Solved</span>
+                                        </div>
                                     }
                                 </div>
 
-                                <h5 class="card-title mb-3">@challenge.Title</h5>
+                                <h3 class="challenge-title">@challenge.Title</h3>
 
-                                <div class="d-flex gap-2 mb-3">
-                                    <div class="text-primary">
-                                        <i class="fas fa-coins me-1"></i>
-                                        @challenge.Coins
+                                <div class="challenge-description-preview">
+                                    @challenge.Description.Substring(0, Math.Min(100, challenge.Description.Length))...
+                                </div>
+
+                                <div class="challenge-rewards">
+                                    <div class="reward">
+                                        <i class="fas fa-coins"></i>
+                                        <span>@challenge.Coins</span>
                                     </div>
-                                    <div class="text-success">
-                                        <i class="fas fa-star me-1"></i>
-                                        @challenge.ExpPoints EXP
+                                    <div class="reward">
+                                        <i class="fas fa-star"></i>
+                                        <span>@challenge.ExpPoints XP</span>
                                     </div>
                                 </div>
 
                                 @if (isUnlocked && !isSolved)
                                 {
-                                    <form asp-action="SolveChallenge" method="post">
-                                        <input type="hidden" name="challengeId" value="@challenge.Id" />
-                                        @if (challenge.SolutionMode == SolutionMode.Password)
-                                        {
-                                            <div class="input-group mb-3">
-                                                <input type="password"
-                                                       name="password"
-                                                       class="form-control"
-                                                       placeholder="Contraseña"
-                                                       required>
-                                            </div>
-                                        }
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            Resolver Desafío <i class="fas fa-arrow-right ms-2"></i>
-                                        </button>
-                                    </form>
+                                    <button class="btn-solve" data-bs-toggle="modal" data-bs-target="#challengeModal-@challenge.Id">
+                                        Solve Challenge
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
                                 }
                                 else if (!isUnlocked)
                                 {
-                                    <div class="alert alert-warning mb-0">
-                                        <i class="fas fa-lock me-2"></i>
-                                        Requiere nivel @challenge.RarityLevel
+                                    <div class="lock-message">
+                                        <i class="fas fa-lock"></i>
+                                        <span>Requires Level @challenge.RarityLevel</span>
                                     </div>
                                 }
+                            </div>
+                        </div>
+
+                        <!-- Challenge Modal -->
+                        <div class="modal fade challenge-modal" id="challengeModal-@challenge.Id" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">@challenge.Title</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="challenge-details">
+                                            <div class="rarity-badge" data-level="@challenge.RarityLevel">
+                                                <div class="rarity-icon">
+                                                    <i class="fas fa-crown"></i>
+                                                </div>
+                                                <div class="rarity-info">
+                                                    <span class="rarity-level">Level @challenge.RarityLevel</span>
+                                                    <span class="rarity-name">@challenge.RarityName</span>
+                                                </div>
+                                            </div>
+
+                                            <p class="challenge-description">@challenge.Description</p>
+
+                                            <div class="challenge-meta">
+                                                <div class="meta-item">
+                                                    <i class="fas fa-calendar"></i>
+                                                    <span>Created: @challenge.CreationDate.ToString("MMMM dd, yyyy")</span>
+                                                </div>
+                                                @if (challenge.SolutionMode == SolutionMode.TimeBased && challenge.ReleaseDate.HasValue)
+                                                {
+                                                    <div class="meta-item">
+                                                        <i class="fas fa-clock"></i>
+                                                        <span>Release: @challenge.ReleaseDate.Value.ToString("MMMM dd, yyyy HH:mm")</span>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <div class="challenge-rewards">
+                                                <div class="reward">
+                                                    <i class="fas fa-coins"></i>
+                                                    <span>@challenge.Coins coins</span>
+                                                </div>
+                                                <div class="reward">
+                                                    <i class="fas fa-star"></i>
+                                                    <span>@challenge.ExpPoints XP</span>
+                                                </div>
+                                            </div>
+
+                                            @if (challenge.ProductLevel.HasValue)
+                                            {
+                                                <div class="unlock-info">
+                                                    <i class="fas fa-unlock"></i>
+                                                    <span>Unlocks products of level @challenge.ProductLevel</span>
+                                                </div>
+                                            }
+                                            @if (challenge.ProductId.HasValue)
+                                            {
+                                                <div class="unlock-info">
+                                                    <i class="fas fa-gift"></i>
+                                                    <span>Unlocks a specific product</span>
+                                                </div>
+                                            }
+
+                                            @if (challenge.Images != null && challenge.Images.Any())
+                                            {
+                                                <div class="challenge-images swiper-container">
+                                                    <div class="swiper-wrapper">
+                                                        @foreach (var image in challenge.Images)
+                                                        {
+                                                            <div class="swiper-slide">
+                                                                <img src="@image.Url" alt="Challenge Image" class="img-fluid">
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <div class="swiper-pagination"></div>
+                                                    <div class="swiper-button-next"></div>
+                                                    <div class="swiper-button-prev"></div>
+                                                </div>
+                                            }
+
+                                            <form asp-action="SolveChallenge" method="post" class="solve-form">
+                                                <input type="hidden" name="challengeId" value="@challenge.Id" />
+                                                @if (challenge.SolutionMode == SolutionMode.Password)
+                                                {
+                                                    <div class="password-input">
+                                                        <input type="password"
+                                                               name="password"
+                                                               class="form-control"
+                                                               placeholder="Enter Password"
+                                                               required>
+                                                    </div>
+                                                }
+                                                <button type="submit" class="btn-solve">
+                                                    Solve Challenge
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -88,110 +218,190 @@
             </div>
         </div>
 
-        <!-- Productos -->
-        @if (unlockedProducts?.Any() == true)
+        <!-- Products Collection Section -->
+        @if (unlockedProducts.Any())
         {
             <div class="tab-pane fade" id="products" role="tabpanel">
                 <div class="row g-4">
                     @foreach (var product in unlockedProducts)
                     {
                         <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="card h-100 border-0 shadow-sm">
-                                @if (product.Images?.Any() == true)
-                                {
-                                    <img src="@product.Images.First().Url"
-                                         class="card-img-top object-fit-cover"
-                                         alt="@product.Name"
-                                         style="height: 200px;">
-                                }
-                                else
-                                {
-                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                                        <i class="fas fa-image fa-3x text-secondary"></i>
+                            <div class="product-card">
+                                <div class="product-image">
+                                    @if (product.Images?.Any() == true)
+                                    {
+                                        <img src="@product.Images.First().Url"
+                                             alt="@product.Name"
+                                             class="img-fluid">
+                                    }
+                                    <div class="product-rarity" data-level="@product.RarityLevel">
+                                        <i class="fas fa-diamond"></i>
+                                        <span>@product.RarityName</span>
                                     </div>
-                                }
-
-                                <div class="card-body">
-                                    <h5 class="card-title mb-3">@product.Name</h5>
-                                    <p class="card-text text-muted small mb-4">@product.Description</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="h5 mb-0 text-primary">@product.Price.ToString("C")</span>
-                                        <button class="btn btn-outline-primary"
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title">@product.Name</h3>
+                                    <p class="product-description">@product.Description.Substring(0, Math.Min(100, product.Description.Length))...</p>
+                                    <div class="product-footer">
+                                        <span class="product-price">@product.Price.ToString("C")</span>
+                                        <button class="btn-details"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#productModal-@product.Id"
-                                        @(product.ProductSizes.Any(s => s.Stock > 0 && s.IsActive) ? "" : "disabled")>
-                                            <i class="fas fa-shopping-cart"></i>
+                                                data-bs-target="#productModal-@product.Id">
+                                            View Details
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Modal para selección de talla y cantidad -->
-                            <div class="modal fade" id="productModal-@product.Id" tabindex="-1" aria-labelledby="productModalLabel-@product.Id" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                    <div class="modal-content border-0 shadow">
-                                        <div class="modal-header bg-dark text-white">
-                                            <h5 class="modal-title fs-4">@product.Name</h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row g-4">
-                                                <div class="col-md-6">
-                                                    @if (product.Images?.Any() == true)
-                                                    {
-                                                        <img src="@product.Images.First().Url"
-                                                             class="img-fluid rounded-3"
-                                                             alt="@product.Name"
-                                                             style="max-height: 400px; object-fit: contain;">
-                                                    }
+                            <!-- Product Modal -->
+                            <div class="modal fade product-modal" id="productModal-@product.Id" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered modal-xl">
+                                    <div class="modal-content">
+                                        <button type="button" class="modal-close" data-bs-dismiss="modal">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+
+                                        <div class="modal-body p-0">
+                                            <div class="row g-0">
+                                                <!-- Left Column - Image Gallery -->
+                                                <div class="col-lg-7 product-gallery">
+                                                    <div class="gallery-container">
+                                                        @if (product.Images?.Any() == true)
+                                                        {
+                                                            <div class="swiper-container">
+                                                                <div class="swiper-wrapper">
+                                                                    @foreach (var image in product.Images)
+                                                                    {
+                                                                        <div class="swiper-slide">
+                                                                            <div class="image-wrapper">
+                                                                                <img src="@image.Url" alt="@product.Name" class="img-fluid">
+                                                                            </div>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                                <div class="swiper-pagination"></div>
+                                                                <div class="swiper-button-prev"></div>
+                                                                <div class="swiper-button-next"></div>
+                                                            </div>
+                                                        }
+                                                    </div>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    <h4 class="mb-3">@product.Price.ToString("C")</h4>
-                                                    <p class="text-muted mb-4">@product.Description</p>
 
-                                                    <!-- Selector de Tallas Moderno -->
-                                                    <div class="mb-4">
-                                                        <label class="form-label fw-bold">Selecciona tu talla</label>
-                                                        <div class="d-flex flex-wrap gap-2" id="sizeSelector-@product.Id">
-                                                            @foreach (var size in product.ProductSizes.Where(s => s.IsActive))
-                                                            {
-                                                                <button type="button"
-                                                                        class="btn btn-outline-dark size-option @(size.Stock <= 0 ? "disabled" : "")"
-                                                                        data-size-id="@size.Id"
-                                                                        data-stock="@size.Stock"
-                                                                        onclick="selectSize(this, @product.Id)">
-                                                                    <span class="d-block">@size.Size</span>
-                                                                    <small class="text-muted">(@size.Stock disponibles)</small>
+                                                <!-- Right Column - Product Details -->
+                                                <div class="col-lg-5 product-details">
+                                                    <div class="details-scroll">
+                                                        <!-- Product Header -->
+                                                        <div class="product-header">
+                                                            <div class="rarity-badge" data-level="@product.RarityLevel">
+                                                                <div class="rarity-icon">
+                                                                    <i class="fas fa-diamond"></i>
+                                                                </div>
+                                                                <div class="rarity-info">
+                                                                    <span class="rarity-level">Level @product.RarityLevel</span>
+                                                                    <span class="rarity-name">@product.RarityName</span>
+                                                                </div>
+                                                            </div>
+
+                                                            <h2 class="product-title">@product.Name</h2>
+
+                                                            <div class="product-meta">
+                                                                <span class="discovery-date">
+                                                                    <i class="fas fa-calendar"></i>
+                                                                    Discovered @product.CreationDate.ToString("MMMM dd, yyyy")
+                                                                </span>
+                                                            </div>
+
+                                                            <!-- Categories -->
+                                                            <div class="category-tags">
+                                                                @foreach (var category in product.ProductCategories)
+                                                                {
+                                                                    <span class="category-tag">@category.Category.Name</span>
+                                                                }
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Product Story -->
+                                                        <div class="product-story">
+                                                            <div class="story-content">
+                                                                <p class="description">@product.Description</p>
+
+                                                                <div class="story-details">
+                                                                    <div class="detail-item">
+                                                                        <span class="detail-label">Total Stock</span>
+                                                                        <span class="detail-value">@product.TotalStock pieces available</span>
+                                                                    </div>
+
+                                                                    <div class="detail-item">
+                                                                        <span class="detail-label">Associated Challenges</span>
+                                                                        <div class="challenge-list">
+                                                                            @if (product.Challenges?.Any() == true)
+                                                                            {
+                                                                                @foreach (var challenge in product.Challenges)
+                                                                                {
+                                                                                    <span class="challenge-tag">@challenge.Title</span>
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <span class="no-challenges">No associated challenges</span>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Size Selection -->
+                                                        <div class="size-selection">
+                                                            <h3 class="section-title">Select Your Size</h3>
+                                                            <div class="size-grid">
+                                                                @foreach (var size in product.ProductSizes.OrderBy(s => s.Size))
+                                                                {
+                                                                    <button type="button"
+                                                                            class="size-btn @(!size.IsActive || size.Stock <= 0 ? "disabled" : "")"
+                                                                            data-size-id="@size.Id"
+                                                                            data-stock="@size.Stock"
+                                                                            onclick="selectSize(this, @product.Id)">
+                                                                        <span class="size-label">@size.Size</span>
+                                                                        <span class="stock-indicator" style="--stock-level: @(size.Stock * 100 / Math.Max(size.Stock, 20))%">
+                                                                            <span class="stock-count">@size.Stock left</span>
+                                                                        </span>
+                                                                    </button>
+                                                                }
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Purchase Section -->
+                                                        <div class="purchase-section">
+                                                            <div class="price-tag">
+                                                                <span class="currency">$</span>
+                                                                <span class="amount">@product.Price.ToString("N2")</span>
+                                                            </div>
+
+                                                            <div class="quantity-selector">
+                                                                <button class="qty-btn" onclick="adjustQuantity(@product.Id, -1)">
+                                                                    <i class="fas fa-minus"></i>
                                                                 </button>
-                                                            }
+                                                                <input type="number"
+                                                                       id="quantity-@product.Id"
+                                                                       value="1"
+                                                                       min="1"
+                                                                       readonly>
+                                                                <button class="qty-btn" onclick="adjustQuantity(@product.Id, 1)">
+                                                                    <i class="fas fa-plus"></i>
+                                                                </button>
+                                                            </div>
+
+                                                            <form asp-action="AddToCart" method="post" class="add-to-cart-form">
+                                                                <input type="hidden" name="productSizeId" id="selectedSize-@product.Id">
+                                                                <input type="hidden" name="quantity" id="selectedQuantity-@product.Id">
+                                                                <button type="submit" class="btn-add-cart" disabled>
+                                                                    <span class="btn-text">Add to Collection</span>
+                                                                    <i class="fas fa-arrow-right"></i>
+                                                                </button>
+                                                            </form>
                                                         </div>
                                                     </div>
-
-                                                    <!-- Selector de Cantidad Interactivo -->
-                                                    <div class="mb-4">
-                                                        <label class="form-label fw-bold">Cantidad</label>
-                                                        <div class="input-group" style="max-width: 150px;">
-                                                            <button class="btn btn-outline-dark" type="button" onclick="adjustQuantity('quantity-@product.Id', -1)">-</button>
-                                                            <input type="text"
-                                                                   id="quantity-@product.Id"
-                                                                   name="quantity"
-                                                                   class="form-control text-center"
-                                                                   value="1"
-                                                                   min="1"
-                                                                   max="0"
-                                                                   disabled>
-                                                            <button class="btn btn-outline-dark" type="button" onclick="adjustQuantity('quantity-@product.Id', 1)">+</button>
-                                                        </div>
-                                                        <small class="text-muted" id="stockMessage-@product.Id"></small>
-                                                    </div>
-
-                                                    <form asp-action="AddToCart" method="post">
-                                                        <input type="hidden" name="productSizeId" id="selectedSize-@product.Id" required>
-                                                        <input type="hidden" name="quantity" id="finalQuantity-@product.Id" required>
-                                                        <button type="submit" class="btn btn-dark w-100 py-3" id="addToCartBtn-@product.Id" disabled>
-                                                            <i class="fas fa-shopping-cart me-2"></i>Añadir al Carrito
-                                                        </button>
-                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -207,94 +417,725 @@
 </div>
 
 <style>
-    .object-fit-cover {
-        object-fit: cover;
+    /* General Styles */
+    body {
+        background-color: #f8f9fa;
+        color: #222222;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .showcase-container {
+        padding: 2rem 1rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Navigation Pills */
+    .nav-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 3rem;
     }
 
     .nav-pills .nav-link {
+        color: #222222;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0;
         transition: all 0.3s ease;
     }
 
         .nav-pills .nav-link.active {
-            background: linear-gradient(135deg, #0062ff, #00c3ff);
-            box-shadow: 0 4px 6px rgba(0, 194, 255, 0.2);
+            background-color: #222222;
+            color: #ffffff;
         }
 
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    .nav-pills .badge {
+        background-color: #f8f9fa;
+        color: #222222;
     }
 
-        .card:hover {
+    /* Challenge Card Styles */
+    .challenge-card {
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .challenge-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
-    .size-option {
-        transition: all 0.2s ease;
-        width: 120px;
-        padding: 0.8rem;
-        border: 2px solid #dee2e6;
+        .challenge-card.locked {
+            opacity: 0.7;
+        }
+
+    .challenge-image {
+        height: 200px;
+        overflow: hidden;
     }
 
-        .size-option.active {
-            border-color: #212529;
-            background-color: #f8f9fa;
-            transform: scale(1.05);
+        .challenge-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-    .input-group button {
-        width: 40px;
+    .placeholder-image {
+        background-color: #e5e5e5;
+        height: 100%;
+    }
+
+    .challenge-card-inner {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .challenge-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .rarity-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: #222222;
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        border-radius: 0;
+        font-size: 0.875rem;
+    }
+
+    .rarity-icon {
+        font-size: 1rem;
+    }
+
+    .rarity-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .rarity-level {
+        font-weight: 600;
+    }
+
+    .rarity-name {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+
+    .solved-badge {
+        background: #28a745;
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        border-radius: 0;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .challenge-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .challenge-description-preview {
+        color: #666;
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+
+    .challenge-rewards {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .reward {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .btn-solve {
+        background-color: #222222;
+        color: #ffffff;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        width: 100%;
     }
 
-    .card {
-        border-radius: 1rem;
-        transition: transform 0.2s ease;
-    }
-
-        .card:hover {
-            transform: translateY(-3px);
+        .btn-solve:hover {
+            background-color: #000000;
         }
+
+    .lock-message {
+        background: #f8f9fa;
+        color: #666;
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Challenge Modal Styles */
+    .challenge-modal .modal-content {
+        border-radius: 0;
+        border: none;
+    }
+
+    .challenge-modal .modal-header {
+        background-color: #222222;
+        color: #ffffff;
+        border-bottom: none;
+    }
+
+    .challenge-modal .modal-title {
+        font-weight: 600;
+    }
+
+    .challenge-details {
+        padding: 2rem;
+    }
+
+    .challenge-description {
+        margin-bottom: 1.5rem;
+    }
+
+    .challenge-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .unlock-info {
+        background: #e9ecef;
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .challenge-images {
+        margin-bottom: 1.5rem;
+    }
+
+        .challenge-images img {
+            width: 100%;
+            height: auto;
+            border-radius: 0;
+        }
+
+    /* Product Card Styles */
+    .product-card {
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        transition: all 0.3s ease;
+    }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+    .product-image {
+        position: relative;
+        padding-bottom: 100%;
+        overflow: hidden;
+    }
+
+        .product-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .product-rarity {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: #222222;
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .product-info {
+        padding: 1.5rem;
+    }
+
+    .product-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-description {
+        font-size: 0.875rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .product-price {
+        font-weight: 600;
+        font-size: 1.125rem;
+    }
+
+    .btn-details {
+        background-color: #222222;
+        color: #ffffff;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-details:hover {
+            background-color: #000000;
+        }
+
+    /* Product Modal Styles */
+    .product-modal .modal-dialog {
+        max-width: 1200px;
+    }
+
+    .product-modal .modal-content {
+        background: #ffffff;
+        border: none;
+        border-radius: 0;
+    }
+
+    .modal-close {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+        z-index: 10;
+        background: none;
+        border: none;
+        color: #222222;
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+    /* Gallery Styles */
+    .product-gallery {
+        background: #f8f8f8;
+        min-height: 600px;
+    }
+
+    .gallery-container {
+        height: 100%;
+    }
+
+    .image-wrapper {
+        position: relative;
+        padding-bottom: 100%;
+    }
+
+        .image-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    /* Product Details Styles */
+    .product-details {
+        padding: 3rem;
+        max-height: 800px;
+    }
+
+    .details-scroll {
+        height: 100%;
+        overflow-y: auto;
+        padding-right: 1rem;
+    }
+
+    .product-header {
+        margin-bottom: 2rem;
+    }
+
+    .product-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .product-meta {
+        color: #666;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .category-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .category-tag {
+        background: #f0f0f0;
+        color: #222222;
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+
+    /* Product Story Styles */
+    .product-story {
+        margin-bottom: 2rem;
+        padding: 2rem 0;
+        border-top: 1px solid #e5e5e5;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .description {
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: #444;
+        margin-bottom: 1.5rem;
+    }
+
+    .story-details {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .detail-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #666;
+    }
+
+    .detail-value {
+        font-weight: 500;
+    }
+
+    /* Size Selection Styles */
+    .size-selection {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .size-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .size-btn {
+        background: #fff;
+        border: 1px solid #e5e5e5;
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .size-btn:not(.disabled):hover {
+            border-color: #222222;
+        }
+
+        .size-btn.active {
+            background: #222222;
+            border-color: #222222;
+            color: #fff;
+        }
+
+    .size-label {
+        font-weight: 600;
+    }
+
+    .stock-indicator {
+        width: 100%;
+        height: 4px;
+        background: #e5e5e5;
+        overflow: hidden;
+    }
+
+        .stock-indicator::after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: var(--stock-level);
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+    .stock-count {
+        font-size: 0.75rem;
+        color: #666;
+    }
+
+    /* Purchase Section Styles */
+    .purchase-section {
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        padding-top: 2rem;
+    }
+
+    .price-tag {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    .currency {
+        font-size: 0.875em;
+        vertical-align: super;
+    }
+
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+        border: 1px solid #e5e5e5;
+        width: fit-content;
+        margin-bottom: 1.5rem;
+    }
+
+    .qty-btn {
+        background: none;
+        border: none;
+        padding: 0.75rem 1rem;
+        color: #666;
+        transition: all 0.2s ease;
+    }
+
+        .qty-btn:hover {
+            color: #222222;
+        }
+
+    .quantity-selector input {
+        width: 60px;
+        text-align: center;
+        border: none;
+        font-weight: 500;
+    }
+
+    .btn-add-cart {
+        width: 100%;
+        background: #222222;
+        color: #fff;
+        border: none;
+        padding: 1rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-add-cart:not(:disabled):hover {
+            background: #000000;
+        }
+
+        .btn-add-cart:disabled {
+            background: #ccc;
+        }
+
+    /* Challenge Tags */
+    .challenge-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .challenge-tag {
+        background: #f0f0f0;
+        color: #222222;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    .no-challenges {
+        color: #666;
+        font-style: italic;
+        font-size: 0.875rem;
+    }
+
+    /* Custom Scrollbar */
+    .details-scroll::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .details-scroll::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .details-scroll::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+        .details-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+    /* Responsive Adjustments */
+    @@media (max-width: 991.98px) {
+        .product-details
+
+    {
+        padding: 2rem;
+        max-height: none;
+    }
+
+    .details-scroll {
+        height: auto;
+        overflow: visible;
+    }
+
+    .product-gallery {
+        min-height: 400px;
+    }
+
+    }
 </style>
 
 <script>
-    function selectSize(btn, productId) {
-        // Reset all buttons
-        document.querySelectorAll(`#sizeSelector-${productId} .size-option`).forEach(el => {
-            el.classList.remove('active', 'border-dark');
+    // Initialize Swiper for image gallery
+    document.addEventListener('DOMContentLoaded', function() {
+        const productSwipers = document.querySelectorAll('.product-modal .swiper-container');
+        productSwipers.forEach(container => {
+            new Swiper(container, {
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                loop: true
+            });
         });
 
-        // Activar botón seleccionado
-        btn.classList.add('active', 'border-dark');
-        const stock = parseInt(btn.dataset.stock);
+        const challengeSwipers = document.querySelectorAll('.challenge-modal .swiper-container');
+        challengeSwipers.forEach(container => {
+            new Swiper(container, {
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true
+                },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                loop: true
+            });
+        });
+    });
+
+    // Enhanced size selection
+    function selectSize(btn, productId) {
+        const sizeButtons = btn.closest('.size-grid').querySelectorAll('.size-btn');
+        sizeButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
         const sizeId = btn.dataset.sizeId;
-
-        // Actualizar controles
+        const stock = parseInt(btn.dataset.stock);
         const quantityInput = document.getElementById(`quantity-${productId}`);
-        const stockMessage = document.getElementById(`stockMessage-${productId}`);
-        const addToCartBtn = document.getElementById(`addToCartBtn-${productId}`);
-
-        quantityInput.max = stock;
-        quantityInput.disabled = stock <= 0;
-        quantityInput.value = stock > 0 ? 1 : 0;
+        const addToCartBtn = btn.closest('.product-details').querySelector('.btn-add-cart');
 
         document.getElementById(`selectedSize-${productId}`).value = sizeId;
-        document.getElementById(`finalQuantity-${productId}`).value = quantityInput.value;
+        document.getElementById(`selectedQuantity-${productId}`).value = quantityInput.value;
 
-        stockMessage.textContent = stock > 0 ? `${stock} disponibles` : 'Talla agotada';
-        stockMessage.className = stock > 0 ? 'text-success' : 'text-danger';
-        addToCartBtn.disabled = stock <= 0;
+        quantityInput.max = stock;
+        addToCartBtn.disabled = false;
+
+        // Animate the button
+        addToCartBtn.classList.add('pulse');
+        setTimeout(() => addToCartBtn.classList.remove('pulse'), 500);
     }
 
-    function adjustQuantity(inputId, delta) {
-        const input = document.getElementById(inputId);
-        let value = parseInt(input.value) || 0;
-        const max = parseInt(input.max) || 1;
+    // Enhanced quantity adjustment
+    function adjustQuantity(productId, delta) {
+        const input = document.getElementById(`quantity-${productId}`);
+        const currentValue = parseInt(input.value);
+        const max = parseInt(input.max) || 10;
 
-        value = Math.max(1, Math.min(max, value + delta));
-        input.value = value;
-        document.getElementById(`finalQuantity-${inputId.split('-')[1]}`).value = value;
+        const newValue = Math.max(1, Math.min(max, currentValue + delta));
+
+        if (newValue !== currentValue) {
+            input.value = newValue;
+            document.getElementById(`selectedQuantity-${productId}`).value = newValue;
+
+            // Animate the quantity change
+            input.classList.add('pulse');
+            setTimeout(() => input.classList.remove('pulse'), 300);
+        }
     }
 </script>
+

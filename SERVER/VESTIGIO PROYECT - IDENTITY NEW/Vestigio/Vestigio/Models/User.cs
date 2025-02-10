@@ -16,6 +16,7 @@ namespace Vestigio.Models
         [Range(0, int.MaxValue, ErrorMessage = "Experience points cannot be negative.")]
         public int ExpPoints { get; set; } = 0;
 
+        [DisplayFormat(DataFormatString = "{0:0.##}")]
         public double LevelProgress { get; set; } = 0;
 
         [Display(Name = "Vestigios")]
