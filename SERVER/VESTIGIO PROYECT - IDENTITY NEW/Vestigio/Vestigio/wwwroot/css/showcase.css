@@ -1,0 +1,670 @@
+﻿/* General Styles */
+body {
+    background-color: #f8f9fa;
+    color: #222222;
+    font-family: 'Poppins', sans-serif;
+}
+
+.showcase-container {
+    padding: 2rem 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Navigation Pills */
+.nav-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.nav-pills .nav-link {
+    color: #222222;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0;
+    transition: all 0.3s ease;
+}
+
+    .nav-pills .nav-link.active {
+        background-color: #222222;
+        color: #ffffff;
+    }
+
+.nav-pills .badge {
+    background-color: #f8f9fa;
+    color: #222222;
+}
+
+/* Challenge Card Styles */
+.challenge-card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+    .challenge-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .challenge-card.locked {
+        opacity: 0.7;
+    }
+
+.challenge-image {
+    height: 200px;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+}
+
+    .challenge-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.placeholder-image {
+    background-color: #e5e5e5;
+    height: 100%;
+}
+
+.challenge-card-inner {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.challenge-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.rarity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #222222;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    font-size: 0.875rem;
+}
+
+.rarity-icon {
+    font-size: 1rem;
+}
+
+.rarity-info {
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    gap:0.5rem;
+}
+
+.rarity-level {
+    font-weight: 600;
+}
+
+.rarity-name {
+    opacity: 0.8;
+}
+
+.solved-badge {
+    background: rgba(40, 167, 69, 0.9);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+    .solved-badge i {
+        font-size: 1.1rem;
+    }
+
+.challenge-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.challenge-description-preview {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+
+.challenge-rewards {
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.reward {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.btn-solve {
+    background-color: #222222;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+    .btn-solve:hover {
+        background-color: #000000;
+    }
+
+.lock-message {
+    background: #f8f9fa;
+    color: #666;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Challenge Modal Styles */
+.challenge-modal .modal-content {
+    border: none;
+}
+
+.challenge-modal .modal-header {
+    background-color: #222222;
+    color: #ffffff;
+    border-bottom: none;
+}
+
+.challenge-modal .modal-title {
+    font-weight: 600;
+}
+
+.challenge-description {
+    margin-bottom: 1.5rem;
+}
+
+.challenge-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.unlock-info {
+    background: #e9ecef;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.challenge-images {
+    margin-bottom: 1.5rem;
+}
+
+    .challenge-images img {
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+    }
+
+/* Product Card Styles */
+.product-card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    transition: all 0.3s ease;
+}
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+.product-image {
+    position: relative;
+    padding-bottom: 100%;
+    overflow: hidden;
+}
+
+    .product-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.product-rarity {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: #222222;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.product-description {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-price {
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+.btn-details {
+    background-color: #222222;
+    color: #ffffff;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+    .btn-details:hover {
+        background-color: #000000;
+    }
+
+/* Product Modal Styles */
+.product-modal .modal-dialog {
+    max-width: 1200px;
+}
+
+.product-modal .modal-content {
+    background: #ffffff;
+    border: none;
+    border-radius: 0;
+}
+
+.modal-close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    z-index: 10;
+    background: none;
+    border: none;
+    color: #222222;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+    .modal-close:hover {
+        transform: rotate(90deg);
+    }
+
+/* Gallery Styles */
+.product-gallery {
+    background: #f8f8f8;
+    min-height: 600px;
+}
+
+.gallery-container {
+    height: 100%;
+}
+
+.image-wrapper {
+    position: relative;
+    padding-bottom: 100%;
+}
+
+    .image-wrapper img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+/* Product Details Styles */
+.product-details {
+    padding: 3rem;
+    max-height: 800px;
+}
+
+.details-scroll {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.product-header {
+    margin-bottom: 2rem;
+}
+
+.product-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.product-meta {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.category-tag {
+    background: #f0f0f0;
+    color: #222222;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+/* Product Story Styles */
+.product-story {
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.description {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 1.5rem;
+}
+
+.story-details {
+    display: grid;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #666;
+}
+
+.detail-value {
+    font-weight: 500;
+}
+
+/* Size Selection Styles */
+.size-selection {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.size-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+}
+
+.size-btn {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+    .size-btn:not(.disabled):hover {
+        border-color: #222222;
+    }
+
+    .size-btn.active {
+        background: #222222;
+        border-color: #222222;
+        color: #fff;
+    }
+
+.size-label {
+    font-weight: 600;
+}
+
+.stock-indicator {
+    width: 100%;
+    height: 4px;
+    background: #e5e5e5;
+    overflow: hidden;
+}
+
+    .stock-indicator::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: var(--stock-level);
+        background: currentColor;
+        transition: width 0.3s ease;
+    }
+
+.stock-count {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+/* Purchase Section Styles */
+.purchase-section {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding-top: 2rem;
+}
+
+.price-tag {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.currency {
+    font-size: 0.875em;
+    vertical-align: super;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e5e5e5;
+    width: fit-content;
+    margin-bottom: 1.5rem;
+}
+
+.qty-btn {
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+    .qty-btn:hover {
+        color: #222222;
+    }
+
+.quantity-selector input {
+    width: 60px;
+    text-align: center;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-add-cart {
+    width: 100%;
+    background: #222222;
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+    .btn-add-cart:not(:disabled):hover {
+        background: #000000;
+    }
+
+    .btn-add-cart:disabled {
+        background: #ccc;
+    }
+
+/* Challenge Tags */
+.challenge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.challenge-tag {
+    background: #f0f0f0;
+    color: #222222;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.no-challenges {
+    color: #666;
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
+/* Custom Scrollbar */
+.details-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.details-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.details-scroll::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+    .details-scroll::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    .text-purple {
+        color: #6f42c1;
+    }
+    
+    .transition-transform {
+        transition: transform 0.3s ease;
+    }
+    
+    .btn-solve:hover .transition-transform {
+        transform: translateX(5px);
+    }
+    
+    .challenge-modal .modal-header {
+        border-bottom: 3px solid rgba(255,255,255,0.1);
+    }
+    
+    .reward {
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+    }
+    
+    .reward:hover {
+        transform: translateY(-3px);
+    }
+
+/* Responsive Adjustments */
+@@media (max-width: 991.98px) {
+    .product-details {
+        padding: 2rem;
+        max-height: none;
+    }
+
+    .details-scroll {
+        height: auto;
+        overflow: visible;
+    }
+
+    .product-gallery {
+        min-height: 400px;
+    }
+}

@@ -13,6 +13,7 @@
 
     int userLevel = user?.Level ?? 1;
     double levelProgress = user?.LevelProgress ?? 0;
+    levelProgress = Math.Round(@levelProgress, 2);
     int userExp = user?.ExpPoints ?? 0;
 }
 
