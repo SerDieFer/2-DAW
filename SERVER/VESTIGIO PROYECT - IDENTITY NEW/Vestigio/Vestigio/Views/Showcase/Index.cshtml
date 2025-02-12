@@ -9,37 +9,44 @@
     <div class="nav-container mb-5">
         <ul class="nav nav-pills d-inline-flex mx-auto" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active text-uppercase"
+                <button class="nav-link active text-uppercase d-flex align-items-center"
                         id="challenges-tab"
                         data-bs-toggle="pill"
                         data-bs-target="#challenges"
                         type="button"
                         role="tab">
-                    Challenges
-                    <span class="badge ms-2">@Model.Count</span>
+                    <span>Challenges</span>
+                    <span class="badge ms-2 d-inline-flex align-items-center justify-content-center"
+                          style="width: 1.25rem; height: 1.25rem; border-radius: 50%;">
+                        @Model.Count
+                    </span>
                 </button>
             </li>
             @if (unlockedProducts.Any())
             {
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link text-uppercase"
+                    <button class="nav-link text-uppercase d-flex align-items-center"
                             id="products-tab"
                             data-bs-toggle="pill"
                             data-bs-target="#products"
                             type="button"
                             role="tab">
-                        Collection
-                        <span class="badge ms-2">@unlockedProducts.Count</span>
+                        <span>Collection</span>
+                        <span class="badge ms-2 d-inline-flex align-items-center justify-content-center"
+                              style="width: 1.25rem; height: 1.25rem; border-radius: 50%;">
+                            @unlockedProducts.Count
+                        </span>
                     </button>
                 </li>
             }
         </ul>
     </div>
 
+
     <div class="tab-content">
         <!-- Challenges Section -->
         <div class="tab-pane fade show active" id="challenges" role="tabpanel">
-            <div class="row g-4">
+            <div class="row g-4 mb-5 pb-5">
                 @foreach (var challenge in Model)
                 {
                     var isUnlocked = challenge.RarityLevel <= userLevel &&
@@ -114,146 +121,134 @@
                             </div>
                         </div>
 
-                        <!-- Challenge Modal -->
+                        <!-- Modal Challenge -->
                         <div class="modal fade challenge-modal" id="challengeModal-@challenge.Id" tabindex="-1">
                             <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-dark text-white">
+                                    <!-- Header -->
+                                    <div class="modal-header border-bottom p-4">
                                         <div class="w-100">
-                                            <h5 class="modal-title fs-3 mb-2">@challenge.Title</h5>
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h5 class="modal-title mb-1 fs-4 fw-bold">@challenge.Title</h5>
+                                                    <div class="d-flex align-items-center gap-2 text-muted">
+                                                        <i class="fas fa-crown fs-6 text-warning"></i>
+                                                        <span class="small text-white">Level @challenge.RarityLevel - @challenge.RarityName</span>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                            <div class="d-flex align-items-center flex-row gap-3">
-                                                <div class="rarity-badge flex-row">
-                                                    <div class="rarity-icon text-warning">
-                                                        <i class="fas fa-crown"></i>
+                                    <!-- Body -->
+                                    <div class="modal-body">
+                                        <!-- Descripción y Metadatos -->
+                                        <div class="row g-4 mb-4">
+                                            <div class="col-md-5">
+                                                <h6 class="text-uppercase text-muted mb-3 small fw-bold">Description</h6>
+                                                <p class="mb-0 text-secondary">@challenge.Description</p>
+                                            </div>
+
+                                            <div class="col-md-7">
+                                                <div class="d-flex gap-3 justify-content-center">
+                                                    <div class="d-flex gap-3 align-items-center p-3 rounded">
+                                                        <i class="fas fa-calendar fs-5 text-primary"></i>
+                                                        <div>
+                                                            <p class="mb-0 small text-muted">Created</p>
+                                                            <p class="mb-0 fw-semibold">@challenge.CreationDate.ToString("dd-MM-yyyy")</p>
+                                                        </div>
                                                     </div>
-                                                    <div class="rarity-info">
-                                                        <span class="rarity-level">LEVEL @challenge.RarityLevel</span>
-                                                        <span class="rarity-name">- @challenge.RarityName</span>
-                                                    </div>
+                                                    @if (challenge.SolutionMode == SolutionMode.TimeBased && challenge.ReleaseDate.HasValue)
+                                                    {
+                                                        <div class="d-flex gap-3 align-items-center p-3 rounded">
+                                                            <i class="fas fa-clock fs-5 text-success"></i>
+                                                            <div>
+                                                                <p class="mb-0 small text-muted">Release</p>
+                                                                <p class="mb-0 fw-semibold">@challenge.ReleaseDate.Value.ToString("dd-MM-yyyy HH:mm")</p>
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                    </div>
 
-                                    <div class="modal-body p-4">
-                                        <div class="challenge-details">
-                                            <!-- Sección de Descripción -->
-                                            <section class="mb-4 d-flex flex-row">
+                                        <!-- Recompensas y Desbloqueos -->
+                                        <div class="rewards-unlocks-grid mb-4">
 
-                                                <div class="col-md-8">
-                                                    <h6 class="text-uppercase text-muted mb-3 fw-bold">Challenge Description</h6>
-                                                    <p class="challenge-description lead">@challenge.Description</p>
-                                                </div>
+                                            <div class="w-100">
+                                                <h6 class="text-uppercase text-muted small fw-bold">Rewards</h6>
+                                            </div>
 
-                                                <div class="col-md-4">
-                                                    <div class="challenge-meta gap-3" style="display: grid; grid-template-columns: 1fr;">
-                                                        <div class="meta-item p-3 bg-light">
-                                                            <i class="fas fa-calendar text-primary"></i>
-                                                            <span>Created:<br>@challenge.CreationDate.ToString("MMMM dd, yyyy")</span>
-                                                        </div>
-                                                        @if (challenge.SolutionMode == SolutionMode.TimeBased && challenge.ReleaseDate.HasValue)
-                                                        {
-                                                            <div class="meta-item p-3 bg-light">
-                                                                <i class="fas fa-clock text-success"></i>
-                                                                <span>Release:<br>@challenge.ReleaseDate.Value.ToString("MMMM dd, yyyy HH:mm")</span>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </section>
-
-                                            <!-- Sección de Recompensas -->
-                                            <div class="challenge-rewards mb-4">
-                                                <h6 class="text-uppercase text-muted mb-3 fw-bolder">Rewards</h6>
-                                                <div class="row g-3">
-                                                    <div class="col">
-                                                        <div class="reward bg-warning bg-opacity-10 p-3">
-                                                            <i class="fas fa-coins text-warning"></i>
-                                                            <div>
-                                                                <div class="fw-bold">@challenge.Coins</div>
-                                                                <small class="text-muted">Challenge Coins</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="reward bg-warning bg-opacity-10 p-3">
-                                                            <i class="fas fa-star text-purple"></i>
-                                                            <div>
-                                                                <div class="fw-bold">@challenge.ExpPoints</div>
-                                                                <small class="text-muted">Experience Points</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                            <!-- Reward 1: Challenge Coins -->
+                                            <div class="reward">
+                                                <i class="fas fa-coins fs-5 text-warning"></i>
+                                                <div>
+                                                    <p class="mb-0 fw-semibold">@challenge.Coins CC</p>
+                                                    <small class="text-muted">Challenge Coins</small>
                                                 </div>
                                             </div>
 
-                                            <!-- Sección de Desbloqueos -->
+                                            <!-- Reward 2: Experience Points -->
+                                            <div class="reward">
+                                                <i class="fas fa-star fs-5 text-purple"></i>
+                                                <div>
+                                                    <p class="mb-0 fw-semibold">@challenge.ExpPoints XP</p>
+                                                    <small class="text-muted">Experience Points</small>
+                                                </div>
+                                            </div>
+
+                                            <!-- Unlock Item -->
                                             @if (challenge.ProductLevel.HasValue || challenge.ProductId.HasValue)
                                             {
-                                                <div class="unlock-info mb-4">
-                                                    <h6 class="text-uppercase text-muted mb-3">Unlocks</h6>
-                                                    <div class="row g-3">
-                                                        @if (challenge.ProductLevel.HasValue)
-                                                        {
-                                                            <div class="col">
-                                                                <div class="d-flex align-items-center gap-3 p-3 bg-light">
-                                                                    <i class="fas fa-layer-group text-primary"></i>
-                                                                    <div>
-                                                                        <div class="fw-bold">Level @challenge.ProductLevel</div>
-                                                                        <small class="text-muted">Premium Products</small>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                        @if (challenge.ProductId.HasValue)
-                                                        {
-                                                            <div class="col">
-                                                                <div class="d-flex align-items-center gap-3 p-3 bg-light">
-                                                                    <i class="fas fa-gift text-success"></i>
-                                                                    <div>
-                                                                        <div class="fw-bold">Exclusive Product</div>
-                                                                        <small class="text-muted">Special Unlock</small>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        }
+                                                <div class="unlock-item">
+                                                    @if (challenge.ProductLevel.HasValue)
+                                                    {
+                                                        <i class="fas fa-layer-group fs-5 text-primary"></i>
+                                                        <div>
+                                                            <p class="mb-0 fw-semibold">Level @challenge.ProductLevel</p>
+                                                            <small class="text-muted">Premium Products</small>
+                                                        </div>
+                                                    }
+                                                    @if (challenge.ProductId.HasValue)
+                                                    {
+                                                        <i class="fas fa-gift fs-5 text-success"></i>
+                                                        <div>
+                                                            <p class="mb-0 fw-semibold">Exclusive</p>
+                                                            <small class="text-muted">Special Product</small>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <!-- Formulario -->
+                                        <form asp-action="SolveChallenge" method="post" class="mt-4">
+                                            <input type="hidden" name="challengeId" value="@challenge.Id" />
+
+                                            @if (challenge.SolutionMode == SolutionMode.Password)
+                                            {
+                                                <div class="mb-4">
+                                                    <label style="font-size: 0.75rem;" class="form-label mb-2 text-uppercase text-muted small fw-bold">Challenge Password</label>
+                                                    <div class="input-group">
+                                                        <input type="password"
+                                                               name="password"
+                                                               class="form-control form-control-lg border-secondary"
+                                                               placeholder="Enter password"
+                                                               required>
+                                                        <button class="btn btn-outline-secondary" type="button">
+                                                            <i class="fas fa-key"></i>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             }
 
-                                            <!-- Formulario de Solución -->
-                                            <form asp-action="SolveChallenge" method="post" class="solve-form">
-                                                <input type="hidden" name="challengeId" value="@challenge.Id" />
-
-                                                @if (challenge.SolutionMode == SolutionMode.Password)
-                                                {
-                                                    <div class="mb-4">
-                                                        <label class="form-label text-muted">Enter Challenge Password</label>
-                                                        <div class="input-group">
-                                                            <input type="password"
-                                                                   name="password"
-                                                                   class="form-control border-2 py-3"
-                                                                   placeholder="••••••••"
-                                                                   required>
-                                                            <span class="input-group-text bg-dark text-white">
-                                                                <i class="fas fa-key"></i>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                }
-
-                                                <button type="submit" class="btn-solve w-100 py-3">
-                                                    <span>Solve Challenge</span>
-                                                    <i class="fas fa-arrow-right transition-transform"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                            <button type="submit" class="btn btn-dark w-100 py-3 fw-semibold">
+                                                Solve Challenge
+                                                <i class="fas fa-arrow-right ms-2"></i>
+                                            </button>
+                                        </form>
                                     </div>
-
-
-                                     
                                 </div>
                             </div>
                         </div>
@@ -299,153 +294,120 @@
                             </div>
 
                             <!-- Product Modal -->
-                            <div class="modal fade product-modal" id="productModal-@product.Id" tabindex="-1">
+                            <div class="modal fade product-modal" id="productModal-@product.Id" tabindex="-1" aria-labelledby="productModalLabel-@product.Id" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-xl">
-                                    <div class="modal-content">
-                                        <button type="button" class="modal-close" data-bs-dismiss="modal">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-
+                                    <div class="modal-content border-0">
                                         <div class="modal-body p-0">
+                                            <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close">
+                                                <i class="fas fa-times"></i>
+                                            </button>
                                             <div class="row g-0">
-                                                <!-- Left Column - Image Gallery -->
-                                                <div class="col-lg-7 product-gallery">
-                                                    <div class="gallery-container">
-                                                        @if (product.Images?.Any() == true)
-                                                        {
-                                                            <div class="swiper-container">
-                                                                <div class="swiper-wrapper">
-                                                                    @foreach (var image in product.Images)
-                                                                    {
-                                                                        <div class="swiper-slide">
-                                                                            <div class="image-wrapper">
-                                                                                <img src="@image.Url" alt="@product.Name" class="img-fluid">
-                                                                            </div>
-                                                                        </div>
-                                                                    }
+                                                <!-- Left Column - Image Carousel -->
+                                                <div class="col-lg-6">
+                                                    <div id="productCarousel-@product.Id" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
+                                                        <div class="carousel-inner h-100" style="position: relative;">
+                                                            <span class="rarity-badge-product">
+                                                                <i class="fas fa-gem rarity-icon"></i>
+                                                                @product.RarityName
+                                                            </span>
+                                                            @foreach (var image in product.Images.Select((value, index) => new { value, index }))
+                                                            {
+                                                                <div class="h-100 carousel-item @(image.index == 0 ? "active" : "")">
+                                                                    <img src="@image.value.Url" class="d-block w-100" alt="@product.Name" style="object-fit: cover; height: 100%;">
                                                                 </div>
-                                                                <div class="swiper-pagination"></div>
-                                                                <div class="swiper-button-prev"></div>
-                                                                <div class="swiper-button-next"></div>
-                                                            </div>
-                                                        }
+                                                            }
+                                                        </div>
+                                                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel-@product.Id" data-bs-slide="prev">
+                                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                            <span class="visually-hidden">Previous</span>
+                                                        </button>
+                                                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel-@product.Id" data-bs-slide="next">
+                                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                            <span class="visually-hidden">Next</span>
+                                                        </button>
                                                     </div>
                                                 </div>
 
                                                 <!-- Right Column - Product Details -->
-                                                <div class="col-lg-5 product-details">
+                                                <div class="col-lg-6 product-details">
                                                     <div class="details-scroll">
-                                                        <!-- Product Header -->
                                                         <div class="product-header">
-                                                            <div class="rarity-badge" data-level="@product.RarityLevel">
-                                                                <div class="rarity-icon">
-                                                                    <i class="fas fa-diamond"></i>
-                                                                </div>
-                                                                <div class="rarity-info">
-                                                                    <span class="rarity-level">Level @product.RarityLevel</span>
-                                                                    <span class="rarity-name">@product.RarityName</span>
-                                                                </div>
-                                                            </div>
-
                                                             <h2 class="product-title">@product.Name</h2>
-
-                                                            <div class="product-meta">
-                                                                <span class="discovery-date">
-                                                                    <i class="fas fa-calendar"></i>
-                                                                    Discovered @product.CreationDate.ToString("MMMM dd, yyyy")
-                                                                </span>
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <span class="price-tag">@product.Price.ToString("C")</span>
                                                             </div>
 
                                                             <!-- Categories -->
                                                             <div class="category-tags">
-                                                                @foreach (var category in product.ProductCategories)
+                                                                @foreach (var productCategory in product.ProductCategories) 
                                                                 {
-                                                                    <span class="category-tag">@category.Category.Name</span>
+                                                                    <span class="category-tag">@productCategory.Category.Name</span>
                                                                 }
                                                             </div>
                                                         </div>
 
-                                                        <!-- Product Story -->
                                                         <div class="product-story">
-                                                            <div class="story-content">
-                                                                <p class="description">@product.Description</p>
-
-                                                                <div class="story-details">
-                                                                    <div class="detail-item">
-                                                                        <span class="detail-label">Total Stock</span>
-                                                                        <span class="detail-value">@product.TotalStock pieces available</span>
-                                                                    </div>
-
-                                                                    <div class="detail-item">
-                                                                        <span class="detail-label">Associated Challenges</span>
-                                                                        <div class="challenge-list">
-                                                                            @if (product.Challenges?.Any() == true)
-                                                                            {
-                                                                                @foreach (var challenge in product.Challenges)
-                                                                                {
-                                                                                    <span class="challenge-tag">@challenge.Title</span>
-                                                                                }
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                <span class="no-challenges">No associated challenges</span>
-                                                                            }
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            <h3 class="section-title">Description</h3>
+                                                            <p class="description">@product.Description</p>
                                                         </div>
 
-                                                        <!-- Size Selection -->
-                                                        <div class="size-selection">
-                                                            <h3 class="section-title">Select Your Size</h3>
+                                                        <!-- Sizes -->
+                                                        <div>
+                                                            <div class="d-flex justify-content-between text-muted small py-4">
+                                                                <span><i class="fas fa-box-open me-2"></i>Total stock: @product.TotalStock</span>
+                                                                <span><i class="fas fa-calendar-alt me-2"></i>Released: @product.CreationDate.ToString("dd-MM-yyyy")</span>
+                                                            </div>
+                                                            <h3 class="section-title">Available sizes</h3>
                                                             <div class="size-grid">
                                                                 @foreach (var size in product.ProductSizes.OrderBy(s => s.Size))
                                                                 {
-                                                                    <button type="button"
-                                                                            class="size-btn @(!size.IsActive || size.Stock <= 0 ? "disabled" : "")"
-                                                                            data-size-id="@size.Id"
+                                                                    <button class="size-btn @(size.Stock <= 0 ? "disabled" : "")"
                                                                             data-stock="@size.Stock"
-                                                                            onclick="selectSize(this, @product.Id)">
+                                                                            data-size-id="@size.Id"
+                                                                            onclick="@(size.Stock > 0 ? $"selectSize(this, {product.Id})" : "")">
                                                                         <span class="size-label">@size.Size</span>
-                                                                        <span class="stock-indicator" style="--stock-level: @(size.Stock * 100 / Math.Max(size.Stock, 20))%">
-                                                                            <span class="stock-count">@size.Stock left</span>
-                                                                        </span>
+                                                                        <div class="stock-indicator" style="--stock-level: @((size.Stock * 100)/product.TotalStock)%"></div>
+                                                                        <span class="stock-count">@size.Stock units</span>
                                                                     </button>
                                                                 }
                                                             </div>
                                                         </div>
 
-                                                        <!-- Purchase Section -->
-                                                        <div class="purchase-section">
-                                                            <div class="price-tag">
-                                                                <span class="currency">$</span>
-                                                                <span class="amount">@product.Price.ToString("N2")</span>
-                                                            </div>
+                                                        <!-- Quantity and Add to Cart -->
+                                                        <div>
+                                                            <div class="d-flex justify-content-between align-items-center py-4">
+                                                                <!-- Quantity Selector (Left) -->
+                                                                <div class="quantity-custom-selector d-flex">
+                                                                    <button class="qty-btn" onclick="adjustQuantity(@product.Id, -1)">
+                                                                        <i class="fas fa-minus"></i>
+                                                                    </button>
+                                                                    <input type="text"
+                                                                           id="quantity-1"
+                                                                           value="1"
+                                                                           min="1"
+                                                                           max="85"
+                                                                           inputmode="numeric"
+                                                                           pattern="[0-9]*"
+                                                                           class="form-control text-center border-0 w-50"
+                                                                           onchange="validateQuantity(1)">
+                                                                    <button class="qty-btn" onclick="adjustQuantity(@product.Id, 1)">
+                                                                        <i class="fas fa-plus"></i>
+                                                                    </button>
+                                                                </div>
 
-                                                            <div class="quantity-selector">
-                                                                <button class="qty-btn" onclick="adjustQuantity(@product.Id, -1)">
-                                                                    <i class="fas fa-minus"></i>
-                                                                </button>
-                                                                <input type="number"
-                                                                       id="quantity-@product.Id"
-                                                                       value="1"
-                                                                       min="1"
-                                                                       readonly>
-                                                                <button class="qty-btn" onclick="adjustQuantity(@product.Id, 1)">
-                                                                    <i class="fas fa-plus"></i>
+                                                                <!-- Hidden Inputs for Selected Size and Quantity -->
+                                                                <input type="hidden" id="selectedSize-@product.Id" name="selectedSize" value="">
+                                                                <input type="hidden" id="selectedQuantity-@product.Id" name="selectedQuantity" value="">
+
+                                                                <!-- Add to Cart Button (Right) -->
+                                                                <button class="w-50 btn-add-cart d-flex align-items-center" disabled>
+                                                                    <i class="fas fa-shopping-cart me-2"></i>
+                                                                    Add to cart
                                                                 </button>
                                                             </div>
-
-                                                            <form asp-action="AddToCart" method="post" class="add-to-cart-form">
-                                                                <input type="hidden" name="productSizeId" id="selectedSize-@product.Id">
-                                                                <input type="hidden" name="quantity" id="selectedQuantity-@product.Id">
-                                                                <button type="submit" class="btn-add-cart" disabled>
-                                                                    <span class="btn-text">Add to Collection</span>
-                                                                    <i class="fas fa-arrow-right"></i>
-                                                                </button>
-                                                            </form>
                                                         </div>
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -466,40 +428,38 @@
 }
 
 <script>
-    // Initialize Swiper for image gallery
-    document.addEventListener('DOMContentLoaded', function() {
-        const productSwipers = document.querySelectorAll('.product-modal .swiper-container');
-        productSwipers.forEach(container => {
-            new Swiper(container, {
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                loop: true
-            });
-        });
+    // Function to adjust quantity
+    function adjustQuantity(productId, amount) {
+        const input = document.getElementById(`quantity-${productId}`);
+        const currentValue = parseInt(input.value);
+        const max = parseInt(input.max) || Infinity;
+        const newValue = currentValue + amount;
 
-        const challengeSwipers = document.querySelectorAll('.challenge-modal .swiper-container');
-        challengeSwipers.forEach(container => {
-            new Swiper(container, {
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true
-                },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                loop: true
-            });
-        });
-    });
+        // Ensure quantity stays within bounds
+        if (newValue < 1 || newValue > max) return;
+        input.value = newValue;
 
-    // Enhanced size selection
+        // Update the hidden input for selected quantity
+        document.getElementById(`selectedQuantity-${productId}`).value = newValue;
+    }
+
+    // Function to validate quantity when manually typed
+    function validateQuantity(productId) {
+        const input = document.getElementById(`quantity-${productId}`);
+        const max = parseInt(input.max) || Infinity;
+        let value = parseInt(input.value);
+
+        // Ensure quantity is within bounds
+        if (isNaN(value) || value < 1) value = 1;
+        if (value > max) value = max;
+
+        input.value = value;
+
+        // Update the hidden input for selected quantity
+        document.getElementById(`selectedQuantity-${productId}`).value = value;
+    }
+
+    // Function to handle size selection
     function selectSize(btn, productId) {
         const sizeButtons = btn.closest('.size-grid').querySelectorAll('.size-btn');
         sizeButtons.forEach(b => b.classList.remove('active'));
@@ -510,33 +470,21 @@
         const quantityInput = document.getElementById(`quantity-${productId}`);
         const addToCartBtn = btn.closest('.product-details').querySelector('.btn-add-cart');
 
+        // Update quantity constraints
+        quantityInput.max = stock;
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > stock) quantityInput.value = stock;
+        if (currentValue < 1) quantityInput.value = 1;
+
+        // Update hidden inputs
         document.getElementById(`selectedSize-${productId}`).value = sizeId;
         document.getElementById(`selectedQuantity-${productId}`).value = quantityInput.value;
 
-        quantityInput.max = stock;
+        // Enable add to cart button
         addToCartBtn.disabled = false;
 
         // Animate the button
         addToCartBtn.classList.add('pulse');
         setTimeout(() => addToCartBtn.classList.remove('pulse'), 500);
     }
-
-    // Enhanced quantity adjustment
-    function adjustQuantity(productId, delta) {
-        const input = document.getElementById(`quantity-${productId}`);
-        const currentValue = parseInt(input.value);
-        const max = parseInt(input.max) || 10;
-
-        const newValue = Math.max(1, Math.min(max, currentValue + delta));
-
-        if (newValue !== currentValue) {
-            input.value = newValue;
-            document.getElementById(`selectedQuantity-${productId}`).value = newValue;
-
-            // Animate the quantity change
-            input.classList.add('pulse');
-            setTimeout(() => input.classList.remove('pulse'), 300);
-        }
-    }
 </script>
-

@@ -54,6 +54,8 @@ namespace Vestigio.Controllers
                     var unlockedProducts = await _context.Products
                         .Include(p => p.Images)
                         .Include(p => p.ProductSizes)
+                        .Include(p => p.ProductCategories)
+                            .ThenInclude(pc => pc.Category)
                         .Where(p => p.IsActive &&
                             (unlockedProductIds.Contains(p.Id) || unlockedLevels.Contains(p.RarityLevel)))
                         .ToListAsync();
