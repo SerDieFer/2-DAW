@@ -1,0 +1,19 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.cuadrado {
+    width: 200px;
+    height: 200px;
+    background-color: red;
+    transition: transform 2s, background-color 2s;
+}
+
+.cuadrado:hover {
+    transform: rotate(45deg);
+    background-color: blue;
+}

@@ -1,0 +1,224 @@
+$neon-green: #7CFC00;
+$dark-bg: #0a0a0a;
+$accent-red: #FF4655;
+$street-gray: #1a1a1a;
+$font-title: 'Poppins';
+$font-body: 'Arial';
+$border-radius: 4px;
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+@mixin hover-effect {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+@mixin text-outline($color) {
+    text-shadow: 
+        -1px -1px 0 $color,
+        1px -1px 0 $color,
+        -1px 1px 0 $color,
+        1px 1px 0 $color;
+}
+
+body {
+    background: $dark-bg;
+    color: white;
+    font-family: $font-body;
+    overflow-x: hidden;
+}
+
+.sticky-nav {
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    padding: 2rem 0;
+    border-bottom: 1px solid $neon-green;
+
+    .nav-links {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        list-style: none;
+        padding: 0;
+    }
+
+    .nav-link {
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        position: relative;
+        transition: $transition;
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: $neon-green;
+            transition: $transition;
+        }
+
+        &:hover {
+            color: $neon-green;
+            &::after { width: 100%; }
+        }
+    }
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
+    gap: 3rem;
+    padding: 4rem;
+}
+
+.product-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: $border-radius;
+    transition: $transition;
+
+    &:hover {
+        @include hover-effect;
+
+        .product-image { transform: scale(1.05); }
+        .quick-shop { bottom: 20px; }
+    }
+
+    .card-inner {
+        background: $street-gray;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+}
+
+.product-media {
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        padding: 1rem;
+        object-fit: contain;
+        transition: $transition;
+    }
+}
+
+.quick-shop {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: $neon-green;
+    color: $dark-bg;
+    border: none;
+    padding: 1rem 2rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+    transition: $transition;
+    cursor: pointer;
+}
+
+.product-info {
+    padding: 1.5rem;
+
+    .product-title {
+        font-family: $font-title;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .product-price {
+        color: $neon-green;
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+}
+
+.product-tags {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 0.5rem;
+
+    .tag {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        font-weight: bold;
+
+        &.limited {
+            background: $accent-red;
+            color: white;
+        }
+
+        &.new {
+            background: $neon-green;
+            color: $dark-bg;
+        }
+    }
+}
+
+.collection-banner {
+    height: 600px;
+    background: url('img/collection-bg.jpg') center/cover;
+    position: relative;
+    margin: 4rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(0,0,0,0.8), rgba(124,252,0,0.2));
+    }
+
+    .banner-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+
+        h2 {
+            font-family: $font-title;
+            font-size: 4rem;
+            letter-spacing: 0.3rem;
+            margin-bottom: 2rem;
+        }
+    }
+}
+
+.btn-explore {
+    background: transparent;
+    border: 2px solid $neon-green;
+    color: $neon-green;
+    padding: 1rem 3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    font-weight: bold;
+    transition: $transition;
+
+    &:hover {
+        background: $neon-green;
+        color: $dark-bg;
+    }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+    .hero-title { font-size: 4rem; }
+    .sticky-nav .nav-links { gap: 1.5rem; }
+    .product-grid { grid-template-columns: 1fr; }
+}

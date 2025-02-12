@@ -1,0 +1,25 @@
+body {
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+input {
+    width: 250px;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    background-color: white;
+    border-radius: 0;
+    outline: none;
+    transition: all 1s;
+}
+
+input:focus {
+    background-color: #e0f2ff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    border-color: #007bff;
+}
