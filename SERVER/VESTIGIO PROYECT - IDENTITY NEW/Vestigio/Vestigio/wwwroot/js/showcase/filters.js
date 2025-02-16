@@ -101,42 +101,42 @@ function initializeFilters() {
         offcanvas.show(); // Forzar reapertura
     }
 
-    async function fetchTabContent() {
-        try {
-            const params = new URLSearchParams();
-            Array.from(filterForm.elements)
-                .filter(el => el.closest(`#${currentTab}Filters`))
-                .forEach(el => {
-                    if (el.name) {
-                        if (el.type === 'checkbox') {
-                            if (el.checked) {
-                                params.append(el.name, el.value);
-                            }
-                        } else if (el.value) {
+async function fetchTabContent() {
+    try {
+        const params = new URLSearchParams();
+        Array.from(filterForm.elements)
+            .filter(el => el.closest(`#${currentTab}Filters`))
+            .forEach(el => {
+                if (el.name) {
+                    if (el.type === 'checkbox') {
+                        if (el.checked) {
                             params.append(el.name, el.value);
                         }
+                    } else if (el.value) {
+                        params.append(el.name, el.value);
                     }
-                });
-
-            params.append("activeTab", currentTab);
-
-            const response = await fetch(`?${params.toString()}`, {
-                headers: { "X-Requested-With": "XMLHttpRequest" }
+                }
             });
 
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        params.append("activeTab", currentTab);
 
-            tabContent.innerHTML = await response.text();
-            history.replaceState({}, "", `?${params.toString()}`);
+        const response = await fetch(`?${params.toString()}`, {
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        });
 
-            window.dispatchEvent(new CustomEvent("contentUpdated", {
-                detail: { tab: currentTab }
-            }));
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-        } catch (error) {
-            console.error("Error loading content:", error);
-        }
+        tabContent.innerHTML = await response.text();
+        history.replaceState({}, "", `?${params.toString()}`);
+
+        window.dispatchEvent(new CustomEvent("contentUpdated", {
+            detail: { tab: currentTab }
+        }));
+
+    } catch (error) {
+        console.error("Error loading content:", error);
     }
+}
 
     function updateFilterVisibility() {
         document.querySelectorAll(".filter-section").forEach(section => {
