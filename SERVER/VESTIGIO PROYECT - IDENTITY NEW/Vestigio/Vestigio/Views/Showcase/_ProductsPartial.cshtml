@@ -1,0 +1,37 @@
+﻿@model List<Product>
+<div class="row g-4">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="product-card">
+                <div class="product-image">
+                    @if (product.Images?.Any() == true)
+                    {
+                        <img src="@product.Images.First().Url" alt="@product.Name" class="img-fluid">
+                    }
+                    <div class="product-rarity" data-level="@product.RarityLevel">
+                        <i class="fas fa-diamond"></i>
+                        <span>@product.RarityName</span>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">@product.Name</h3>
+                    <p class="product-description">
+                        @product.Description.Substring(0, Math.Min(100, product.Description.Length))...
+                    </p>
+                    <div class="product-footer">
+                        <span class="product-price">@product.Price.ToString("C")</span>
+                        <button class="btn-details" data-bs-toggle="modal" data-bs-target="#productModal-@product.Id">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("_ProductModal", product)
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/js/showcase/products_interactions.js" asp-append-version="true"></script>
+}

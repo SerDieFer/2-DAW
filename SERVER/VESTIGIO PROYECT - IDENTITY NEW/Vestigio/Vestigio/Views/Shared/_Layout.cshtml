@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Vestigio</title>
+    <title>@ViewData["Title"]Vestigio</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -143,13 +143,16 @@
         <!-- Elementos de navegación -->
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                <!-- Inicio (visible para todos) -->
-                <li class="nav-item mx-2">
-                    <a class="nav-link hover-underline" asp-controller="Showcase" asp-action="Index">
-                        <i class="bi bi-house-door me-1"></i>
-                        Showcase
-                    </a>
-                </li>
+                <!-- Inicio (visible solo para usuarios que NO son administradores) -->
+                @if (!User.IsInRole("Admin"))
+                {
+                    <li class="nav-item mx-2">
+                        <a class="nav-link hover-underline" asp-controller="Showcase" asp-action="Index">
+                            <i class="bi bi-house-door me-1"></i>
+                            Showcase
+                        </a>
+                    </li>
+                }
 
                 <!-- Menú para administradores -->
                 @if (User.IsInRole("Admin"))
@@ -195,7 +198,7 @@
     <main class="flex-grow-1">
         <div class="container py-5">
             @RenderBody()
-            @RenderSection("Styles", false)
+            @await RenderSectionAsync("Styles", required: false)
         </div>
     </main>
 
