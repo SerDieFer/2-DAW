@@ -78,9 +78,11 @@
 
                                     <div class="d-flex justify-content-between align-items-center py-4">
                                         <div class="quantity-custom-selector d-flex">
+
                                             <button type="button" class="qty-btn qty-decrease">
                                                 <i class="fas fa-minus"></i>
                                             </button>
+
                                             <input type="text"
                                                    id="quantity-@Model.Id"
                                                    data-product-id="@Model.Id"
@@ -89,10 +91,12 @@
                                                    inputmode="numeric"
                                                    pattern="[0-9]*"
                                                    aria-label="Cantidad">
+
                                             <button type="button" class="qty-btn qty-increase">
                                                 <i class="fas fa-plus"></i>
                                             </button>
                                         </div>
+
                                         <button type="submit" class="w-50 btn-add-cart d-flex align-items-center" disabled>
                                             <i class="fas fa-shopping-cart me-2"></i>
                                             Add to cart

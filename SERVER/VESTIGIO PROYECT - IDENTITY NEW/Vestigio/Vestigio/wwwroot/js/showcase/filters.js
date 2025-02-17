@@ -57,7 +57,7 @@ function initializeFilters() {
         resetButton.addEventListener("click", handleReset);
         filterForm.addEventListener("submit", handleFormSubmit);
 
-        const debouncedFetch = debounce(fetchTabContent, 300);
+        const debouncedFetch = debounce(fetchTabContent, 10);
         filterForm.addEventListener('input', debouncedFetch);
         filterForm.addEventListener('change', debouncedFetch);
     }
@@ -147,17 +147,17 @@ function initializeFilters() {
     }
 
     async function fetchTabContent() {
-        console.log(`Cargando contenido para la pestaña: ${currentTab}`);
+        //console.log(`Cargando contenido para la pestaña: ${currentTab}`);
         try {
             const params = new URLSearchParams();
             const section = document.getElementById(`${currentTab}Filters`);
             if (!section) {
-                console.warn(`No se encontró la sección de filtros para ${currentTab}`);
+                //console.warn(`No se encontró la sección de filtros para ${currentTab}`);
                 return;
             }
 
             const controls = section.querySelectorAll("input, select, textarea");
-            console.log("Controles encontrados:", controls);
+            //console.log("Controles encontrados:", controls);
             const selectedCategories = [];
 
             // Limpiar las categorías previas antes de agregar nuevas
@@ -170,12 +170,9 @@ function initializeFilters() {
                 if (el.type === 'checkbox') {
                     // Si está marcado, añadimos a los parámetros
                     if (el.checked) {
-                        console.log(`Categoría seleccionada: ${el.value}`);
+                        //console.log(`Categoría seleccionada: ${el.value}`);
                         params.append("categories", el.value); // Usamos 'categories' como nombre de parámetro
                         selectedCategories.push(el.value); // Guardamos la categoría seleccionada
-                    } else {
-                        // Si no está marcado, no hacemos nada (no la añadimos a la URL)
-                        console.log(`Categoría desmarcada: ${el.value}`);
                     }
                 }
                 else if (el.tagName === 'SELECT' && el.value) {
@@ -186,18 +183,18 @@ function initializeFilters() {
                 }
             });
 
-            console.log("Categorías seleccionadas:", selectedCategories); // Log de categorías seleccionadas
+            //console.log("Categorías seleccionadas:", selectedCategories); // Log de categorías seleccionadas
 
             params.append("activeTab", currentTab);
-            console.log("Parámetros enviados:", params.toString());
+            //console.log("Parámetros enviados:", params.toString());
 
             const response = await fetch(`/Showcase/Index?${params.toString()}`, {
                 headers: { "X-Requested-With": "XMLHttpRequest" }
             });
-            console.log("Respuesta HTTP:", response.status);
+            //console.log("Respuesta HTTP:", response.status);
             if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
             const content = await response.text();
-            console.log("Contenido recibido:", content);
+            //console.log("Contenido recibido:", content);
             document.getElementById("tabContent").innerHTML = content;
             history.replaceState({}, "", `?${params.toString()}`);
             window.dispatchEvent(new CustomEvent("contentUpdated", { detail: { tab: currentTab } }));
@@ -213,7 +210,7 @@ function initializeFilters() {
         });
     }
 
-    function debounce(func, timeout = 300) {
+    function debounce(func, timeout = 10) {
         let timer;
         return (...args) => {
             clearTimeout(timer);
