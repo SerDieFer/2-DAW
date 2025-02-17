@@ -10,10 +10,10 @@
     </div>
     <div class="offcanvas-body">
         <form id="filterForm" method="get">
-            <input type="hidden" name="activeTab" id="activeTab" value="@activeTab">
+            <input type="hidden" name="activeTab" id="activeTab" value="@activeTab" />
 
             <!-- Filtros Challenges -->
-            <div class="filter-section" id="challengesFilters" style="@(activeTab == "challenges" ? "display:block" : "display:none")">
+            <div class="filter-section" id="challengesFilters" style='@(activeTab == "challenges" ? "display:block;" : "display:none;")'>
                 <div class="mb-3">
                     <label class="form-label">Nivel del desafío</label>
                     <div class="row g-2">
@@ -24,16 +24,16 @@
                                    placeholder="Mín"
                                    value="@filters?.MinLevel"
                                    min="1"
-                                   max="10">
+                                   max="10" />
                         </div>
                         <div class="col">
                             <input type="number"
                                    name="maxLevel"  
                                    class="form-control"
-                                   placeholder="Mín"
+                                   placeholder="Máx"
                                    value="@filters?.MaxLevel"
                                    min="1"
-                                   max="10">
+                                   max="10" />
                         </div>
                     </div>
                 </div>
@@ -41,8 +41,8 @@
                     <label class="form-label">Tipo de solución</label>
                     <select class="form-select" name="solutionType">
                         <option value="">Todos</option>
-                        <option value="Password" selected="@(filters?.SolutionType == "Password" ? "selected" : null)">Contraseña</option>
-                        <option value="TimeBased" selected="@(filters?.SolutionType == "TimeBased" ? "selected" : null)">Tiempo</option>
+                        <option value="Password" selected=@(filters?.SolutionType == "Password" ? "selected" : "")>Contraseña</option>
+                        <option value="TimeBased" selected=@(filters?.SolutionType == "TimeBased" ? "selected" : "")>Tiempo</option>
                     </select>
                 </div>
                 <!-- Filtro de XP -->
@@ -55,15 +55,15 @@
                                    class="form-control"
                                    placeholder="Mín"
                                    value="@filters?.MinXP"
-                                   min="0">
+                                   min="0" />
                         </div>
                         <div class="col">
                             <input type="number"
                                    name="maxXP"
                                    class="form-control"
-                                   placeholder="Mín"
+                                   placeholder="Máx"
                                    value="@filters?.MaxXP"
-                                   min="0">
+                                   min="0" />
                         </div>
                     </div>
                 </div>
@@ -77,15 +77,15 @@
                                    class="form-control"
                                    placeholder="Mín"
                                    value="@filters?.MinCoins"
-                                   min="0">
+                                   min="0" />
                         </div>
                         <div class="col">
                             <input type="number"
                                    name="maxCoins"
                                    class="form-control"
-                                   placeholder="Max"
+                                   placeholder="Máx"
                                    value="@filters?.MaxCoins"
-                                   min="0">
+                                   min="0" />
                         </div>
                     </div>
                 </div>
@@ -93,35 +93,35 @@
                     <label class="form-label">Status</label>
                     <select class="form-select" name="showSolved">
                         <option value="">All</option>
-                        <option value="true" selected="@(filters?.ShowSolved == true ? "selected" : null)">Solved</option>
-                        <option value="false" selected="@(filters?.ShowSolved == false ? "selected" : null)">Unsolved</option>
+                        <option value="true" selected=@(filters?.ShowSolved == true ? "selected" : "")>Solved</option>
+                        <option value="false" selected=@(filters?.ShowSolved == false ? "selected" : "")>Unsolved</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Ordenar por</label>
                     <select class="form-select" name="challengeSort">
-                        <option value="level_asc" selected="@(filters?.ChallengeSort == "level_asc")">Nivel (Asc)</option>
-                        <option value="level_desc" selected="@(filters?.ChallengeSort == "level_desc")">Nivel (Desc)</option>
-                        <option value="date_asc" selected="@(filters?.ChallengeSort == "date_asc")">Fecha (Asc)</option>
-                        <option value="date_desc" selected="@(filters?.ChallengeSort == "date_desc")">Fecha (Desc)</option>
+                        <option value="level_asc" selected=@(filters?.ChallengeSort == "level_asc" ? "selected" : "")>Nivel (Asc)</option>
+                        <option value="level_desc" selected=@(filters?.ChallengeSort == "level_desc" ? "selected" : "")>Nivel (Desc)</option>
+                        <option value="date_asc" selected=@(filters?.ChallengeSort == "date_asc" ? "selected" : "")>Fecha (Asc)</option>
+                        <option value="date_desc" selected=@(filters?.ChallengeSort == "date_desc" ? "selected" : "")>Fecha (Desc)</option>
                     </select>
                 </div>
             </div>
 
             <!-- Filtros Productos -->
-            <div class ="filter-section" id="productsFilters" style="@(activeTab == "products" ? "display:block" : "display:none")">
+            <div class="filter-section" id="productsFilters" style='@(activeTab == "products" ? "display:block;" : "display:none;")'>
                 <div class="mb-3">
                     <label class="form-label">Precio</label>
                     <div class="row g-2">
                         <div class="col">
                             <input type="number" name="minPrice" class="form-control"
                                    placeholder="Mín" value="@filters?.MinPrice"
-                                   min="0" step="0.01">
+                                   min="0" step="0.01" />
                         </div>
                         <div class="col">
                             <input type="number" name="maxPrice" class="form-control"
                                    placeholder="Máx" value="@filters?.MaxPrice"
-                                   min="0" step="0.01">
+                                   min="0" step="0.01" />
                         </div>
                     </div>
                 </div>
@@ -132,9 +132,9 @@
                     {
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox"
-                                   name="categories" value="@category.Id"
+                                   name="categories[]" value="@category.Id"
                                    id="category-@category.Id"
-                            @(filters?.Categories?.Contains(category.Id) == true ? "checked" : "")>
+                            @(filters?.Categories?.Contains(category.Id) == true ? "checked" : "") />
                             <label class="form-check-label" for="category-@category.Id">
                                 @category.Name
                             </label>
@@ -144,10 +144,10 @@
                 <div class="mb-3">
                     <label class="form-label">Ordenar por</label>
                     <select class="form-select" name="productSort">
-                        <option value="price_asc" selected="@(filters?.ProductSort == "price_asc")">Precio (Asc)</option>
-                        <option value="price_desc" selected="@(filters?.ProductSort == "price_desc")">Precio (Desc)</option>
-                        <option value="rarity_asc" selected="@(filters?.ProductSort == "rarity_asc")">Rareza (Asc)</option>
-                        <option value="rarity_desc" selected="@(filters?.ProductSort == "rarity_desc")">Rareza (Desc)</option>
+                        <option value="price_asc" selected=@(filters?.ProductSort == "price_asc" ? "selected" : "")>Precio (Asc)</option>
+                        <option value="price_desc" selected=@(filters?.ProductSort == "price_desc" ? "selected" : "")>Precio (Desc)</option>
+                        <option value="rarity_asc" selected=@(filters?.ProductSort == "rarity_asc" ? "selected" : "")>Rareza (Asc)</option>
+                        <option value="rarity_desc" selected=@(filters?.ProductSort == "rarity_desc" ? "selected" : "")>Rareza (Desc)</option>
                     </select>
                 </div>
             </div>
@@ -161,5 +161,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/showcase/filters.js" asp-append-version="true"></script>
+    <script type="module" src="~/js/showcase/filters.js" asp-append-version="true"></script>
 }
