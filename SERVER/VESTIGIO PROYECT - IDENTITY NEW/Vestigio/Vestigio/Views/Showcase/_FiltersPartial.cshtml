@@ -10,6 +10,7 @@
     </div>
     <div class="offcanvas-body">
         <form id="filterForm" method="get">
+            <input type="hidden" name="activeTab" id="activeTab" value="@activeTab" />
 
             <!-- Filtros Challenges -->
             <div class="filter-section" id="challengesFilters" style='@(activeTab == "challenges" ? "display:block;" : "display:none;")'>
@@ -40,8 +41,8 @@
                     <label class="form-label">Tipo de solución</label>
                     <select class="form-select" name="solutionType">
                         <option value="">Todos</option>
-                        <option value="Password" selected='@(filters?.SolutionType == "Password" ? "selected" : null)'>Contraseña</option>
-                        <option value="TimeBased" selected='@(filters?.SolutionType == "TimeBased" ? "selected" : null)'>Tiempo</option>
+                        <option value="Password" selected=@(filters?.SolutionType == "Password" ? "selected" : "")>Contraseña</option>
+                        <option value="TimeBased" selected=@(filters?.SolutionType == "TimeBased" ? "selected" : "")>Tiempo</option>
                     </select>
                 </div>
                 <!-- Filtro de XP -->
@@ -92,17 +93,17 @@
                     <label class="form-label">Status</label>
                     <select class="form-select" name="showSolved">
                         <option value="">All</option>
-                        <option value="true" selected=@(filters?.ShowSolved == true ? "selected" : null)>Solved</option>
-                        <option value="false" selected=@(filters?.ShowSolved == false ? "selected" : null)>Unsolved</option>
+                        <option value="true" selected=@(filters?.ShowSolved == true ? "selected" : "")>Solved</option>
+                        <option value="false" selected=@(filters?.ShowSolved == false ? "selected" : "")>Unsolved</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Ordenar por</label>
                     <select class="form-select" name="challengeSort">
-                        <option value="level_asc" selected='@(filters?.ChallengeSort == "level_asc" || filters?.ChallengeSort == null ? "selected" : null)'>Nivel (Asc)</option>
-                        <option value="level_desc" selected='@(filters?.ChallengeSort == "level_desc" ? "selected" : null)'>Nivel (Desc)</option>
-                        <option value="date_asc" selected='@(filters?.ChallengeSort == "date_asc" ? "selected" : null)'>Fecha (Asc)</option>
-                        <option value="date_desc" selected='@(filters?.ChallengeSort == "date_desc" ? "selected" : null)'>Fecha (Desc)</option>
+                        <option value="level_asc" selected=@(filters?.ChallengeSort == "level_asc" ? "selected" : "")>Nivel (Asc)</option>
+                        <option value="level_desc" selected=@(filters?.ChallengeSort == "level_desc" ? "selected" : "")>Nivel (Desc)</option>
+                        <option value="date_asc" selected=@(filters?.ChallengeSort == "date_asc" ? "selected" : "")>Fecha (Asc)</option>
+                        <option value="date_desc" selected=@(filters?.ChallengeSort == "date_desc" ? "selected" : "")>Fecha (Desc)</option>
                     </select>
                 </div>
             </div>
@@ -130,11 +131,10 @@
                     @foreach (var category in validCategories)
                     {
                         <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   name="categories"
-                                   value="@category.Id"
-                            @(filters?.Categories?.Contains(category.Id) == true ? "checked" : "")>
+                            <input class="form-check-input" type="checkbox"
+                                   name="categories[]" value="@category.Id"
+                                   id="category-@category.Id"
+                            @(filters?.Categories?.Contains(category.Id) == true ? "checked" : "") />
                             <label class="form-check-label" for="category-@category.Id">
                                 @category.Name
                             </label>
@@ -144,10 +144,10 @@
                 <div class="mb-3">
                     <label class="form-label">Ordenar por</label>
                     <select class="form-select" name="productSort">
-                        <option value="price_asc" selected='@(filters?.ProductSort == "price_asc" || filters?.ProductSort == null ? "selected" : null)'>Precio (Asc)</option>
-                        <option value="price_desc" selected='@(filters?.ProductSort == "price_desc" ? "selected" : null)'>Precio (Desc)</option>
-                        <option value="rarity_asc" selected='@(filters?.ProductSort == "rarity_asc" ? "selected" : null)'>Rareza (Asc)</option>
-                        <option value="rarity_desc" selected='@(filters?.ProductSort == "rarity_desc" ? "selected" : null)'>Rareza (Desc)</option>
+                        <option value="price_asc" selected=@(filters?.ProductSort == "price_asc" ? "selected" : "")>Precio (Asc)</option>
+                        <option value="price_desc" selected=@(filters?.ProductSort == "price_desc" ? "selected" : "")>Precio (Desc)</option>
+                        <option value="rarity_asc" selected=@(filters?.ProductSort == "rarity_asc" ? "selected" : "")>Rareza (Asc)</option>
+                        <option value="rarity_desc" selected=@(filters?.ProductSort == "rarity_desc" ? "selected" : "")>Rareza (Desc)</option>
                     </select>
                 </div>
             </div>
@@ -159,3 +159,7 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script type="module" src="~/js/showcase/filters.js" asp-append-version="true"></script>
+}

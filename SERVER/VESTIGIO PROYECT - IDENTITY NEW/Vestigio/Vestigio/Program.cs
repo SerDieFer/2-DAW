@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using Vestigio.Data;
 using Vestigio.Models;
-using Vestigio.Services;
+using Vestigio.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ??
@@ -82,12 +83,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHealthChecks();
 builder.Services.AddMvc();
 
-builder.Services.AddScoped<IFilterService, FilterService>();
-builder.Services.AddStackExchangeRedisCache(options => {
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-});
-builder.Services.AddResponseCompression();
-
 // Configuración de la sesión
 // Se utiliza DistributedMemoryCache para almacenar la sesión en memoria.
 builder.Services.AddDistributedMemoryCache();
@@ -101,8 +96,8 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 
 // CONFIGURE THE HTTP REQUEST PIPELINE.
-    if (app.Environment.IsDevelopment())
-    {
+if (app.Environment.IsDevelopment())
+{
     app.UseMigrationsEndPoint();
 }
 else
