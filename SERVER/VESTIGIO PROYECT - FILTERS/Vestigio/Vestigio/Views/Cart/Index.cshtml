@@ -1,0 +1,195 @@
+﻿@model Order
+
+<div class="container-fluid px-4 px-md-5 py-5" style="max-width: 1400px;">
+    <div class="row">
+        <div class="col-12 mb-5">
+            <h1 class="fs-4 text-uppercase" style="letter-spacing: 2px;">Shopping Cart</h1>
+        </div>
+    </div>
+
+    @if (Model?.OrderDetails?.Any() == true)
+    {
+        <div class="row">
+            <div class="col-lg-8 pe-lg-5">
+                @foreach (var item in Model.OrderDetails)
+                {
+                    <div class="cart-item mb-4 pb-4 border-bottom" style="border-color: #f0f0f0 !important;">
+                        <div class="row align-items-center">
+                            <div class="col-4 col-md-3">
+                                <div class="ratio ratio-1x1 bg-light">
+                                    @if (item.Product.Images?.Any() == true)
+                                    {
+                                        <img src="@item.Product.Images.First().Url"
+                                             alt="@item.Product.Name"
+                                             class="object-fit-cover w-100 h-100">
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex align-items-center justify-content-center h-100 bg-secondary text-white">
+                                            No Image
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-8 col-md-9">
+                                <div class="row align-items-center h-100">
+                                    <div class="col-12 col-md-5 mb-3 mb-md-0">
+                                        <h2 class="fs-6 text-uppercase mb-1" style="letter-spacing: 1px;">@item.Product.Name</h2>
+                                        <form asp-action="ChangeSize" method="post" class="mt-2">
+                                            <input type="hidden" name="orderDetailId" value="@item.Id" />
+                                            <select name="newProductSizeId"
+                                                    class="form-select form-select-sm rounded-0"
+                                                    onchange="this.form.submit()"
+                                                    asp-items="@(new SelectList(item.Product.ProductSizes
+                                                        .Where(ps => ps.IsActive),
+                                                        "Id", "Size", item.ProductSizeId))">
+                                            </select>
+                                        </form>
+                                        <small class="text-muted d-block mt-2" style="letter-spacing: 0.5px;">
+                                            Stock: @item.ProductSize.Stock
+                                        </small>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <form asp-action="UpdateQuantity" method="post" class="quantity-selector border d-inline-flex">
+                                            <input type="hidden" name="orderDetailId" value="@item.Id" />
+                                            <button type="button" class="btn btn-link text-dark px-2 py-1" onclick="updateQuantity(this, -1)">−</button>
+                                            <input type="text"
+                                                   name="newQuantity"
+                                                   value="@item.Quantity"
+                                                   min="1"
+                                                   max="@item.ProductSize.Stock"
+                                                   class="border-0 text-center"
+                                                   style="width: 40px; outline: none;"
+                                                   readonly>
+                                            <button type="button" class="btn btn-link text-dark px-2 py-1" onclick="updateQuantity(this, 1)">+</button>
+                                        </form>
+                                    </div>
+                                    <div class="col-6 col-md-2 text-end text-md-start">
+                                        <span class="fs-6">@item.Price.ToString("C")</span>
+                                        <small class="text-muted d-block">@item.Product.Price.ToString("C") each</small>
+                                    </div>
+                                    <div class="col-12 col-md-2 text-end">
+                                        <form asp-action="RemoveFromCart" method="post">
+                                            <input type="hidden" name="orderDetailId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-link text-dark p-0 text-decoration-none">
+                                                <span class="small text-uppercase" style="letter-spacing: 1px;">Remove</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="col-lg-4">
+                <div class="position-sticky" style="top: 2rem;">
+                    <div class="bg-light p-4">
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-uppercase" style="letter-spacing: 1px;">Subtotal</span>
+                                <span>@Model.OrderDetails.Sum(od => od.Price).ToString("C")</span>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-3">
+                            <a asp-controller="Showcase" asp-action="Index"
+                               class="btn btn-dark rounded-0 text-uppercase py-3"
+                               style="letter-spacing: 2px;">Continue Shopping</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center py-5">
+                <p class="text-uppercase mb-4" style="letter-spacing: 2px;">Your cart is empty</p>
+                <a asp-controller="Showcase" asp-action="Index"
+                   class="btn btn-dark rounded-0 text-uppercase py-3 px-5"
+                   style="letter-spacing: 2px;">Shop Now</a>
+            </div>
+        </div>
+    }
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<style>
+    body {
+        background-color: #ffffff;
+        color: #212529;
+    }
+
+    .quantity-selector {
+        transition: border-color 0.2s;
+    }
+
+        .quantity-selector:hover {
+            border-color: #212529 !important;
+        }
+
+    .btn-link:hover {
+        opacity: 0.7;
+    }
+
+    .cart-item {
+        transition: opacity 0.3s;
+    }
+
+        .cart-item.removing {
+            opacity: 0;
+        }
+
+    /* Custom scrollbar for webkit browsers */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #212529;
+    }
+
+    .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+    }
+</style>
+
+<script>
+    function updateQuantity(button, change) {
+        const form = button.closest('form');
+        const input = form.querySelector('input[name="newQuantity"]');
+        const newQuantity = parseInt(input.value) + change;
+
+        if (newQuantity > 0 && newQuantity <= parseInt(input.max)) {
+            input.value = newQuantity;
+            form.submit();
+        }
+    }
+
+    document.querySelectorAll('form[asp-action="RemoveFromCart"]').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const cartItem = this.closest('.cart-item');
+            cartItem.classList.add('removing');
+            setTimeout(() => this.submit(), 300);
+        });
+    });
+</script>

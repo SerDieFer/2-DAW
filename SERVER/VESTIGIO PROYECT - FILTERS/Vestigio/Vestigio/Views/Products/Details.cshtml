@@ -1,0 +1,258 @@
+﻿@model Vestigio.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid vh-100 py-4">
+    <div class="row g-4 h-75">
+        <!-- Gallery Section -->
+        <div class="col-lg-7 h-100">
+            <div class="h-100 d-flex flex-column">
+                <!-- Main Image -->
+                <div class="ratio ratio-1x1 bg-light rounded-4 overflow-hidden shadow-lg position-relative">
+                    @if (Model.Images?.Any() == true)
+                    {
+                        <div class="position-absolute top-0 end-0 m-3 z-3">
+
+                            <div class="badge px-4 py-2 border-2 fw-bold fs-5 shadow"
+                                 style="background: @GetRarityColor(Model.RarityLevel);">
+                                Lv. @Model.RarityLevel - @Model.RarityName
+                            </div>
+
+                        </div>
+
+                        <img src="@Model.Images.First().Url" alt="@Model.Name"
+                             class="main-image w-100 h-100 object-fit-cover"
+                             id="mainProductImage"
+                             style="transition: opacity 0.3s ease;" />
+                    }
+                </div>
+
+                <!-- Thumbnails (Only show if more than 1 image) -->
+                @if (Model.Images?.Count > 1)
+                {
+                    <div class="mt-3 h-25">
+                        <div class="d-flex gap-3 h-100 overflow-x-auto pb-2 px-1">
+                            @foreach (var image in Model.Images.Take(8))
+                            {
+                                <div class="thumbnail-item flex-shrink-0 h-100 ratio ratio-1x1 bg-white rounded-3 shadow-sm p-1">
+                                    <img src="@image.Url" alt="Thumbnail"
+                                         class="thumbnail-img w-100 h-100 object-fit-cover cursor-pointer"
+                                         style="transition: transform 0.2s ease;"
+                                         data-fullimage="@image.Url" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Product Info Section -->
+        <div class="col-lg-5 h-100">
+            <div class="d-flex flex-column bg-white rounded-4 p-4 shadow-lg">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="display-5 fw-bold mb-0">@Model.Name</h1>
+                    <div class="badge @(Model.IsActive ? "bg-success" : "bg-danger") text-white px-4 py-2 fs-6">
+                        @(Model.IsActive ? "Active" : "Disabled")
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="d-flex flex-column mb-4">
+                    <h3 class="h4 fw-semibold mb-3">Description</h3>
+                    <div class="text-muted lh-lg fs-5">
+                        @Model.Description
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="d-flex flex-column  mb-4">
+                    <h3 class="h4 fw-semibold mb-3">Categories</h3>
+                    <div class="d-flex flex-row flex-wrap gap-2">
+                        @foreach (var category in Model.ProductCategories)
+                        {
+                            <div class="text-muted lh-lg fs-5">
+                                <span class="badge bg-info">
+                                    @category.Category.Name
+                                </span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Size Selector -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-end mb-3">
+                        <h3 class="h4 fw-semibold mb-0">Sizes</h3>
+                        <div class="text-muted fs-6">
+                            Total Stock: <span class="fw-bold text-primary">@Model.ProductSizes.Sum(s => s.Stock)</span>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-3">
+                        @foreach (var size in Model.ProductSizes)
+                        {
+                            var sizeInfo = Vestigio.Utilities.ClothingSizes.GetSizeDescription(size.Size);
+
+                            <div class="size-card @(size.Stock == 0 ? "disabled-size" : "")
+                             @(size.IsActive && size.Stock > 0 ? "active-size" : "")
+                             p-3 rounded-4 border-2 bg-white">
+                                <div class="d-flex flex-column gap-1">
+                                    <!-- Fila 1: Tamaño y Nombre -->
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="fw-bold fs-5 mb-1">@size.Size</div>
+                                        <div class="text-muted small">@sizeInfo.Split('(')[1].TrimEnd(')')</div>
+                                    </div>
+
+                                    <!-- Fila 2: Stock -->
+                                    <div class="mt-2">
+                                        <span class="badge @(size.Stock > 0 ? "bg-primary" : "bg-secondary") fs-6 py-2">
+                                            @if (size.Stock > 0)
+                                            {
+                                                <span>@size.Stock Available</span>
+                                            }
+                                            else
+                                            {
+                                                <span>0 Units</span>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
+                <!-- Price and Actions -->
+                <div class="border-top pt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <span class="h2 fw-bold text-primary">@Model.Price.ToString("C")</span>
+                        <div class="text-muted small mt-1">
+                            Created: @Model.CreationDate.ToString("dd-MM-yyyy")
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="/Product/Edit/@Model.Id" class="btn btn-primary px-4 py-3 flex-grow-1">
+                            <i class="bi bi-pencil-square me-2"></i>Edit Product
+                        </a>
+                        <form asp-action="Delete" method="post" class="flex-grow-1">
+                            <button type="submit" class="btn btn-danger w-100 px-4 py-3">
+                                <i class="bi bi-trash3 me-2"></i>Delete
+                            </button>
+                        </form>
+                        <a href="/Products/Index" class="btn btn-outline-secondary px-4 py-3 flex-grow-1">
+                            <i class="bi bi-arrow-left me-2"></i>Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .size-card {
+        min-width: 200px;
+        max-width: 240px;
+        transition: all 0.2s ease;
+        border: 1px solid #dee2e6;
+    }
+
+        .size-card:hover:not(.opacity-50) {
+            transform: translateY(-3px);
+            border-color: var(--bs-primary) !important;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+        }
+
+        .size-card .bi {
+            margin-top: -2px;
+        }
+
+    .active-size {
+        border-color: var(--bs-primary) !important;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+    }
+
+        .active-size:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+    .disabled-size {
+        opacity: 0.65;
+        background-color: #f8f9fa !important;
+        border-style: dashed !important;
+    }
+
+        .disabled-size .badge {
+            background-color: #6c757d !important;
+        }
+
+    .badge.bg-opacity-10 {
+        border: 1px solid currentColor;
+    }   
+
+    .thumbnail-item {
+        width: 120px;
+        transition: transform 0.2s ease;
+    }
+
+        .thumbnail-item:hover {
+            transform: translateY(-2px);
+        }
+
+    #mainProductImage {
+        object-position: center center;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const thumbnails = document.querySelectorAll('.thumbnail-img');
+            const mainImage = document.getElementById('mainProductImage');
+
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function () {
+                    mainImage.style.opacity = '0';
+                    setTimeout(() => {
+                        mainImage.src = this.dataset.fullimage;
+                        mainImage.style.opacity = '1';
+                    }, 200);
+
+                    document.querySelectorAll('.thumbnail-item').forEach(t => {
+                        t.classList.remove('border-primary');
+                        t.style.transform = 'none';
+                    });
+                    this.parentElement.classList.add('border-primary');
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+            });
+        });
+    </script>
+}
+
+@functions {
+    private string GetRarityColor(int level)
+    {
+        return level switch
+        {
+            1 => "#6c757d",
+            2 => "#28a745",
+            3 => "#17a2b8",
+            4 => "#007bff",
+            5 => "#6610f2",
+            6 => "#dc3545",
+            7 => "#fd7e14",
+            8 => "#ffc107",
+            9 => "#e83e8c",
+            10 => "#20c997",
+            _ => "#6c757d"
+        };
+    }
+}

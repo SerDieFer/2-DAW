@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html lang="es" class="d-flex flex-column min-vh-100">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]Vestigio</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Vestigio.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/css/administration.css" asp-append-version="true" />
+</head>
+<style>
+    :root {
+        --primary-color: #222222;
+        --secondary-color: #404040;
+        --accent-color: #d7d7d7;
+        --background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    }
+
+    /* Estilos generales */
+    body {
+    font-family: 'Poppins', sans-serif;
+    }
+
+    /* Navbar moderna */
+    .bg-gradient-primary {
+    background: var(--background);
+    }
+
+    .navbar-brand {
+    transition: transform 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+    transform: scale(1.05);
+    }
+
+    .logo-img {
+    transition: transform 0.3s ease;
+    }
+
+    .brand-text {
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    font-size: 1.4rem;
+    }
+
+    /* Efectos de navegación */
+    .hover-underline {
+    position: relative;
+    padding: 0.5rem 0;
+    }
+
+    .hover-underline::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: white;
+    transition: all 0.3s ease;
+    }
+
+    .hover-underline:hover::after {
+    width: 100%;
+    left: 0;
+    }
+
+    .nav-link {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+    color: var(--accent-color) !important;
+    }
+
+    .nav-link i {
+    transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover i {
+    transform: translateY(-2px);
+    }
+
+    /* Footer mejorado */
+    .footer {
+    background: #1a1a1a;
+    }
+
+    .footer a {
+    transition: color 0.3s ease;
+    position: relative;
+    }
+
+    .footer a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+    }
+
+    .footer a:hover {
+    color: var(--accent-color) !important;
+    text-decoration: none;
+    }
+
+    .footer a:hover::after {
+    width: 100%;
+    }
+
+</style>
+<body class="d-flex flex-column flex-grow-1">
+<!-- NAVBAR MODERNO -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary py-5 shadow-sm" style="font-size:large;">
+    <div class="container">
+        <!-- Logo y nombre visible -->
+        <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+            <img src="/images/vestigio_logo.png" width="45" alt="Vestigio" class="me-2 logo-img">
+            <span class="brand-text">VESTIGIO</span>
+        </a>
+
+        <!-- Botón hamburguesa -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarContent" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Elementos de navegación -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <!-- Inicio (visible solo para usuarios que NO son administradores) -->
+                @if (!User.IsInRole("Admin"))
+                {
+                    <li class="nav-item mx-2">
+                        <a class="nav-link hover-underline" asp-controller="Showcase" asp-action="Index">
+                            <i class="bi bi-house-door me-1"></i>
+                            Showcase
+                        </a>
+                    </li>
+                }
+
+                <!-- Menú para administradores -->
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item mx-2">
+                        <a class="nav-link hover-underline" asp-controller="Products" asp-action="Index">
+                            <i class="bi bi-box-seam me-1"></i>
+                            Products
+                        </a>
+                    </li>
+
+                    <li class="nav-item mx-2">
+                        <a class="nav-link hover-underline" asp-controller="Challenges" asp-action="Index">
+                            <i class="bi bi-stars me-1"></i>
+                            Challenges
+                        </a>
+                    </li>
+
+                    <li class="nav-item mx-2">
+                        <a class="nav-link hover-underline" asp-controller="Orders" asp-action="Index">
+                            <i class="bi bi-list-task me-1"></i>
+                            Orders
+                        </a>
+                    </li>
+
+                    <li class="nav-item mx-2">
+                        <a class="nav-link hover-underline" asp-controller="Categories" asp-action="Index">
+                            <i class="bi bi-diagram-3 me-1"></i>
+                            Categories
+                        </a>
+                    </li>
+
+                }
+            </ul>
+
+            <!-- Login Partial -->
+            <partial name="_LoginPartial" class="ms-lg-3" />
+        </div>
+    </div>
+</nav
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow-1">
+        <div class="container py-5">
+            @RenderBody()
+            @await RenderSectionAsync("Styles", required: false)
+        </div>
+    </main>
+
+    <!-- FOOTER CENTRADO -->
+    <footer class="footer bg-dark text-light mt-auto py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="mb-0">
+                        &copy; 2025 Vestigio -
+                        <a asp-controller="Home" asp-action="Privacy" class="text-light">Política de Privacidad</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

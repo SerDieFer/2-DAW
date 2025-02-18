@@ -1,0 +1,375 @@
+﻿@model Vestigio.Utilities.PaginatedList<Vestigio.Models.Challenge>
+
+@{
+    ViewData["Title"] = "Challenges";
+    var searchTitle = ViewData["searchTitle"]?.ToString();
+    var rarityLevel = ViewData["rarityLevel"] as int?;
+
+    var isActive = ViewData["isActive"]?.ToString();
+    var solutionMode = ViewData["solutionMode"]?.ToString();
+
+    var minCoins = ViewData["minCoins"] != null ? (int)ViewData["minCoins"] : (int?)null;
+    var maxCoins = ViewData["maxCoins"] != null ? (int)ViewData["maxCoins"] : (int?)null;
+
+    var minExp = ViewData["minExp"] != null ? (int)ViewData["minExp"] : (int?)null;
+    var maxExp = ViewData["maxExp"] != null ? (int)ViewData["maxExp"] : (int?)null;
+
+    var startDate = ViewData["startDate"] != null ? (string)ViewData["startDate"] : null;
+    var endDate = ViewData["endDate"] != null ? (string)ViewData["endDate"] : null;
+
+    var startReleaseDate = ViewData["startReleaseDate"] != null ? (string)ViewData["startReleaseDate"] : null;
+    var endReleaseDate = ViewData["endReleaseDate"] != null ? (string)ViewData["endReleaseDate"] : null;
+}
+
+<div class="container" id="administration-index">
+    <h1 class="text-center mb-4 display-4 fw-600" style="color: var(--primary-color);">
+        Challenge Management
+        <hr class="mx-auto" style="width: 120px; height: 3px; background: var(--secondary-color); opacity: 1;">
+    </h1>
+
+    <!-- Filtros -->
+    <div class="filter-card">
+        <form method="get" action="@Url.Action("Index")">
+
+            <!-- Row 1 -->
+            <div class="row filter-rows g-4">
+
+                <!-- Filter by Name -->
+                <div class="col-md-4">  
+                    <label class="form-label small text-uppercase text-muted fw-500">Challenge Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchTitle" class="form-control" value="@searchTitle">
+                    </div>
+                </div>
+
+                <!-- Filter by Level -->
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Rarity Level</label>
+                    <input type="number" name="rarityLevel" class="form-control"
+                           min="1" max="10" placeholder="1-10" value="@rarityLevel">
+                </div>
+
+                <!-- Filter by Coins -->
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Coins Range</label>
+                    <div class="input-group">
+                        <input type="number" name="minCoins" class="form-control" value="@minCoins" min="0">
+                        <span class="input-group-text">-</span>
+                        <input type="number" name="maxCoins" class="form-control" value="@maxCoins" min="0">
+                    </div>
+                </div>
+
+                <!-- Filter by Experience -->
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Experience Range</label>
+                    <div class="input-group">
+                        <input type="number" name="minExp" class="form-control" value="@minExp" min="0">
+                        <span class="input-group-text">-</span>
+                        <input type="number" name="maxExp" class="form-control" value="@maxExp" min="0">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Row 2 -->
+            <div class="row g-3 mt-1">
+
+                <!-- Filter by Status -->
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Status</label>
+                    <select name="isActive" class="form-select">
+                        <option value="">Any Status</option>
+                        <option value="True" selected="@(isActive == "True")">Active</option>
+                        <option value="False" selected="@(isActive == "False")">Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Filter by Solution Mode -->
+                <div class="col-md-2">
+                    <label class="form-label small text-uppercase text-muted fw-500">Solution Mode</label>
+                    <select name="solutionMode" class="form-select">
+                        <option value="">Any Mode</option>
+                        <option value="Password" selected="@(solutionMode == "Password")">Password</option>
+                        <option value="TimeBased" selected="@(solutionMode == "TimeBased")">Time Based</option>
+                    </select>
+                </div>
+
+                <!-- Filter by Creation Date -->
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Creation Date Range</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" id="startDate" name="startDate" value="@startDate">
+                        <span class="input-group-text">-</span>
+                        <input type="date" class="form-control" id="endDate" name="endDate" value="@endDate">
+                    </div>
+                </div>
+
+                <!-- Filter by Release Date -->
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Release Date Range</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" id="startReleaseDate" name="startReleaseDate" value="@startReleaseDate">
+                        <span class="input-group-text">-</span>
+                        <input type="date" class="form-control" id="endReleaseDate" name="endReleaseDate" value="@endReleaseDate">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Row 3 -->
+            <div class="action-buttons d-flex justify-content-between align-items-center mt-4">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-light px-4">
+                        <i class="bi bi-funnel me-2"></i>Apply Filters
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-light px-4">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
+                    </a>
+                </div>
+                <a asp-action="Create" class="btn btn-light px-4">
+                    <i class="bi bi-plus-circle me-2"></i>New Challenge
+                </a>
+            </div>
+        </form>
+    </div>
+
+        <div class="table-container mb-5">
+            <table class="table table-hover table-custom">
+            <thead class="text-white text-center">
+                <tr>
+                    <th style="width: 70px;"><i class="bi bi-power"></i></th>
+                    <th style="width: 15%;">Title</th>
+                    <th style="width: 10%;">Rarity</th>
+                    <th style="width: 10%;">Exp & Coins</th>
+                    <th style="width: 12%;">Solution Mode</th>
+                    <th style="width: 12%;">Linked To</th>
+                    <th style="width: 7.5%;">Creation Date</th>
+                    <th style="width: 150px;">Preview</th>
+                    <th style="width: 100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <div class="d-flex">
+                                    <div class="form-check form-switch d-flex justify-content-center">
+                                        <input class="form-check-input" type="checkbox" role="switch" @(item.IsActive ? "checked" : "") disabled>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="product-name-cell">
+                                <div class="product-name-content">
+                                    <h6 class="mb-0 fw-500">@item.Title</h6>
+                                </div>
+                            </td>
+   
+                            <td class="text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="rarity-indicator" style="background-color: @GetRarityColor(item.RarityLevel);"></div>
+                                    <span style="color: @GetRarityColor(item.RarityLevel)">
+                                        @item.RarityName (@item.RarityLevel)
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="d-flex flex-column gap-2">
+                                    <span class="badge bg-primary bg-gradient p-1 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-star h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold">@item.ExpPoints</span>
+                                    </span>
+                                    <span class="badge bg-warning bg-gradient p-1 d-flex align-items-center justify-content-center">
+                                        <i style="color:black" class="bi bi-coin h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold text-dark">@item.Coins</span>
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td class="text-center">
+                                <div class="d-flex flex-column gap-2">
+                                    <!-- Encabezado -->
+                                    <span class="badge py-1 px-4 d-flex align-items-center justify-content-center bg-gradient @(item.SolutionMode == SolutionMode.Password ? "bg-success" : "bg-warning")">
+                                        @if (item.SolutionMode == SolutionMode.Password)
+                                        {
+                                            <i class="bi bi-shield h5 py-1 me-2 m-0"></i>
+                                            <span class="m-0 fw-bold">@item.SolutionMode</span>
+                                        }
+                                        else
+                                        {
+                                            <i style="color:black" class="bi bi-clock h5 py-1 me-2 m-0"></i>
+                                            <span class="text-black m-0 fw-bold">@item.SolutionMode</span>
+                                        }
+                                        
+                                    </span>
+
+                                    <!-- Detalle -->
+                                        @if (item.SolutionMode == SolutionMode.Password)
+                                        {
+                                        <span class="badge bg-success bg-gradient py-1 px-4 d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-key h5 py-1 me-2 m-0"></i>
+                                                <span class="m-0 fw-bold">@item.Password</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                        <span class="badge bg-warning bg-gradient py-1 px-4 d-flex align-items-center justify-content-center">
+                                            <i style="color:black" class="bi bi-calendar3 h5 py-1 me-2 m-0"></i>
+                                            <span class="m-0 fw-bold text-dark">@item.ReleaseDate?.ToString("dd/MM/yyyy HH:mm")</span>
+                                            </span>
+                                        }
+                                </div>
+                            </td>
+
+                            <td class="text-center">
+                                @if (item.ProductId != null)
+                                {
+                                    <a asp-controller="Products"
+                                       asp-action="Details"
+                                       asp-route-id="@item.ProductId"
+                                       class="badge bg-info bg-gradient text-decoration-none py-1 px-3 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-box-seam h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold">Product #@item.ProductId</span>
+                                    </a>
+                                }
+                                else if (item.ProductLevel != null)
+                                {
+                                    <span class="badge bg-info bg-gradient text-decoration-none py-1 px-3 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-bar-chart-line h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold">Level @item.ProductLevel</span>
+                                        
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">None</span>
+                                }
+                            </td>
+
+                            <td class="text-center">@item.CreationDate.ToString("dd-MM-yyyy")</td>
+
+                            <td class="w-100">
+                                @if (item.Images?.Any() == true)
+                                {
+                                    var imageList = item.Images.ToList();
+                                    <div class="carousel-container">
+                                        <div id="carousel-@item.Id" class="carousel slide" data-bs-interval="false">
+                                            <div class="carousel-inner">
+                                                @for (int i = 0; i < imageList.Count; i++)
+                                                {
+                                                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                        <img src="@imageList[i].Url" class="d-block h-100 w-100"
+                                                             alt="Challenge image @(i + 1)">
+                                                    </div>
+                                                }
+                                            </div>
+                                            @if (imageList.Count > 1)
+                                            {
+                                                <button class="carousel-control-prev" type="button"
+                                                        data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon"></span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button"
+                                                        data-bs-target="#carousel-@item.Id" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon"></span>
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="text-center text-muted py-3">
+                                        <i class="bi bi-image fs-4"></i>
+                                        <div class="small">No images</div>
+                                    </div>
+                                }
+                            </td>
+
+                            <td class="align-middle">
+                                <div class="btn-group-vertical d-flex align-items-center gap-2 w-100" role="group" aria-label="Item actions">
+                                    <a asp-action="Edit" asp-route-id="@item.Id"
+                                        class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                                        aria-label="Edit"
+                                        style="width: 2.5rem; height: 2.5rem;">
+                                        <i class="bi bi-pencil-square fs-5"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id"
+                                        class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                                        aria-label="Details"
+                                        style="width: 2.5rem; height: 2.5rem;">
+                                        <i class="bi bi-eye fs-5"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id"
+                                        class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                        aria-label="Delete"
+                                        style="width: 2.5rem; height: 2.5rem;">
+                                        <i class="bi bi-trash fs-5"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="13" class="text-muted">No challenges found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="d-flex justify-content-center pb-5 mb-5">
+            <ul class="pagination pagination-lg">
+                <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
+
+@functions {
+    private string GetRarityColor(int level)
+    {
+        return level switch
+        {
+            1 => "#6c757d",
+            2 => "#28a745",
+            3 => "#17a2b8",
+            4 => "#007bff",
+            5 => "#6610f2",
+            6 => "#dc3545",
+            7 => "#fd7e14",
+            8 => "#ffc107",
+            9 => "#e83e8c",
+            10 => "#20c997",
+            _ => "#6c757d"
+        };
+    }
+}

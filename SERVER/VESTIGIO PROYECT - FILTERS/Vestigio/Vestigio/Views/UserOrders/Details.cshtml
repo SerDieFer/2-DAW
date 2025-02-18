@@ -1,0 +1,91 @@
+﻿@model Vestigio.Models.Order
+
+@{
+    ViewData["Title"] = "Detalle del Pedido";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Pedido #@Model.Id</h1>
+        <div>
+            <button class="btn btn-secondary me-2" onclick="window.print()">Imprimir</button>
+            <a href="@Url.Action("Index", "UserOrders")" class="btn btn-outline-secondary">Volver</a>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card mb-4 shadow-sm border-0">
+        <div class="card-body">
+            <h5 class="card-title">Información del Pedido</h5>
+            <p class="card-text">
+                <strong>Fecha:</strong> @Model.CreationDate.ToString("dd/MM/yyyy") <br />
+                <strong>Estado:</strong> @Model.OrderStatus.StatusName
+            </p>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white">
+            Detalles del Pedido
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Talla</th>
+                            <th class="text-center">Cantidad</th>
+                            <th class="text-end">Precio Unitario</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detail in Model.OrderDetails)
+                        {
+                            <tr>
+                                <td>@detail.Product.Name</td>
+                                <td>@detail.ProductSize.Size</td>
+                                <td class="text-center">@detail.Quantity</td>
+                                <td class="text-end">@detail.Product.Price.ToString("C")</td>
+                                <td class="text-end">@detail.Price.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="4" class="text-end">Total:</th>
+                            <th class="text-end">
+                                @Model.OrderDetails.Sum(d => d.Price).ToString("C")
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @* Si el pedido está pendiente, se muestra la opción para confirmarlo *@
+    @if (Model.OrderStatusId == 1)
+    {
+        <div class="text-center mt-4">
+            <form method="post" asp-action="Confirm" asp-controller="UserOrders" asp-route-id="@Model.Id">
+                <button type="submit" class="btn btn-success btn-lg">
+                    Confirmar Pedido
+                </button>
+            </form>
+        </div>
+    }
+</div>

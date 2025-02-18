@@ -1,0 +1,366 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Vestigio.Data
+@using Vestigio.Utilities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject VestigioDbContext _context
+
+@{
+    var userSignedIn = SignInManager.IsSignedIn(User);
+    var user = userSignedIn ? await UserManager.GetUserAsync(User) : null;
+    var isAdmin = user != null && await UserManager.IsInRoleAsync(user, "Admin");
+
+    int userLevel = user?.Level ?? 1;
+    double levelProgress = user?.LevelProgress ?? 0;
+    levelProgress = Math.Round(@levelProgress, 2);
+    int userExp = user?.ExpPoints ?? 0;
+}
+
+<div class="user-nav-container gap-3">
+    @if (userSignedIn)
+    {
+
+        <!-- Carrito -->
+        @if (!isAdmin)
+        {
+            // Se obtiene el ID del pedido actual desde la sesión
+            var currentOrderId = Context.Session.GetInt32("CurrentOrderId");
+            int cartItemCount = 0;
+
+            if (currentOrderId.HasValue)
+            {
+                // Se cuenta solo los detalles del pedido con ese ID y que esté en estado pendiente (OrderStatusId == 1)
+                cartItemCount = await _context.Orders
+                .Where(o => o.Id == currentOrderId.Value && o.OrderStatusId == 1)
+                .SelectMany(o => o.OrderDetails)
+                .CountAsync();
+            }
+
+            <div class="cart-wrapper">
+                <a class="cart-button" asp-controller="Cart" asp-action="Index" aria-label="Carrito de compras">
+                    <i class="bi bi-cart3 fs-3"></i>
+                    @if (cartItemCount > 0)
+                    {
+                        <span class="cart-badge">@cartItemCount</span>
+                    }
+                </a>
+            </div>
+        }
+
+        <!-- Menú de usuario -->
+        <div class="user-dropdown">
+            <button class="user-avatar py-2 w-100 d-flex justify-content-center align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="user-info d-flex flex-row gap-3 w-100 justify-content-center align-items-center">
+                    <i class="bi bi-person-circle fs-3 text-white"></i>
+                    <span class="user-name">@User.Identity?.Name</span>
+                </div>
+            </button>
+
+            <!-- Encabezado con información de usuario -->
+            <ul class="dropdown-menu w-100">
+                <li class="dropdown-header">
+                    <div class="user-menu-header d-flex align-content-center justify-content-between gap-2 p-2">
+                        <span class="fw-bolder text-white">@user.Nickname</span>
+                        <span>Role - <span class="user-role fw-bold">@(isAdmin ? "Admin" : "User")</span></span>
+                    </div>
+                </li>
+
+                <!-- Nivel y progreso de nivel -->
+                @if (!isAdmin)
+                {
+                    <li class="level-container mb-4">
+                        <div class="level-indicator d-flex align-items-center justify-content-center text-center gap-2">
+                            <span class="level-percent text-white fw-bold">@levelProgress%</span>
+                            <div class="progress flex-grow-1" style="height: 10px; max-width: 200px;">
+                                <div class="progress-bar" role="progressbar"
+                                     style="width: @levelProgress.ToString("0")%;"
+                                     aria-valuenow="@levelProgress"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                            <span class="level-text fw-bold">
+                                @if (userLevel == 10)
+                                {
+                                    <span>Max Level</span>
+                                }
+                                else
+                                {
+                                    <span>Level @userLevel</span>
+                                }
+                            </span>
+                        </div>
+                    </li>
+                }
+
+                <li><hr class="dropdown-divider"></li>
+
+                <!-- Opciones de menú -->
+                <li>
+                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                        <i class="bi bi-person-circle"></i>
+                        My Profile
+                    </a>
+                </li>
+                @if (!isAdmin)
+                {
+                    <li>
+                        <a class="dropdown-item" asp-controller="UserOrders" asp-action="Index">
+                            <i class="bi bi-box-seam"></i>
+                            My Orders
+                        </a>
+                    </li>
+                }
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="post" asp-area="Identity" asp-page="/Account/Logout">
+                        <button type="submit" class="dropdown-item logout-button">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        <!-- Botones de autenticación -->
+        <div class="auth-buttons">
+            <a class="btn auth-btn login-btn" asp-area="Identity" asp-page="/Account/Login">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Iniciar Sesión
+            </a>
+            <a class="btn auth-btn register-btn" asp-area="Identity" asp-page="/Account/Register">
+                <i class="bi bi-person-plus"></i>
+                Registrarse
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    :root {
+        --primary-color: #222222;
+        --secondary-color: #404040;
+        --accent-color: #d7d7d7;
+        --background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        --dark-bg: #1a1a1a;
+        --light-text: #f8fafc;
+        --border-radius: 12px;
+    }
+
+    .user-nav-container {
+        display: flex;
+        align-items: center;
+    }
+
+    /* Estilos mejorados para el carrito */
+    .cart-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .cart-button {
+        position: relative;
+        padding: 0.5rem;
+        color: var(--light-text);
+        transition: transform 0.2s ease;
+    }
+
+        .cart-button:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+    .cart-badge {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        background: #ef4444 !important;
+        color: white;
+        font-size: 0.75rem;
+        min-width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    /* Indicador de nivel mejorado */
+    .level-indicator {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        margin: 0rem 1rem;
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .progress {
+        width: 80px;
+        height: 6px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 3px;
+    }
+
+    .progress-bar {
+        background: var(--accent-color);
+        transition: width 0.3s ease;
+        height:
+    }
+
+    .level-text {
+        color: var(--light-text);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* Menú de usuario */
+    .user-dropdown {
+        position:relative;
+        width:300px;
+    }
+
+    .user-avatar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        border-radius: var(--border-radius);
+        transition: background 0.2s ease;
+    }
+
+        .user-avatar:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+    .avatar-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        color: var(--light-text);
+        font-weight: 500;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .user-role {
+        color: var(--accent-color);
+        font-weight: 400;
+    }
+
+    .dropdown-menu {
+        background: var(--background);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: var(--border-radius);
+        padding: 0.5rem;
+        margin-top: 0.75rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .dropdown-item {
+        color: var(--light-text);
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.2s ease;
+    }
+
+        .dropdown-item:hover {
+            background: var(--primary-color);
+            padding-left: 1.25rem;
+            font-weight:bold;
+            color:white;
+        }
+
+    .dropdown-header {
+        padding: 0.75rem 1rem;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.9rem;
+    }
+
+    .logout-button {
+        color: #ef4444 !important;
+    }
+
+        .logout-button:hover {
+            background: rgba(239,68,68,0.1) !important;
+        }
+
+    /* Botones de autenticación modernos */
+    .auth-buttons {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .auth-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 500;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .login-btn {
+        background: var(--light-text);
+        color: var(--primary-color);
+    }
+
+        .login-btn:hover {
+            background: var(--primary-color);
+            color: var(--light-text);
+        }
+
+    .register-btn {
+        background: var(--primary-color);
+        color: var(--light-text);
+        border: 2px solid transparent;
+    }
+
+        .register-btn:hover {
+            background: transparent;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+    @@media (max-width: 768px) {
+        .user-name {
+            max-width: 120px;
+        }
+
+        .auth-buttons {
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .auth-btn {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+</style>
