@@ -55,6 +55,7 @@ namespace Vestigio.Controllers
             List<int> solvedChallenges = new List<int>();
             List<Product> unlockedProducts = new List<Product>();
             List<Category> validCategories = new List<Category>();
+            List<(int Id, string Size)> distinctSizes = new List<(int, string)>();
             bool hasUnlockedProducts = false;
 
             if (User.Identity.IsAuthenticated)
@@ -106,13 +107,12 @@ namespace Vestigio.Controllers
                         .Distinct() // Elimina duplicados
                         .ToList();
 
-                    var distinctSizes = validSizes
+                     distinctSizes = validSizes
                         .GroupBy(ps => ps.Size) // Agrupamos por talla
                         .Select(g => g.First()) // Tomamos solo el primer elemento de cada grupo
                         .Select(ps => (ps.Id, ps.Size)) // Convertimos a tupla
                         .ToList();
 
-                    ViewBag.ValidSizes = distinctSizes; // Asignamos a ViewBag
 
                 }
             }
@@ -133,15 +133,19 @@ namespace Vestigio.Controllers
                 filteredChallenges = ApplyChallengeSorting(challengesQuery, challengeSort, solvedChallenges).ToList();
             }
 
-            ViewBag.Challenges = filteredChallenges;
-            ViewBag.UnlockedProducts = unlockedProducts;
-
-            ViewBag.ValidCategories = validCategories;
-
-            ViewBag.SolvedChallenges = solvedChallenges;
-
+            // VIEWBAG DATA
             ViewBag.UserLevel = userLevel;
             ViewBag.HasUnlockedProducts = hasUnlockedProducts;
+
+            ViewBag.Challenges = filteredChallenges;
+            ViewBag.SolvedChallenges = solvedChallenges;
+            ViewBag.ChallengeCount = filteredChallenges.Count;
+
+            ViewBag.UnlockedProducts = unlockedProducts;
+            ViewBag.ProductCount = unlockedProducts.Count;
+            ViewBag.ValidSizes = distinctSizes;
+
+            ViewBag.ValidCategories = validCategories;
 
             ViewBag.ActiveTab = activeTab;
 

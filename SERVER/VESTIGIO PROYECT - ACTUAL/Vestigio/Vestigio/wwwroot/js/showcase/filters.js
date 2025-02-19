@@ -88,6 +88,7 @@ function initializeFilters() {
 
     async function handleTabChange(e) {
         e.preventDefault();
+        updateItemCounts(currentTab);
         /*console.log("Cambio de pestaña:", e.currentTarget);*/
 
         tabLinks.forEach(tab => tab.classList.remove("active"));
@@ -210,9 +211,21 @@ function initializeFilters() {
             document.getElementById("tabContent").innerHTML = content;
             history.replaceState({}, "", `?${params.toString()}`);
             window.dispatchEvent(new CustomEvent("contentUpdated", { detail: { tab: currentTab } }));
+            updateItemCounts(currentTab);
         } catch (error) {
             console.error("Error al cargar contenido:", error);
         }
+    }
+
+    function updateItemCounts(tab) {
+        // Contar elementos directamente en el DOM actual, no en el HTML recibido
+        const count = tab === 'challenges'
+            ? document.querySelectorAll('.challenge-card').length
+            : document.querySelectorAll('.product-card').length;
+
+        // Actualizar badge
+        const badge = document.querySelector(`#${tab}-tab .badge`);
+        if (badge) badge.textContent = count;
     }
 
     function updateFilterVisibility() {

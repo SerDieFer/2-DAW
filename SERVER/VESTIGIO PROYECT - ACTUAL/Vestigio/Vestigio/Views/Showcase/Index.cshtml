@@ -16,7 +16,7 @@
                 Challenges
                 <span class="badge ms-2 d-inline-flex align-items-center justify-content-center"
                       style="width: 1.25rem; height: 1.25rem; border-radius: 50%;">
-                    @Model.Count
+                    @(ViewBag.ChallengeCount ?? Model.Count)
                 </span>
             </button>
         </li>
@@ -27,7 +27,7 @@
                     Collection
                     <span class="badge ms-2 d-inline-flex align-items-center justify-content-center"
                           style="width: 1.25rem; height: 1.25rem; border-radius: 50%;">
-                        @unlockedProducts.Count()
+                        @(ViewBag.ProductCount ?? unlockedProducts.Count)
                     </span>
                 </button>
             </li>
