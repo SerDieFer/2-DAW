@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Vestigio.Utilities
+﻿namespace Vestigio.Utilities
 {
     public static class ClothingSizes
     {

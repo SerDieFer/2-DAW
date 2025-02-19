@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Win32;
 using Vestigio.Data;
 using Vestigio.Models;
-using Vestigio.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ??
-    //throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
+//throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
 // GET THE PATH TO THE CURRENT USER'S DESKTOP DIRECTORY
 string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);

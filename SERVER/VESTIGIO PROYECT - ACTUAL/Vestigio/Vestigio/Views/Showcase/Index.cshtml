@@ -5,6 +5,7 @@
     var solvedChallenges = ViewBag.SolvedChallenges as List<int> ?? new List<int>();
     var unlockedProducts = ViewBag.UnlockedProducts as List<Product> ?? new List<Product>();
     var validCategories = ViewBag.ValidCategories as List<Category> ?? new List<Category>();
+    var productSizes = ViewBag.ProductSizes as List<string> ?? new List<string>();
     var filters = ViewBag.Filters as dynamic;
 }
 <!-- NAV -->
@@ -61,6 +62,6 @@
 
 <!-- SCRIPTS -->
 @section Scripts {
-    <script type="module" src="~/js/showcase/filters.js" asp-append-version="true"></script>
-    <script type="module" src="~/js/showcase/products_interactions.js" asp-append-version="true"></script>
+    <script src="~/js/showcase/filters.js"></script>
+    <script src="~/js/showcase/products_interactions.js"></script>
 }

@@ -13,7 +13,9 @@ namespace Vestigio.Migrations
 {
     [DbContext(typeof(VestigioDbContext))]
     [Migration("20250209120343_levels")]
+#pragma warning disable CS8981 // El nombre de tipo solo contiene caracteres ASCII en minúsculas. Estos nombres pueden reservarse para el idioma.
     partial class levels
+#pragma warning restore CS8981 // El nombre de tipo solo contiene caracteres ASCII en minúsculas. Estos nombres pueden reservarse para el idioma.
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

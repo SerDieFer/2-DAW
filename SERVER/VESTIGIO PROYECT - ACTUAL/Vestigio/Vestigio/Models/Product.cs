@@ -34,8 +34,8 @@ namespace Vestigio.Models
         [Range(1, 10, ErrorMessage = "The level must be between 1 y 10")]
         public int RarityLevel { get; set; }
 
-            // DYNAMICALLY DISPLAYS THE NAME OF THE RARITY LEVEL
-            public string RarityName => LevelsNaming.GetLevelName(RarityLevel);
+        // DYNAMICALLY DISPLAYS THE NAME OF THE RARITY LEVEL
+        public string RarityName => LevelsNaming.GetLevelName(RarityLevel);
 
         [Display(Name = "Creation Date")]
         [DataType(DataType.Date)]

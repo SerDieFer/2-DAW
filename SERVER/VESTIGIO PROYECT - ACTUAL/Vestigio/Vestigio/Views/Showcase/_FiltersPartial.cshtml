@@ -2,6 +2,7 @@
     var activeTab = ViewBag.ActiveTab as string ?? "challenges";
     var filters = ViewBag.Filters;
     var validCategories = ViewBag.ValidCategories as List<Category> ?? new List<Category>();
+    var validSizes = ViewBag.ValidSizes;
 }
 <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="filterOffcanvas">
     <div class="offcanvas-header">
@@ -125,6 +126,50 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Filtro de Niveles -->
+                <div class="mb-3">
+                    <label class="form-label">Nivel del producto</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <input type="number"
+                                   name="minLevel"
+                                   class="form-control"
+                                   placeholder="Mín"
+                                   value="@filters?.MinLevel"
+                                   min="1"
+                                   max="10" />
+                        </div>
+                        <div class="col">
+                            <input type="number"
+                                   name="maxLevel"
+                                   class="form-control"
+                                   placeholder="Máx"
+                                   value="@filters?.MaxLevel"
+                                   min="1"
+                                   max="10" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtro de Tallas -->
+                <div class="mb-3">
+                    <label class="form-label">Tallas</label>
+                    @foreach (var size in ViewBag.ValidSizes)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   name="sizes"
+                                   value="@size.Item2"
+                                   id="size-@size.Item2" />
+                            <label class="form-check-label" for="size-@size.Item2">
+                                @size.Item2
+                            </label>
+                        </div>
+                    }
+                </div>
+
                 <!-- Filtro de Categorías -->
                 <div class="mb-3">
                     <label class="form-label">Categorías</label>
@@ -132,7 +177,7 @@
                     {
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox"
-                                   name="categories[]" value="@category.Id"
+                                   name="categories" value="@category.Id"
                                    id="category-@category.Id"
                             @(filters?.Categories?.Contains(category.Id) == true ? "checked" : "") />
                             <label class="form-check-label" for="category-@category.Id">
@@ -141,6 +186,7 @@
                         </div>
                     }
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label">Ordenar por</label>
                     <select class="form-select" name="productSort">
@@ -159,7 +205,3 @@
         </form>
     </div>
 </div>
-
-@section Scripts {
-    <script type="module" src="~/js/showcase/filters.js" asp-append-version="true"></script>
-}

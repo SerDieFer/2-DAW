@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Vestigio.Data;
 using Vestigio.Models;
 using Vestigio.Utilities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Vestigio.Controllers
 {
@@ -373,10 +364,10 @@ namespace Vestigio.Controllers
         private void PrepareDropdowns()
         {
             ViewBag.ProductLevels = Enumerable.Range(1, 10)
-                .Select(i => new SelectListItem 
-                { 
+                .Select(i => new SelectListItem
+                {
                     Value = i.ToString(),
-                    Text = $"{i} - {LevelsNaming.GetLevelName(i)}" 
+                    Text = $"{i} - {LevelsNaming.GetLevelName(i)}"
                 });
 
             ViewBag.Products = new SelectList(_context.Products

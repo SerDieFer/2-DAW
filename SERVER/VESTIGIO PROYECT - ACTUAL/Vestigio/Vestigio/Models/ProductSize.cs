@@ -1,7 +1,5 @@
-﻿using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Vestigio.Utilities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Vestigio.Models
 {

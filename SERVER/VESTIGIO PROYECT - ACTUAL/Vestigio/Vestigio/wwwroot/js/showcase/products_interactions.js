@@ -1,5 +1,4 @@
-﻿// productInteractions.js
-document.addEventListener("DOMContentLoaded", initializeProductInteractions);
+﻿document.addEventListener("DOMContentLoaded", initializeProductInteractions);
 window.addEventListener("contentUpdated", initializeProductInteractions);
 
 // Funciones nombradas para manejar eventos
@@ -24,6 +23,7 @@ function handleBodyInput(e) {
     const quantityInput = e.target.closest('.quantity-input');
     if (quantityInput) {
         validateQuantityInput(quantityInput);
+        quantityInput.dispatchEvent(new Event('change'));
     }
 }
 
@@ -87,16 +87,18 @@ function validateQuantityInput(input) {
     const maxStock = selectedSize ? parseInt(selectedSize.dataset.stock) : 0;
 
     let value = parseInt(input.value) || 0;
-    value = Math.max(0, Math.min(value, maxStock)); // Permite 0 si no hay stock
+    value = Math.max(0, Math.min(value, maxStock));
 
-    // Asegurar mínimo 1 solo si hay stock disponible
     if (maxStock > 0) {
         value = Math.max(1, value);
     } else {
         value = 0;
     }
 
+    // Actualizar ambos campos
     input.value = value;
+    modal.querySelector(`#selectedQuantity-${productId}`).value = value;
+
     input.classList.toggle('is-invalid', value > maxStock);
 
     const addToCartBtn = modal.querySelector('.btn-add-cart');

@@ -5,10 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
 using Vestigio.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Vestigio.Controllers
 {
@@ -31,8 +27,9 @@ namespace Vestigio.Controllers
             int? minCoins = null, int? maxCoins = null,
             decimal? minPrice = null, decimal? maxPrice = null,
             string solutionType = null, bool? showSolved = null,
-            List<int> categories = null, string activeTab = "challenges",
-            string challengeSort = "level_asc", string productSort = "price_asc" )
+            List<int> categories = null, List<string> sizes = null,
+            string challengeSort = "level_asc", string productSort = "price_asc",
+            string activeTab = "challenges")
         {
             // RESET PARAMETERS FOR FILTERING
             if (activeTab == "challenges")
@@ -40,12 +37,11 @@ namespace Vestigio.Controllers
                 minPrice = null;
                 maxPrice = null;
                 categories = null;
+                sizes = null;
                 productSort = "price_asc";
             }
             else if (activeTab == "products")
             {
-                minLevel = null;
-                maxLevel = null;
                 solutionType = null;
                 minXP = null;
                 maxXP = null;
@@ -87,26 +83,38 @@ namespace Vestigio.Controllers
                         .Where(p => p.IsActive &&
                             (unlockedProductIds.Contains(p.Id) || unlockedLevels.Contains(p.RarityLevel)));
 
-                    // ONLY APPLU FILTERS IS THE TAB IS ACTIVE
+                    // ONLY APPLY FILTERS IS THE TAB IS ACTIVE
                     if (activeTab == "products")
                     {
-                        productsQuery = ApplyProductFilters(productsQuery, minPrice, maxPrice, categories);
+                        productsQuery = ApplyProductFilters(productsQuery, minPrice, maxPrice, minLevel, maxLevel, categories, sizes);
                         productsQuery = ApplyProductSorting(productsQuery, productSort);
                     }
 
                     unlockedProducts = await productsQuery.ToListAsync();
                     hasUnlockedProducts = unlockedProducts.Any();
+
                     validCategories = await productsQuery
                         .SelectMany(p => p.ProductCategories.Select(pc => pc.Category))
                         .Distinct()
                         .ToListAsync();
-                }
-            }
 
-            // IF NO PRODUCTS ARE UNLOCKED ONLY CHALLENGE TAB WILL BE ACTIVE
-            if (activeTab == "products" && !hasUnlockedProducts)
-            {
-                activeTab = "challenges";
+                    var validSizes = unlockedProducts
+                        .ToList() // Convierte a List<Product> primero
+                        .SelectMany(p => p.ProductSizes
+                            .Where(ps => ps.Stock > 0) // Filtra solo tallas con stock
+                            .Select(ps => new { ps.Id, ps.Size })) // Selecciona Id y Size
+                        .Distinct() // Elimina duplicados
+                        .ToList();
+
+                    var distinctSizes = validSizes
+                        .GroupBy(ps => ps.Size) // Agrupamos por talla
+                        .Select(g => g.First()) // Tomamos solo el primer elemento de cada grupo
+                        .Select(ps => (ps.Id, ps.Size)) // Convertimos a tupla
+                        .ToList();
+
+                    ViewBag.ValidSizes = distinctSizes; // Asignamos a ViewBag
+
+                }
             }
 
             // FILTER CHALLENGES IF THE ACTIVE TAB IS THE CHALLENGES ONE
@@ -127,10 +135,14 @@ namespace Vestigio.Controllers
 
             ViewBag.Challenges = filteredChallenges;
             ViewBag.UnlockedProducts = unlockedProducts;
+
             ViewBag.ValidCategories = validCategories;
+
             ViewBag.SolvedChallenges = solvedChallenges;
+
             ViewBag.UserLevel = userLevel;
             ViewBag.HasUnlockedProducts = hasUnlockedProducts;
+
             ViewBag.ActiveTab = activeTab;
 
             ViewBag.Filters = new
@@ -146,8 +158,9 @@ namespace Vestigio.Controllers
                 MinPrice = activeTab == "products" ? minPrice : null,
                 MaxPrice = activeTab == "products" ? maxPrice : null,
                 Categories = activeTab == "products" ? categories : null,
+                Sizes = activeTab == "products" ? sizes : null,
                 ProductSort = activeTab == "products" ? productSort : "price_asc",
-                ShowSolved = activeTab == "challenges" ? showSolved : null
+                ShowSolved = activeTab == "challenges" ? showSolved : null,
             };
 
             // AJAX HANDLE
@@ -229,15 +242,26 @@ namespace Vestigio.Controllers
                 _ => orderedQuery.ThenBy(c => c.RarityLevel)
             };
         }
-        
+
         // PRODUCTS FILTERING METHOD
         private IQueryable<Product> ApplyProductFilters(
-            IQueryable<Product> query, decimal? minPrice, decimal? maxPrice, List<int> categories)
+            IQueryable<Product> query,
+            decimal? minPrice, decimal? maxPrice,
+            int? minLevel, int? maxLevel,
+            List<int> categories, List<string> sizes)
         {
             if (minPrice.HasValue) query = query.Where(p => p.Price >= minPrice);
             if (maxPrice.HasValue) query = query.Where(p => p.Price <= maxPrice);
             if (categories != null && categories.Any())
                 query = query.Where(p => p.ProductCategories.Any(pc => categories.Contains(pc.CategoryId)));
+
+            if (minLevel.HasValue) query = query.Where(c => c.RarityLevel >= minLevel);
+            if (maxLevel.HasValue) query = query.Where(c => c.RarityLevel <= maxLevel);
+
+            if (sizes != null && sizes.Any())
+            {
+                query = query.Where(p => p.ProductSizes.Any(ps => sizes.Contains(ps.Size) && ps.Stock > 0));
+            }
 
             return query;
         }
@@ -333,97 +357,97 @@ namespace Vestigio.Controllers
         }
 
 
-    // CART ADD METHOD
-    [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> AddToCart(int productSizeId, int quantity)
-    {
-        using var transaction = await _context.Database.BeginTransactionAsync();
-        try
+        // CART ADD METHOD
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AddToCart(int productSizeId, int quantity)
         {
-            var userId = _userManager.GetUserId(User);
-            if (userId == null) return Redirect("/Identity/Account/Login");
-
-            // Verificar si existe un pedido activo en la sesión actual
-            if (!HttpContext.Session.TryGetValue("CurrentOrderId", out byte[] orderIdBytes))
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                // Crear nuevo pedido si no existe
-                var newOrder = new Order
+                var userId = _userManager.GetUserId(User);
+                if (userId == null) return Redirect("/Identity/Account/Login");
+
+                // Verificar si existe un pedido activo en la sesión actual
+                if (!HttpContext.Session.TryGetValue("CurrentOrderId", out byte[] orderIdBytes))
                 {
-                    UserId = userId,
-                    CreationDate = DateTime.Now,
-                    OrderStatusId = 1,
-                    OrderDetails = new List<OrderDetail>()
-                };
-                _context.Orders.Add(newOrder);
+                    // Crear nuevo pedido si no existe
+                    var newOrder = new Order
+                    {
+                        UserId = userId,
+                        CreationDate = DateTime.Now,
+                        OrderStatusId = 1,
+                        OrderDetails = new List<OrderDetail>()
+                    };
+                    _context.Orders.Add(newOrder);
+                    await _context.SaveChangesAsync();
+
+                    // Guardar el ID del pedido en la sesión
+                    HttpContext.Session.SetInt32("CurrentOrderId", newOrder.Id);
+                }
+
+                // Obtener el ID del pedido actual desde la sesión
+                var currentOrderId = HttpContext.Session.GetInt32("CurrentOrderId").Value;
+
+                // Cargar el producto y validar stock
+                var productSize = await _context.ProductSizes
+                    .Include(ps => ps.Product)
+                    .FirstOrDefaultAsync(ps => ps.Id == productSizeId);
+
+                if (productSize.Stock < quantity)
+                {
+                    TempData["ErrorMessage"] = $"Stock insuficiente. Disponible: {productSize.Stock}";
+                    return RedirectToAction("Index");
+                }
+
+                // Cargar el pedido actual
+                var order = await _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .FirstOrDefaultAsync(o => o.Id == currentOrderId);
+
+                // Calcular cantidad existente en el carrito
+                int existingQuantity = order.OrderDetails
+                    .Where(od => od.ProductSizeId == productSizeId)
+                    .Sum(od => od.Quantity);
+
+                if (existingQuantity + quantity > productSize.Stock)
+                {
+                    TempData["ErrorMessage"] = $"Límite de stock alcanzado. Disponible: {productSize.Stock - existingQuantity}";
+                    return RedirectToAction("Index");
+                }
+
+                // Agregar o actualizar detalle sin modificar stock
+                var existingDetail = order.OrderDetails.FirstOrDefault(od => od.ProductSizeId == productSizeId);
+                if (existingDetail != null)
+                {
+                    existingDetail.Quantity += quantity;
+                    existingDetail.Price = productSize.Product.Price * existingDetail.Quantity;
+                }
+                else
+                {
+                    order.OrderDetails.Add(new OrderDetail
+                    {
+                        ProductSizeId = productSizeId,
+                        ProductId = productSize.Product.Id,
+                        Quantity = quantity,
+                        Price = productSize.Product.Price * quantity
+                    });
+                }
+
                 await _context.SaveChangesAsync();
-
-                // Guardar el ID del pedido en la sesión
-                HttpContext.Session.SetInt32("CurrentOrderId", newOrder.Id);
+                await transaction.CommitAsync();
+                TempData["SuccessMessage"] = "Producto agregado al carrito";
             }
-
-            // Obtener el ID del pedido actual desde la sesión
-            var currentOrderId = HttpContext.Session.GetInt32("CurrentOrderId").Value;
-
-            // Cargar el producto y validar stock
-            var productSize = await _context.ProductSizes
-                .Include(ps => ps.Product)
-                .FirstOrDefaultAsync(ps => ps.Id == productSizeId);
-
-            if (productSize.Stock < quantity)
+            catch
             {
-                TempData["ErrorMessage"] = $"Stock insuficiente. Disponible: {productSize.Stock}";
-                return RedirectToAction("Index");
+                await transaction.RollbackAsync();
+                TempData["ErrorMessage"] = "Error al procesar la solicitud";
             }
-
-            // Cargar el pedido actual
-            var order = await _context.Orders
-                .Include(o => o.OrderDetails)
-                .FirstOrDefaultAsync(o => o.Id == currentOrderId);
-
-            // Calcular cantidad existente en el carrito
-            int existingQuantity = order.OrderDetails
-                .Where(od => od.ProductSizeId == productSizeId)
-                .Sum(od => od.Quantity);
-
-            if (existingQuantity + quantity > productSize.Stock)
-            {
-                TempData["ErrorMessage"] = $"Límite de stock alcanzado. Disponible: {productSize.Stock - existingQuantity}";
-                return RedirectToAction("Index");
-            }
-
-            // Agregar o actualizar detalle sin modificar stock
-            var existingDetail = order.OrderDetails.FirstOrDefault(od => od.ProductSizeId == productSizeId);
-            if (existingDetail != null)
-            {
-                existingDetail.Quantity += quantity;
-                existingDetail.Price = productSize.Product.Price * existingDetail.Quantity;
-            }
-            else
-            {
-                order.OrderDetails.Add(new OrderDetail
-                {
-                    ProductSizeId = productSizeId,
-                    ProductId = productSize.Product.Id,
-                    Quantity = quantity,
-                    Price = productSize.Product.Price * quantity
-                });
-            }
-
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-            TempData["SuccessMessage"] = "Producto agregado al carrito";
+            return RedirectToAction("Index", "Cart");
         }
-        catch
-        {
-            await transaction.RollbackAsync();
-            TempData["ErrorMessage"] = "Error al procesar la solicitud";
-        }
-        return RedirectToAction("Index", "Cart");
-    }
 
-    // ORDER HANDLING METHOD
-    private async Task<Order> GetOrCreateOrder(string userId)
+        // ORDER HANDLING METHOD
+        private async Task<Order> GetOrCreateOrder(string userId)
         {
             var orderId = HttpContext.Session.GetInt32("CurrentOrderId");
             if (orderId.HasValue)

@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
 using Vestigio.Utilities;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 namespace Vestigio.Controllers
 {
@@ -136,7 +130,7 @@ namespace Vestigio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")] 
+            [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")]
             Product product,
             List<int> categoryIds, // Cambiar a List<int> para recibir los IDs de las categorías
             Dictionary<string, int> sizes, // Cambiar a Dictionary para recibir tamaños y stock
