@@ -1,0 +1,77 @@
+﻿@model List<Challenge>
+@{
+    var userLevel = ViewBag.UserLevel as int? ?? 1;
+    var solvedChallenges = ViewBag.SolvedChallenges as List<int> ?? new List<int>();
+}
+<div class="row g-4 mb-5 pb-5">
+    @foreach (var challenge in Model)
+    {
+        var isUnlocked = challenge.RarityLevel <= userLevel &&
+        (challenge.SolutionMode != SolutionMode.TimeBased || challenge.IsPublic);
+        var isSolved = solvedChallenges.Contains(challenge.Id);
+        <div class="col-md-6 col-lg-4">
+            <div class="challenge-card @( !isUnlocked ? "locked" : "" ) @( isSolved ? "solved" : "" )">
+                <div class="challenge-image position-relative">
+                    @if (challenge.Images != null && challenge.Images.Any())
+                    {
+                        <img src="@challenge.Images.First().Url" alt="@challenge.Title" class="img-fluid">
+                    }
+                    else
+                    {
+                        <div class="placeholder-image"></div>
+                    }
+                    @if (isSolved)
+                    {
+                        <div class="solved-badge position-absolute top-0 end-0 m-3">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Solved</span>
+                        </div>
+                    }
+                </div>
+                <div class="challenge-card-inner">
+                    <div class="challenge-header">
+                        <div class="rarity-badge" data-level="@challenge.RarityLevel">
+                            <div class="rarity-icon">
+                                <i class="fas fa-crown"></i>
+                            </div>
+                            <div class="rarity-info">
+                                <span class="rarity-level">Level @challenge.RarityLevel</span>
+                                <span class="rarity-name">- @challenge.RarityName</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="challenge-title">@challenge.Title</h3>
+                    <div class="challenge-description-preview">
+                        @challenge.Description.Substring(0, Math.Min(100, challenge.Description.Length))...
+                    </div>
+                    <div class="challenge-rewards">
+                        <div class="reward">
+                            <i class="fas fa-coins"></i>
+                            <span>@challenge.Coins</span>
+                        </div>
+                        <div class="reward">
+                            <i class="fas fa-star"></i>
+                            <span>@challenge.ExpPoints XP</span>
+                        </div>
+                    </div>
+                    @if (isUnlocked && !isSolved)
+                    {
+                        <button class="btn-solve" data-bs-toggle="modal" data-bs-target="#challengeModal-@challenge.Id">
+                            Solve Challenge
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    }
+                    else if (!isUnlocked)
+                    {
+                        <div class="lock-message">
+                            <i class="fas fa-lock"></i>
+                            <span>Requires Level @challenge.RarityLevel</span>
+                        </div>
+                    }
+                </div>
+            </div>
+            @* Llamamos al partial del modal para el desafío *@
+            @Html.Partial("~/Views/Showcase/_ChallengeModal.cshtml", challenge)
+        </div>
+    }
+</div>
