@@ -1,160 +1,512 @@
 ﻿@model Vestigio.Models.Order
 
-<div class="container-lg">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <div>
-            <h1 class="display-6 mb-0">Pedido #@Model.Id</h1>
-            <small class="text-muted">@Model.OrderStatus.StatusName</small>
-        </div>
-        <div>
-            <a href="@Url.Action("Index")" class="btn btn-outline-dark">
-                <i class="bi bi-arrow-left me-2"></i>Volver
+@{
+    var orderDetailsList = Model.OrderDetails.ToList();
+}
+
+<div class="container-fluid mb-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 header-zone">
+        <h1 class="h3 mb-0 header-hover fw-bold">
+            <i class="bi bi-receipt me-2"></i>Order #@Model.Id
+        </h1>
+        <div class="d-flex gap-2">
+            @if (Model.OrderStatus.StatusName == "Pending")
+            {
+                <button type="button"
+                        class="btn btn-outline-danger hover-scale fw-bold"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteOrderModal">
+                    <i class="bi bi-trash3 me-2"></i>Delete Order
+                </button>
+            }
+            <a href="@Url.Action("Index")" class="btn btn-outline-dark hover-scale fw-bold">
+                <i class="bi bi-arrow-left me-2"></i>Back
             </a>
         </div>
     </div>
 
-    <div class="row g-4">
-        <!-- Información principal -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm h-100">
+    <!-- Contenido principal -->
+    <div class="row g-4 orders-grid mb-5 pb-5">
+        <!-- Sección de Detalles -->
+        <div class="col-12 col-lg-8">
+            <div class="card-detail shadow-sm mb-4 py-5 px-4">
                 <div class="card-body">
-                    <h5 class="card-title mb-4">
-                        <i class="bi bi-info-circle me-2"></i>Detalles del Pedido
-                    </h5>
-                    <dl class="row">
-                        <dt class="col-sm-5">Fecha:</dt>
-                        <dd class="col-sm-7">@Model.CreationDate.ToString("dd MMM yyyy HH:mm")</dd>
+                    <div class="row g-4">
+                        <!-- Columna 1 -->
+                        <div class="col-md-6">
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold">Order Date:</span>
+                                <span class="detail-value">@Model.CreationDate.ToString("dd MMM yyyy HH:mm")</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold">Status:</span>
+                                <span class="detail-value">
+                                    <span class="badge @GetStatusBadge()">
+                                        @Model.OrderStatus.StatusName
+                                    </span>
+                                </span>
+                            </div>
+                            @if (Model.OrderStatus.StatusName != "Pending")
+                            {
+                                <div class="detail-item">
+                                    <span class="detail-label fw-bold">Total:</span>
+                                    <span class="detail-value text-success">
+                                        <strong>@ViewBag.Total.ToString("C")</strong>
+                                    </span>
+                                </div>
+                            }
 
-                        <dt class="col-sm-5">Estado:</dt>
-                        <dd class="col-sm-7">
-                            <span class="badge @GetStatusBadge()">
-                                @Model.OrderStatus.StatusName
-                            </span>
-                        </dd>
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold">Email:</span>
+                                <span class="detail-value">@Model.User.Email</span>
+                            </div>
 
-                        <dt class="col-sm-5">Total:</dt>
-                        <dd class="col-sm-7">@Model.Total.ToString("C")</dd>
-                    </dl>
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold">Phone:</span>
+                                <span class="detail-value">@Model.User.PhoneNumber</span>
+                            </div>
+                        </div>
+
+                        <!-- Columna 2 -->
+                        <div class="col-md-6">
+
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold">Client:</span>
+                                <span class="detail-value">@Model.User.FirstName @Model.User.LastName</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold">Adress:</span>
+                                <span class="detail-value">
+                                    @Model.User.Address
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold">City:</span>
+                                <span class="detail-value">
+                                    @Model.User.City
+                                </span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label fw-bold">Postal Code:</span>
+                                <span class="detail-value">
+                                    @Model.User.PostalCode
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Datos del usuario -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm h-100">
+            <!-- Tabla de Productos -->
+            <div class="card-detail shadow-sm">
                 <div class="card-body">
-                    <h5 class="card-title mb-4">
-                        <i class="bi bi-person-circle me-2"></i>Datos del Cliente
-                    </h5>
-                    <dl class="row">
-                        <dt class="col-sm-5">Nombre:</dt>
-                        <dd class="col-sm-7">@Model.User.FirstName @Model.User.LastName</dd>
-
-                        <dt class="col-sm-5">Contacto:</dt>
-                        <dd class="col-sm-7">@Model.User.PhoneNumber</dd>
-
-                        <dt class="col-sm-5">Dirección:</dt>
-                        <dd class="col-sm-7">
-                            @Model.User.Address, @Model.User.City (@Model.User.PostalCode)
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-        </div>
-
-        <!-- Acciones -->
-        <div class="col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body d-flex flex-column justify-content-center">
-                    @if (Model.OrderStatusId == 1)
+                    @if (Model.OrderStatus.StatusName == "Pending")
                     {
-                        <form method="post" asp-action="Confirm">
-                            <button type="submit" class="btn btn-success w-100 btn-lg">
-                                <i class="bi bi-check-circle me-2"></i>Confirmar Pedido
-                            </button>
+                        <form asp-action="Update" method="post" id="orderForm">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="text-center">Image</th>
+                                            <th class="text-center">Product</th>
+                                            <th class="text-center">Size</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-center">Price</th>
+                                            <th class="text-center">Total</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < orderDetailsList.Count; i++)
+                                        {
+                                            var item = orderDetailsList[i];
+                                            <tr data-item-id="@item.Id">
+                                                <td class="text-center align-middle">
+                                                    <img src="@item.Product.Images.First().Url"
+                                                         class="product-thumb-lg img-fluid rounded"
+                                                         alt="@item.Product.Name">
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <input type="hidden" name="orderDetails[@i].Id" value="@item.Id" />
+                                                    <input type="hidden" name="orderDetails[@i].ProductId" value="@item.ProductId" />
+                                                    <div class="fw-bold">@item.Product.Name</div>
+                                                    <small class="text-muted">@item.Product.Description</small>
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <select name="orderDetails[@i].ProductSizeId"
+                                                            class="form-select form-select-sm size-selector text-center"
+                                                            style="width:80px"
+                                                            data-original-value="@item.ProductSizeId"
+                                                            data-initial-stock="@item.ProductSize.Stock"
+                                                            onchange="updateMaxQuantity(this)">
+                                                        @foreach (var size in item.Product.ProductSizes)
+                                                        {
+                                                            <option value="@size.Id"
+                                                                    data-stock="@size.Stock"
+                                                                    selected="@(size.Id == item.ProductSizeId)">
+                                                                @size.Size
+                                                            </option>
+                                                        }
+                                                    </select>
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <div class="d-flex justify-content-center">
+                                                        <input type="number"
+                                                                name="orderDetails[@i].Quantity"
+                                                                value="@item.Quantity"
+                                                                min="1"
+                                                                max="@item.ProductSize.Stock"
+                                                                style="width:60px"
+                                                                class="form-control form-control-sm text-center quantity-input"
+                                                                data-original-value="@item.Quantity"
+                                                                data-original-quantity="@item.Quantity"
+                                                                data-original-max="@item.ProductSize.Stock"
+                                                                oninput="validateQuantity(this)">
+                                                    </div>
+                                                </td>
+                                                <td class="text-center align-middle">@item.Price.ToString("C")</td>
+                                                <td class="text-center align-middle fw-bold">
+                                                    @((item.Price * item.Quantity).ToString("C"))
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <button type="button"
+                                                            class="btn btn-link text-danger"
+                                                            onclick="removeItem(@item.Id)">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Botones de Acción (Ocultos inicialmente) -->
+                            <div id="actionButtons" class="text-end px-3 pb-4" style="display: none;">
+                                <button type="button"
+                                        class="btn btn-outline-danger hover-scale me-2"
+                                        id="resetChanges">
+                                    <i class="bi bi-x-circle me-2"></i>Cancel
+                                </button>
+                                <button type="submit" class="btn btn-outline-success hover-scale">
+                                    <i class="bi bi-save me-2"></i>Save Changes
+                                </button>
+                            </div>
                         </form>
                     }
-                    <button class="btn btn-outline-dark mt-3" onclick="window.print()">
-                        <i class="bi bi-printer me-2"></i>Imprimir
-                    </button>
+                    else
+                    {
+                        <!-- Vista no editable -->
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="text-center">Image</th>
+                                        <th class="text-center">Product</th>
+                                        <th class="text-center">Size</th>
+                                        <th class="text-center">Qty</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderDetails)
+                                    {
+                                        <tr>
+                                            <td class="text-center">
+                                                <img src="@item.Product.Images.First().Url"
+                                                     class="product-thumb-lg img-fluid rounded"
+                                                     alt="@item.Product.Name">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="fw-bold">@item.Product.Name</div>
+                                                <small class="text-muted">@item.Product.Description</small>
+                                            </td>
+                                            <td class="text-center">@item.ProductSize.Size</td>
+                                            <td class="text-center">@item.Quantity</td>
+                                            <td class="text-center">@item.Price.ToString("C")</td>
+                                            <td class="text-center fw-bold">@((item.Price * item.Quantity).ToString("C"))</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+            <!-- Panel Resumen -->
+            <div class="col-12 col-lg-4">
+                <div class="card-detail shadow-sm h-100 p-4">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-4 fw-bold">
+                            <i class="bi bi-wallet2 me-2"></i>Payment Summary
+                        </h5>
+
+                        <div class="payment-summary">
+
+                            <div class="d-flex flex-column gap-3">
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold">Subtotal:</span>
+                                    <span>@ViewBag.Total.ToString("C")</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-bold">Shipping:</span>
+                                    <span>FREE</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span class="fw-bold">Total:</span>
+                                    <span>@ViewBag.Total.ToString("C")</span>
+                                </div>
+                            </div>
+
+                            @if (Model.OrderStatus.StatusName == "Pending")
+                            {
+                                <div class="alert alert-warning mt-4 fw-bold text-center">
+                                    <i class="bi bi-exclamation-circle me-2"></i>
+                                    Payment pending confirmation
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-success mt-4 fw-bold text-center">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Payment completed
+                                </div>
+                            }
+
+                            <div class="mt-4">
+                                @if (Model.OrderStatusId == 1)
+                                {
+                                    <form method="post" asp-action="Confirm" class="mb-3">
+                                        <button type="submit" class="btn btn-success w-100 py-3 hover-scale bounce-on-hover fw-bold">
+                                            <i class="bi bi-check-circle me-2"></i>Confirm Order
+                                        </button>
+                                    </form>
+                                }
+                                <button class="btn btn-outline-dark w-100 py-3 hover-scale bounce-on-hover fw-bold" onclick="window.print()">
+                                    <i class="bi bi-printer me-2"></i>Print Details
+                                </button>
+                            </div>
+                        </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Productos -->
-    <div class="card shadow-sm mt-4">
-        <div class="card-body">
-            <h5 class="card-title mb-4">
-                <i class="bi bi-box-seam me-2"></i>Productos Solicitados
-            </h5>
-
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th style="width: 60px"></th>
-                            <th>Producto</th>
-                            <th>Talla</th>
-                            <th class="text-center">Cantidad</th>
-                            <th class="text-end">P. Unitario</th>
-                            <th class="text-end">Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.OrderDetails)
-                        {
-                            <tr>
-                                <td>
-                                    @if (item.Product.Images?.Any() == true)
-                                    {
-                                        <img src="@item.Product.Images.First().Url"
-                                             class="img-fluid rounded"
-                                             style="max-height: 50px"
-                                             alt="@item.Product.Name">
-                                    }
-                                </td>
-                                <td>
-                                    <div class="fw-bold">@item.Product.Name</div>
-                                    <small class="text-muted">SKU: @item.Product.Id</small>
-                                </td>
-                                <td>@item.ProductSize.Size</td>
-                                <td class="text-center">@item.Quantity</td>
-                                <td class="text-end">@item.Price.ToString("C")</td>
-                                <td class="text-end fw-bold">@((item.Price * item.Quantity).ToString("C"))</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+    <!-- Modal Eliminar Ítem -->
+    <div class="modal fade" id="deleteItemModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this product from the order?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteItem">Delete</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Modal Eliminar Pedido -->
+    <div class="modal fade" id="deleteOrderModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete the entire order? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteOrder">Delete Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/userOrders.css" asp-append-version="true" />
+}
 
 @functions {
     string GetStatusBadge()
     {
         return Model.OrderStatus.StatusName switch
         {
-            "Pendiente" => "bg-warning text-dark",
-            "Confirmado" => "bg-success",
-            "Cancelado" => "bg-danger",
+            "Pending" => "bg-warning text-dark",
+            "Confirmed" => "bg-success",
+            "Cancelled" => "bg-danger",
             _ => "bg-secondary"
         };
     }
 }
 
-<style>
-    .card {
-        border-radius: 1rem;
-        transition: transform 0.2s;
-    }
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elementos del DOM y variables globales
+            const actionButtons = document.getElementById('actionButtons');
+            const stockCache = new Map();
+            let currentItemToDelete = null;
 
-        .card:hover {
-            transform: translateY(-3px);
-        }
+            // Función para actualizar el stock máximo
+            const updateMaxQuantity = async (selectElement) => {
+                const productSizeId = selectElement.value;
+                const originalSizeId = selectElement.dataset.originalValue;
+                const quantityInput = selectElement.closest('tr').querySelector('.quantity-input');
+                const originalQuantity = quantityInput.dataset.originalQuantity;
 
-    dt {
-        font-weight: 500;
-    }
-</style>
+                try {
+                    if (productSizeId === originalSizeId) {
+                        quantityInput.value = originalQuantity;
+                        quantityInput.max = selectElement.dataset.initialStock;
+                    } else {
+                        quantityInput.value = 1;
+                        if (!stockCache.has(productSizeId)) {
+                            const response = await fetch(`@Url.Action("GetStock", "UserOrders")?productSizeId=${productSizeId}`);
+                            const stock = await response.json();
+                            stockCache.set(productSizeId, stock);
+                        }
+                        quantityInput.max = stockCache.get(productSizeId);
+                    }
+
+                    if (quantityInput.value > quantityInput.max) {
+                        quantityInput.value = quantityInput.max;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    quantityInput.max = 999;
+                }
+            };
+
+            // Validación de cantidad en tiempo real
+            const handleQuantityInput = (input) => {
+                const max = parseInt(input.max) || 999;
+                let value = Math.min(Math.max(input.value, 1), max);
+                input.value = value !== 1 ? value : 1;
+            };
+
+            // Verificador de cambios globales
+            const checkChanges = () => {
+                const hasChanges = Array.from(document.querySelectorAll('[data-original-value]'))
+                    .some(element => element.value !== element.dataset.originalValue);
+                actionButtons.style.display = hasChanges ? 'block' : 'none';
+            };
+
+            // Event listeners para selects de tallas
+            document.querySelectorAll('.size-selector').forEach(select => {
+                select.dataset.originalValue = select.value;
+                select.addEventListener('change', async () => {
+                    await updateMaxQuantity(select);
+                    checkChanges();
+                });
+            });
+
+            // Event listeners para inputs de cantidad
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.dataset.originalValue = input.value;
+                input.max = input.dataset.originalMax;
+                input.addEventListener('input', () => {
+                    handleQuantityInput(input);
+                    checkChanges();
+                });
+            });
+
+            // Botón Cancelar
+            document.getElementById('resetChanges')?.addEventListener('click', () => {
+                document.querySelectorAll('[data-original-value]').forEach(element => {
+                    element.value = element.dataset.originalValue;
+                    if (element.classList.contains('size-selector')) {
+                        const quantityInput = element.closest('tr').querySelector('.quantity-input');
+                        quantityInput.value = quantityInput.dataset.originalQuantity;
+                        quantityInput.max = element.dataset.initialStock;
+                    }
+                    element.dispatchEvent(new Event('change'));
+                });
+                checkChanges();
+            });
+
+            // Eliminar ítem - Mostrar modal
+            window.removeItem = (itemId) => {
+                currentItemToDelete = itemId;
+                new bootstrap.Modal(document.getElementById('deleteItemModal')).show();
+            };
+
+            // Confirmar eliminación de ítem
+            document.getElementById('confirmDeleteItem').addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`@Url.Action("RemoveItem", "UserOrders")?itemId=${currentItemToDelete}`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    });
+
+                    if (response.ok) {
+                        const itemRow = document.querySelector(`tr[data-item-id="${currentItemToDelete}"]`);
+                        itemRow?.remove();
+
+                        // Eliminar pedido si no quedan productos
+                        if (document.querySelectorAll('tbody tr').length === 0) {
+                            await deleteOrder();
+                        }
+
+                        checkChanges();
+                    }
+                } catch (error) {
+                    alert('Error deleting product');
+                } finally {
+                    currentItemToDelete = null;
+                    bootstrap.Modal.getInstance(document.getElementById('deleteItemModal')).hide();
+                }
+            });
+
+            // Función para eliminar pedido completo
+            const deleteOrder = async () => {
+                try {
+                    const response = await fetch(`@Url.Action("Delete", "UserOrders")?id=@Model.Id`, {
+                        method: 'POST',
+                        headers: {
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        }
+                    });
+
+                    if (response.ok) {
+                        window.location.href = '@Url.Action("Index", "UserOrders")';
+                    }
+                } catch (error) {
+                    alert('Error deleting order');
+                }
+            };
+
+            // Confirmar eliminación de pedido
+            document.getElementById('confirmDeleteOrder').addEventListener('click', () => {
+                bootstrap.Modal.getInstance(document.getElementById('deleteOrderModal')).hide();
+                deleteOrder();
+            });
+
+            // Inicialización de caché de stock
+            document.querySelectorAll('.size-selector').forEach(select => {
+                const initialSizeId = select.value;
+                if (initialSizeId) {
+                    stockCache.set(initialSizeId, parseInt(select.dataset.initialStock));
+                    select.closest('tr').querySelector('.quantity-input').max = select.dataset.initialStock;
+                }
+            });
+        });
+    </script>
+}

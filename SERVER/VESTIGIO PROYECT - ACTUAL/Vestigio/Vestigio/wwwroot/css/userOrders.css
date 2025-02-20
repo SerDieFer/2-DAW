@@ -1,0 +1,503 @@
+﻿:root {
+    --primary-accent: #2d3436;
+    --secondary-accent: #636e72;
+    --soft-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --card-bg: #ffffff;
+    --hover-transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --border-radius: 15px;
+}
+
+/* Animación de Fade para el Contenedor */
+@keyframes container-fade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de Bounce para las Tarjetas */
+@keyframes card-bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-12px);
+    }
+
+    60% {
+        transform: translateY(-6px);
+    }
+}
+
+body {
+    background: #f8f9fa;
+    font-family: 'Inter', sans-serif;
+}
+
+.header-zone {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.5rem 0;
+}
+
+.header-hover {
+    transition: var(--hover-transition);
+    color: var(--primary-accent);
+    position: relative;
+    display: inline-block;
+}
+
+    .header-hover::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--primary-accent);
+        transition: width 0.3s ease;
+    }
+
+    .header-hover:hover::after {
+        width: 100%;
+    }
+
+.filter-btn {
+    border-radius: var(--border-radius);
+    border-width: 2px;
+    letter-spacing: 0.5px;
+    transition: var(--hover-transition);
+}
+
+    .filter-btn:hover {
+        background: var(--primary-accent);
+        color: white !important;
+    }
+
+.offcanvas-dynamic {
+    border-left: 4px solid var(--primary-accent);
+    box-shadow: var(--soft-shadow);
+}
+
+.offcanvas-header-dynamic {
+    background: var(--primary-accent);
+    color: white;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--secondary-accent);
+    box-shadow: 0 0 0 0.25rem rgba(45, 52, 54, 0.1);
+}
+
+.form-control:hover, .form-select:hover {
+    border-color: var(--secondary-accent);
+    box-shadow: 0 2px 8px rgba(45, 52, 54, 0.05);
+}
+
+.orders-grid {
+    animation: container-fade 0.6s ease-out;
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    transition: box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: visible;
+    transform: translateZ(0);
+}
+
+    .card:hover {
+        animation: card-bounce 0.5s ease;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: var(--border-radius);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    .card:hover::after {
+        opacity: 1;
+    }
+
+.badge {
+    padding: 0.5em 1em;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75em;
+    letter-spacing: 0.5px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+    .badge:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+.bg-warning {
+    background: #fff3cd !important;
+    color: #856404 !important;
+}
+
+.bg-success {
+    background: #d4edda !important;
+    color: #155724 !important;
+}
+
+.bg-danger {
+    background: #f8d7da !important;
+    color: #721c24 !important;
+}
+
+.bg-secondary {
+    background: #e2e3e5 !important;
+    color: #383d41 !important;
+}
+
+.pagination-dynamic {
+    margin-top: 2rem;
+}
+
+    .pagination-dynamic .page-link {
+        border: none;
+        color: var(--secondary-accent);
+        margin: 0 4px;
+        border-radius: 8px !important;
+        transition: var(--hover-transition);
+        position: relative;
+    }
+
+        .pagination-dynamic .page-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-accent);
+            transition: width 0.3s ease;
+        }
+
+        .pagination-dynamic .page-link:hover::after {
+            width: 100%;
+        }
+
+    .pagination-dynamic .page-item.active .page-link {
+        background: var(--primary-accent);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .pagination-dynamic .page-link:hover {
+        background: rgba(45, 52, 54, 0.05);
+    }
+
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s, background 0.3s;
+}
+
+    .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s ease-out, height 0.3s ease-out;
+    }
+
+    .btn:hover::after {
+        width: 200px;
+        height: 200px;
+    }
+
+.hover-scale {
+    transition: var(--hover-transition);
+}
+
+    .hover-scale:hover {
+        transform: scale(1.02);
+    }
+
+.btn-outline-dark:hover {
+    background: var(--primary-accent);
+    color: white !important;
+}
+
+
+.text-accent {
+    color: var(--primary-accent);
+    border-bottom: 2px solid rgba(45, 52, 54, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.product-img {
+    max-height: 150px;
+    width: auto;
+    mix-blend-mode: multiply;
+    transition: transform 0.3s ease;
+}
+
+.placeholder-img {
+    width: 150px;
+    height: 150px;
+    background: rgba(45, 52, 54, 0.05);
+}
+
+.table-hover tr {
+    transition: var(--hover-transition);
+}
+
+    .table-hover tr:hover {
+        background: rgba(45, 52, 54, 0.03);
+    }
+
+.bg-primary-accent {
+    background: var(--primary-accent) !important;
+}
+
+.detail-item {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.detail-label {
+    font-weight: 500;
+    color: var(--secondary-accent);
+}
+
+.detail-value {
+    color: var(--primary-accent);
+}
+
+.bounce-on-hover {
+    transition: transform 0.3s ease;
+}
+
+    .bounce-on-hover:hover {
+        animation: bounce 0.5s ease;
+    }
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-8px);
+    }
+
+    60% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Variante para Details - Cards sin bounce */
+.card-detail {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: visible;
+    transform: translateZ(0);
+    animation: none !important;
+}
+
+    .card-detail:hover {
+        animation: none !important;
+        z-index: 2;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-detail::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: var(--border-radius);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: -1;
+    }
+
+    /* Opcional: Si quieres mantener la sombra pero sin movimiento */
+    .card-detail:hover::after {
+        opacity: 1;
+        animation: none;
+    }
+
+.product-thumb {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}
+
+.payment-summary {
+    background: rgba(45, 52, 54, 0.03);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+}
+
+.product-thumb-lg {
+    height: 100px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform 0.3s ease;
+}
+
+    .product-thumb-lg:hover {
+        transform: scale(1.1);
+    }
+
+
+.table td, .table th {
+    vertical-align: middle !important;
+}
+
+    /* Ajuste especial para celdas con múltiples líneas */
+    .table td.multiline {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80px;
+    }
+
+/* Botones fijos en la parte inferior del resumen */
+.mt-auto {
+    margin-top: auto;
+}
+
+.form-select-sm, .form-control-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+}
+
+.btn-link.text-danger {
+    padding: 0.25rem;
+    font-size: 1rem;
+    vertical-align: middle;
+}
+
+    .btn-link.text-danger:hover {
+        color: #dc3545 !important;
+        transform: scale(1.1);
+        transition: all 0.3s ease;
+    }
+
+.table td.align-middle {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.form-select-sm.text-center {
+    text-align-last: center;
+    text-align: center;
+}
+
+.action-buttons {
+    transition: opacity 0.3s ease;
+    margin-top: 1.5rem;
+}
+
+    .action-buttons[style*="none"] {
+        display: block !important;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .action-buttons[style*="block"] {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+
+.table-container {
+    transition: margin-bottom 0.3s ease;
+}
+
+#actionButtons {
+    display: none;
+    padding: 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.table-expanded {
+    margin-bottom: 100px;
+    transition: margin 0.3s ease;
+}
+
+.quantity-input {
+    max-width: 100px;
+    text-align: center;
+    border: 2px solid #dee2e6;
+    padding: 0.375rem 0.75rem;
+}
+
+.size-selector {
+    max-width: 150px;
+    margin: 0 auto;
+    text-align: center;
+    text-align-last: center;
+}
+
+.modal-content {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+#confirmDeleteItem, #confirmDeleteOrder {
+    transition: all 0.2s;
+}
+
+    #confirmDeleteItem:hover, #confirmDeleteOrder:hover {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
