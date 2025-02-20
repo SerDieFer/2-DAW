@@ -28,6 +28,28 @@ namespace Vestigio.Models
         [DataType(DataType.Date)]
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
+        // PERSONAL INFO
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
+        [Display(Name = "ID")]
+        [StringLength(9, MinimumLength = 9)]
+        [RegularExpression(@"^((([A-Za-z])\d{8})|(\d{8}([A-Za-z])))$", ErrorMessage = "ID must contain a letter at the or at the beginning")]
+        public string DNI { get; set; }
+
+        [Display(Name = "Adress")]
+        public string Address { get; set; }
+
+        [Display(Name = "City")]
+        public string City { get; set; }
+
+        [Display(Name = "Postal Code")]
+        [RegularExpression(@"^\d{5}$", ErrorMessage = "Postal code must be a 5-digit number")]
+        public string PostalCode { get; set; }
+
 
         // RELATIONS
         [Display(Name = "Orders")]

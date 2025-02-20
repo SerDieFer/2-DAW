@@ -40,9 +40,12 @@
                                             <select name="newProductSizeId"
                                                     class="form-select form-select-sm rounded-0"
                                                     onchange="this.form.submit()"
-                                                    asp-items="@(new SelectList(item.Product.ProductSizes
-                                                        .Where(ps => ps.IsActive),
-                                                        "Id", "Size", item.ProductSizeId))">
+                                                    asp-items="@(new SelectList(
+                                                        item.Product.ProductSizes
+                                                            .Where(ps => ps.IsActive && ps.Stock >= item.Quantity),
+                                                        "Id",
+                                                        "Size",
+                                                        item.ProductSizeId))">
                                             </select>
                                         </form>
                                         <small class="text-muted d-block mt-2" style="letter-spacing: 0.5px;">
@@ -96,7 +99,15 @@
                             <a asp-controller="Showcase" asp-action="Index"
                                class="btn btn-dark rounded-0 text-uppercase py-3"
                                style="letter-spacing: 2px;">Continue Shopping</a>
+
+                            <form asp-action="ConfirmOrder" method="post">
+                                <button type="submit" class="btn btn-success rounded-0 text-uppercase py-3"
+                                        style="letter-spacing: 2px;">
+                                    Confirm Purchase
+                                </button>
+                            </form>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -124,6 +135,7 @@
 {
     <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
 }
+
 
 <style>
     body {

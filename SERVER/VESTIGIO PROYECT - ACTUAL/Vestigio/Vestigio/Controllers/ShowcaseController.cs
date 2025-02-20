@@ -297,8 +297,7 @@ namespace Vestigio.Controllers
         [HttpPost]
         public async Task<IActionResult> SolveChallenge(int challengeId, string password)
         {
-            if (!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Account");
-
+            if (!User.Identity.IsAuthenticated) return Redirect("/Identity/Account/Login");
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 

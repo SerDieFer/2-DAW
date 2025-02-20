@@ -29,10 +29,10 @@ namespace Vestigio.Controllers
                 return View(new Order());
             }
 
-            // Se carga el pedido pendiente que está en la sesión.
             var order = await _context.Orders
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.Product)
+                        .ThenInclude(p => p.ProductSizes)
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.ProductSize)
                 .FirstOrDefaultAsync(o => o.Id == currentOrderId.Value && o.OrderStatusId == 1);
@@ -243,6 +243,7 @@ namespace Vestigio.Controllers
             {
                 var detail = await _context.OrderDetails
                     .Include(od => od.ProductSize)
+                        .ThenInclude(ps => ps.Product)
                     .FirstOrDefaultAsync(od => od.Id == orderDetailId);
 
                 if (detail == null)
@@ -255,21 +256,30 @@ namespace Vestigio.Controllers
                     .Include(ps => ps.Product)
                     .FirstOrDefaultAsync(ps => ps.Id == newProductSizeId);
 
+                // Validaciones
                 if (newSize == null)
                 {
-                    TempData["ErrorMessage"] = "Nueva talla no encontrada.";
+                    TempData["ErrorMessage"] = "Talla no encontrada.";
                     return RedirectToAction("Index");
                 }
 
-                if (detail.Quantity > newSize.Stock)
+                if (newSize.ProductId != detail.ProductSize.ProductId)
                 {
-                    TempData["ErrorMessage"] = $"Stock insuficiente en nueva talla. Disponible: {newSize.Stock}";
+                    TempData["ErrorMessage"] = "No puedes cambiar a un producto diferente.";
                     return RedirectToAction("Index");
                 }
 
-                detail.ProductSizeId = newSize.Id;
+                if (newSize.Stock < detail.Quantity)
+                {
+                    TempData["ErrorMessage"] = $"Stock insuficiente. Disponible: {newSize.Stock}";
+                    return RedirectToAction("Index");
+                }
 
+                // Actualizar talla
+                detail.ProductSizeId = newSize.Id;
+                detail.ProductId = newSize.ProductId;
                 await _context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
                 TempData["SuccessMessage"] = "Talla actualizada correctamente";
             }
@@ -289,8 +299,23 @@ namespace Vestigio.Controllers
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+
+                // Verificar que los campos obligatorios estén completos
+                if (string.IsNullOrWhiteSpace(user.DNI) ||
+                    string.IsNullOrWhiteSpace(user.Address) ||
+                    string.IsNullOrWhiteSpace(user.City) ||
+                    string.IsNullOrWhiteSpace(user.PostalCode) ||
+                    string.IsNullOrWhiteSpace(user.FirstName) ||
+                    string.IsNullOrWhiteSpace(user.LastName) ||
+                    string.IsNullOrWhiteSpace(user.PhoneNumber))
+                {
+                    TempData["ErrorMessage"] = "Debes completar tu información personal antes de realizar un pedido.";
+                    return Redirect("/Identity/Account/Manage");
+                }
+
                 var currentOrderId = HttpContext.Session.GetInt32("CurrentOrderId");
-                if (currentOrderId == null)
+                if (!currentOrderId.HasValue)
                 {
                     TempData["ErrorMessage"] = "No hay pedido activo para confirmar.";
                     return RedirectToAction("Index");
@@ -313,12 +338,12 @@ namespace Vestigio.Controllers
                 foreach (var detail in order.OrderDetails)
                 {
                     var productSize = await _context.ProductSizes
-                        .FromSqlRaw("SELECT * FROM ProductSizes WITH (UPDLOCK) WHERE Id = {0}", detail.ProductSizeId)
+                        .FromSqlRaw("SELECT * FROM ProductSize WITH (UPDLOCK) WHERE Id = {0}", detail.ProductSizeId)
                         .FirstOrDefaultAsync();
 
                     if (productSize == null || productSize.Stock < detail.Quantity)
                     {
-                        TempData["ErrorMessage"] = $"Stock insuficiente para {productSize?.Product.Name ?? "el producto"}. Disponible: {productSize?.Stock}";
+                        TempData["ErrorMessage"] = $"Stock insuficiente para {productSize?.Product?.Name ?? "el producto"}. Disponible: {productSize?.Stock ?? 0}";
                         await transaction.RollbackAsync();
                         return RedirectToAction("Index");
                     }
@@ -334,13 +359,14 @@ namespace Vestigio.Controllers
                 HttpContext.Session.Remove("CurrentOrderId");
                 TempData["SuccessMessage"] = "Compra confirmada correctamente";
             }
-            catch
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                TempData["ErrorMessage"] = "Error al confirmar la compra";
+                TempData["ErrorMessage"] = "Error al confirmar la compra: " + ex.Message;
             }
-            // Se redirige a la vista de pedidos (por ejemplo, el índice del controlador Orders)
+
             return RedirectToAction("Index", "Orders");
         }
+
     }
 }

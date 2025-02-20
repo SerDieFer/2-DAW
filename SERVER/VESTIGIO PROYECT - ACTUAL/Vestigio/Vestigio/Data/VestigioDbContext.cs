@@ -53,6 +53,10 @@ namespace Vestigio.Data
                 .Property(od => od.Price)
                 .HasPrecision(10, 2);
 
+            modelBuilder.Entity<Order>()
+                .Property(o => o.Total)
+                .HasPrecision(18, 2);
+
             // COMPOUND KEY FOR CHALLENGE RESOLUTION (A CHALLENGE CAN ONLY BE SOLVED ONCE PER USER)
             modelBuilder.Entity<ChallengeResolution>()
                 .HasIndex(cr => new { cr.UserId, cr.ChallengeId })

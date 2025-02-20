@@ -11,6 +11,9 @@ namespace Vestigio.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CreationDate { get; set; }
 
+        [Display(Name = "Total")]
+        public decimal Total { get; set; }
+
         // RELATION WITH ORDER STATUS
         public int OrderStatusId { get; set; }
         public OrderStatus OrderStatus { get; set; }
