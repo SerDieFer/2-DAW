@@ -26,9 +26,9 @@
                 <div class="col-12">
                     <label class="form-label">Date Range</label>
                     <div class="input-group">
-                        <input type="date" name="startDate" class="form-control" value="@filters?.startDate?.ToString("yyyy-MM-dd")">
+                        <input type="date" name="startDate" class="form-control" value="@filters?.startDate?.ToString("dd/MM/yyyy")">
                         <span class="input-group-text">-</span>
-                        <input type="date" name="endDate" class="form-control" value="@filters?.endDate?.ToString("yyyy-MM-dd")">
+                        <input type="date" name="endDate" class="form-control" value="@filters?.endDate?.ToString("dd/MM/yyyy")">
                     </div>
                 </div>
 
@@ -129,7 +129,7 @@
 </div>
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/userOrders.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/orders.css" asp-append-version="true" />
 }
 
 @functions {
@@ -150,9 +150,9 @@
         var filters = ViewBag.Filters as dynamic;
 
         if (filters?.startDate != null)
-            routeData.Add("startDate", filters.startDate.ToString("yyyy-MM-dd"));
+            routeData.Add("startDate", filters.startDate.ToString("dd/MM/yyyy"));
         if (filters?.endDate != null)
-            routeData.Add("endDate", filters.endDate.ToString("yyyy-MM-dd"));
+            routeData.Add("endDate", filters.endDate.ToString("dd/MM/yyyy"));
         if (filters?.minTotal != null)
             routeData.Add("minTotal", filters.minTotal.ToString());
         if (filters?.maxTotal != null)

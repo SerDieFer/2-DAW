@@ -20,75 +20,48 @@ namespace Vestigio.Controllers
             _context = context;
             _userManager = userManager;
         }
+
         public async Task<IActionResult> Index(
-         DateTime? startDate, DateTime? endDate,
-         decimal? minTotal, decimal? maxTotal,
-         int? statusId, int? pageNumber, int pageSize = 6)
+            DateTime? startDate, DateTime? endDate,
+            decimal? minTotal, decimal? maxTotal,
+            int? statusId, int? pageNumber, int pageSize = 6)
         {
             var userId = _userManager.GetUserId(User);
 
             var query = _context.Orders
                 .Include(o => o.OrderStatus)
                 .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.Product)
+                        .ThenInclude(p => p.Images)
+                .Include(o => o.OrderDetails)
+                    .ThenInclude(od => od.ProductSize)
                 .Where(o => o.UserId == userId)
-                .Select(o => new {
-                    Order = o,
-                    Total = o.OrderDetails.Sum(d => d.Price * d.Quantity)
-                })
                 .AsQueryable();
 
             // Aplicar filtros
             if (startDate.HasValue)
-            {
-                var start = startDate.Value.Date;
-                query = query.Where(x => x.Order.CreationDate >= start);
-            }
+                query = query.Where(o => o.CreationDate >= startDate.Value.Date);
 
             if (endDate.HasValue)
-            {
-                var end = endDate.Value.Date.AddDays(1).AddTicks(-1);
-                query = query.Where(x => x.Order.CreationDate <= end);
-            }
+                query = query.Where(o => o.CreationDate <= endDate.Value.Date.AddDays(1).AddTicks(-1));
 
             if (statusId.HasValue)
-            {
-                query = query.Where(x => x.Order.OrderStatusId == statusId.Value);
-            }
+                query = query.Where(o => o.OrderStatusId == statusId.Value);
 
             if (minTotal.HasValue)
-            {
-                query = query.Where(x => x.Total >= minTotal.Value);
-            }
+                query = query.Where(o => o.Total >= minTotal.Value);
 
             if (maxTotal.HasValue)
-            {
-                query = query.Where(x => x.Total <= maxTotal.Value);
-            }
-
-            // Proyección final
-            var finalQuery = query.Select(x => x.Order);
+                query = query.Where(o => o.Total <= maxTotal.Value);
 
             var paginatedOrders = await PaginatedList<Order>.CreateAsync(
-                finalQuery.OrderByDescending(o => o.CreationDate),
+                query.OrderByDescending(o => o.CreationDate),
                 pageNumber ?? 1,
                 pageSize
             );
 
-            // Calcular totales
-            var ordersWithTotal = paginatedOrders.Select(o => {
-                o.Total = o.OrderDetails.Sum(d => d.Price * d.Quantity);
-                return o;
-            }).ToList();
-
             ViewBag.Statuses = await _context.OrderStatuses.ToListAsync();
-            ViewBag.Filters = new
-            {
-                startDate,
-                endDate,
-                minTotal,
-                maxTotal,
-                statusId
-            };
+            ViewBag.Filters = new { startDate, endDate, minTotal, maxTotal, statusId };
 
             return View(paginatedOrders);
         }
@@ -106,7 +79,6 @@ namespace Vestigio.Controllers
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.ProductSize)
                 .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
-
 
             if (order == null)
             {
@@ -134,17 +106,100 @@ namespace Vestigio.Controllers
             return View(order);
         }
 
-        // 3. Confirma el pedido pendiente (actualiza stock y cambia estado)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(int id, List<OrderDetail> orderDetails)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var order = await _context.Orders
+                    .Include(o => o.OrderDetails)
+                        .ThenInclude(od => od.Product)
+                            .ThenInclude(p => p.ProductSizes)
+                    .FirstOrDefaultAsync(o => o.Id == id);
+
+                if (order == null)
+                {
+                    return Json(new { success = false, message = "Pedido no encontrado." });
+                }
+
+                foreach (var detail in orderDetails)
+                {
+                    var existingDetail = order.OrderDetails.FirstOrDefault(od => od.Id == detail.Id);
+                    if (existingDetail != null)
+                    {
+                        var isValidSize = existingDetail.Product.ProductSizes.Any(ps => ps.Id == detail.ProductSizeId);
+                        if (!isValidSize)
+                        {
+                            return Json(new { success = false, message = "Talla inválida para el producto" });
+                        }
+
+                        existingDetail.Quantity = detail.Quantity;
+                        existingDetail.ProductSizeId = detail.ProductSizeId;
+                        existingDetail.Price = existingDetail.Product.Price; // Precio unitario
+                    }
+                }
+
+                order.Total = order.OrderDetails.Sum(od => od.Price * od.Quantity); // Actualizar total
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Json(new { success = true, newTotal = order.Total });
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                return Json(new { success = false, message = "Error al actualizar el pedido" });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveItem(int itemId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                var detail = await _context.OrderDetails
+                    .Include(d => d.Order)
+                        .ThenInclude(o => o.OrderDetails)
+                    .FirstOrDefaultAsync(d => d.Id == itemId && d.Order.UserId == userId);
+
+                if (detail == null)
+                    return Json(new { success = false, message = "Ítem no encontrado." });
+
+                var order = detail.Order;
+                _context.OrderDetails.Remove(detail);
+
+                // Actualizar el total del pedido
+                order.Total = order.OrderDetails
+                    .Where(od => od.Id != itemId)
+                    .Sum(od => od.Price * od.Quantity);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Json(new { success = true, newTotal = order.Total }); // Devolver el nuevo total
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return Json(new { success = false, message = "Error al eliminar el ítem: " + ex.Message });
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Confirm(int id)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
-
             try
             {
                 var userId = _userManager.GetUserId(User);
                 var user = await _userManager.GetUserAsync(User);
 
+                // Validar datos del usuario
                 if (string.IsNullOrWhiteSpace(user.DNI) ||
                     string.IsNullOrWhiteSpace(user.Address) ||
                     string.IsNullOrWhiteSpace(user.City) ||
@@ -160,26 +215,15 @@ namespace Vestigio.Controllers
                 var order = await _context.Orders
                     .Include(o => o.OrderDetails)
                         .ThenInclude(od => od.ProductSize)
-                            .ThenInclude(ps => ps.Product)
                     .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
 
-                if (order == null)
+                if (order == null || order.OrderStatusId != 1 || !order.OrderDetails.Any())
                 {
-                    TempData["ErrorMessage"] = "Pedido no encontrado.";
+                    TempData["ErrorMessage"] = "Pedido no válido para confirmar";
                     return RedirectToAction("Index");
                 }
 
-                if (order.OrderStatusId != 1)
-                {
-                    TempData["ErrorMessage"] = "El pedido no se encuentra en estado pendiente.";
-                    return RedirectToAction("Details", new { id = id });
-                }
-
-                if (!order.OrderDetails.Any())
-                {
-                    TempData["ErrorMessage"] = "El pedido no puede estar vacío";
-                    return RedirectToAction("Details", new { id });
-                }
+                order.Total = order.OrderDetails.Sum(od => od.Price * od.Quantity); // Actualizar total final
 
                 foreach (var detail in order.OrderDetails)
                 {
@@ -189,15 +233,14 @@ namespace Vestigio.Controllers
 
                     if (productSize == null || productSize.Stock < detail.Quantity)
                     {
-                        TempData["ErrorMessage"] = $"Stock insuficiente para {productSize?.Product.Name ?? "el producto"}. Disponible: {productSize?.Stock}";
+                        TempData["ErrorMessage"] = $"Stock insuficiente para {productSize?.Product.Name}";
                         await transaction.RollbackAsync();
-                        return RedirectToAction("Details", new { id = id });
+                        return RedirectToAction("Details", new { id });
                     }
-
-                    productSize.UpdateStock(-detail.Quantity);
+                    productSize.Stock -= detail.Quantity;
                 }
 
-                order.OrderStatusId = 2; // Estado confirmado
+                order.OrderStatusId = 2; // Confirmado
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
@@ -206,76 +249,9 @@ namespace Vestigio.Controllers
             catch
             {
                 await transaction.RollbackAsync();
-                TempData["ErrorMessage"] = "Error al confirmar el pedido.";
+                TempData["ErrorMessage"] = "Error al confirmar el pedido";
             }
-
             return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(int id, List<OrderDetail> orderDetails)
-        {
-            var order = await _context.Orders
-                .Include(o => o.OrderDetails)
-                .ThenInclude(od => od.Product)
-                .ThenInclude(p => p.ProductSizes)
-                .FirstOrDefaultAsync(o => o.Id == id);
-
-            foreach (var detail in orderDetails)
-            {
-                var existingDetail = order.OrderDetails
-                    .FirstOrDefault(od => od.Id == detail.Id);
-
-                if (existingDetail != null)
-                {
-                    // Validar que la talla pertenece al producto
-                    var isValidSize = existingDetail.Product.ProductSizes
-                        .Any(ps => ps.Id == detail.ProductSizeId);
-
-                    if (!isValidSize)
-                    {
-                        ModelState.AddModelError("", "Invalid size for product");
-                        return View("Details", order);
-                    }
-
-                    existingDetail.Quantity = detail.Quantity;
-                    existingDetail.ProductSizeId = detail.ProductSizeId;
-                }
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Details", new { id });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveItem(int itemId)
-        {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-            try
-            {
-                var userId = _userManager.GetUserId(User);
-                var detail = await _context.OrderDetails
-                    .Include(d => d.Order)
-                        .ThenInclude(o => o.OrderStatus)
-                    .FirstOrDefaultAsync(d => d.Id == itemId && d.Order.UserId == userId);
-
-                if (detail?.Order.OrderStatus.StatusName != "Pending")
-                    return Forbid();
-
-                _context.OrderDetails.Remove(detail);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-
-                return Json(new { success = true });
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                return Json(new { success = false });
-            }
         }
 
         [HttpPost]
@@ -283,13 +259,12 @@ namespace Vestigio.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
-
             try
             {
                 var userId = _userManager.GetUserId(User);
 
                 var order = await _context.Orders
-                    .Include(o => o.OrderStatus)
+                    .Include(o => o.OrderStatus) // Asegurar que OrderStatus esté incluido
                     .Include(o => o.OrderDetails)
                     .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
 
@@ -315,17 +290,25 @@ namespace Vestigio.Controllers
                 await transaction.CommitAsync();
 
                 TempData["SuccessMessage"] = "Pedido eliminado correctamente.";
+                return Json(new
+                {
+                    success = true
+                });
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 TempData["ErrorMessage"] = $"Error al eliminar el pedido: {ex.Message}";
+                return Json(new
+                {
+                    success = false,
+                    message = "Error al eliminar el pedido: " + ex.Message
+                });
             }
 
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
         public async Task<IActionResult> GetStock(int productSizeId)
         {
             var stock = await _context.ProductSizes
@@ -334,6 +317,20 @@ namespace Vestigio.Controllers
                 .FirstOrDefaultAsync();
 
             return Json(stock > 0 ? stock : 0);
+        }
+
+        public async Task<IActionResult> ProductModal(int productId)
+        {
+            var product = await _context.Products
+                .Include(p => p.Images)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.ProductCategories).ThenInclude(pc => pc.Category)
+                .FirstOrDefaultAsync(p => p.Id == productId);
+
+            if (product == null)
+                return NotFound();
+
+            return PartialView("~/Views/UserOrders/_ProductInfo.cshtml", product);
         }
     }
 }

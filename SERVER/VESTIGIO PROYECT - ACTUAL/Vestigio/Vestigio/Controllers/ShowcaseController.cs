@@ -361,6 +361,7 @@ namespace Vestigio.Controllers
 
 
         // CART ADD METHOD
+        // Agrega un producto al carrito
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> AddToCart(int productSizeId, int quantity)
@@ -369,33 +370,62 @@ namespace Vestigio.Controllers
             try
             {
                 var userId = _userManager.GetUserId(User);
-                if (userId == null) return Redirect("/Identity/Account/Login");
+                if (userId == null)
+                    return Redirect("/Identity/Account/Login");
 
-                // Verificar si existe un pedido activo en la sesión actual
-                if (!HttpContext.Session.TryGetValue("CurrentOrderId", out byte[] orderIdBytes))
+                // Se obtiene el pedido actual desde la sesión
+                var currentOrderId = HttpContext.Session.GetInt32("CurrentOrderId");
+                Order order;
+                if (currentOrderId == null)
                 {
-                    // Crear nuevo pedido si no existe
-                    var newOrder = new Order
+                    // No existe pedido en la sesión: se crea uno nuevo
+                    order = new Order
                     {
                         UserId = userId,
                         CreationDate = DateTime.Now,
-                        OrderStatusId = 1,
+                        OrderStatusId = 1, // Pending
                         OrderDetails = new List<OrderDetail>()
                     };
-                    _context.Orders.Add(newOrder);
+                    _context.Orders.Add(order);
                     await _context.SaveChangesAsync();
 
-                    // Guardar el ID del pedido en la sesión
-                    HttpContext.Session.SetInt32("CurrentOrderId", newOrder.Id);
+                    // Se guarda el ID del nuevo pedido en la sesión
+                    HttpContext.Session.SetInt32("CurrentOrderId", order.Id);
+                }
+                else
+                {
+                    // Se intenta cargar el pedido pendiente de la sesión
+                    order = await _context.Orders
+                        .Include(o => o.OrderDetails)
+                        .FirstOrDefaultAsync(o => o.Id == currentOrderId.Value && o.OrderStatusId == 1);
+
+                    if (order == null)
+                    {
+                        // En caso de que exista la variable de sesión pero el pedido ya no esté pendiente,
+                        // se crea un nuevo pedido.
+                        order = new Order
+                        {
+                            UserId = userId,
+                            CreationDate = DateTime.Now,
+                            OrderStatusId = 1,
+                            OrderDetails = new List<OrderDetail>()
+                        };
+                        _context.Orders.Add(order);
+                        await _context.SaveChangesAsync();
+                        HttpContext.Session.SetInt32("CurrentOrderId", order.Id);
+                    }
                 }
 
-                // Obtener el ID del pedido actual desde la sesión
-                var currentOrderId = HttpContext.Session.GetInt32("CurrentOrderId").Value;
-
-                // Cargar el producto y validar stock
+                // Se carga la talla del producto y se valida el stock
                 var productSize = await _context.ProductSizes
                     .Include(ps => ps.Product)
                     .FirstOrDefaultAsync(ps => ps.Id == productSizeId);
+
+                if (productSize == null)
+                {
+                    TempData["ErrorMessage"] = "Producto no encontrado.";
+                    return RedirectToAction("Index");
+                }
 
                 if (productSize.Stock < quantity)
                 {
@@ -403,12 +433,7 @@ namespace Vestigio.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // Cargar el pedido actual
-                var order = await _context.Orders
-                    .Include(o => o.OrderDetails)
-                    .FirstOrDefaultAsync(o => o.Id == currentOrderId);
-
-                // Calcular cantidad existente en el carrito
+                // Se calcula la cantidad ya agregada al carrito para esta talla
                 int existingQuantity = order.OrderDetails
                     .Where(od => od.ProductSizeId == productSizeId)
                     .Sum(od => od.Quantity);
@@ -419,7 +444,7 @@ namespace Vestigio.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // Agregar o actualizar detalle sin modificar stock
+                // Se agrega el detalle o se actualiza si ya existe
                 var existingDetail = order.OrderDetails.FirstOrDefault(od => od.ProductSizeId == productSizeId);
                 if (existingDetail != null)
                 {
@@ -433,10 +458,10 @@ namespace Vestigio.Controllers
                         ProductSizeId = productSizeId,
                         ProductId = productSize.Product.Id,
                         Quantity = quantity,
-                        Price = productSize.Product.Price * quantity
+                        Price = productSize.Product.Price
                     });
                 }
-
+                order.Total = order.OrderDetails.Sum(od => od.Price * od.Quantity);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
                 TempData["SuccessMessage"] = "Producto agregado al carrito";
