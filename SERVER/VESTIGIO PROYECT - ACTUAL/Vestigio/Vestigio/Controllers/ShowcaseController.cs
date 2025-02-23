@@ -8,6 +8,7 @@ using Vestigio.Utilities;
 
 namespace Vestigio.Controllers
 {
+    [Authorize]
     public class ShowcaseController : Controller
     {
         private readonly VestigioDbContext _context;

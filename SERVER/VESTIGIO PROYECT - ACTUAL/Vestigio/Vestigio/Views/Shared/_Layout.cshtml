@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"]Vestigio</title>
+    <title>@ViewData["Title"]</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -128,10 +128,20 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary py-5 shadow-sm" style="font-size:large;">
     <div class="container">
         <!-- Logo y nombre visible -->
-        <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
-            <img src="/images/vestigio_logo.png" width="45" alt="Vestigio" class="me-2 logo-img">
-            <span class="brand-text">VESTIGIO</span>
-        </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="AdminPanel">
+                <img src="/images/vestigio_logo.png" width="45" alt="Vestigio" class="me-2 logo-img">
+                <span class="brand-text">VESTIGIO</span>
+            </a>
+        }
+        else
+        {
+            <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                <img src="/images/vestigio_logo.png" width="45" alt="Vestigio" class="me-2 logo-img">
+                <span class="brand-text">VESTIGIO</span>
+            </a>
+        }
 
         <!-- Botón hamburguesa -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -216,7 +226,14 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- jQuery Validation -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -231,21 +231,26 @@
                                    style="width: 2.5rem; height: 2.5rem;">
                                     <i class="bi bi-pencil-square fs-5"></i>
                                 </a>
+
                                 <a asp-action="Details" asp-route-id="@item.Id"
                                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
                                    aria-label="Details"
                                    style="width: 2.5rem; height: 2.5rem;">
                                     <i class="bi bi-eye fs-5"></i>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
-                                   aria-label="Delete"
-                                   style="width: 2.5rem; height: 2.5rem;">
+          
+                                <button type="button" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                        style="width: 2.5rem; height: 2.5rem;"
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id">
                                     <i class="bi bi-trash fs-5"></i>
-                                </a>
+                                </button>
+
                             </div>
                         </td>
                     </tr>
+
+                    <!-- Renderizar el modal para cada producto -->
+                    @await Html.PartialAsync("_DeleteModal", item)
                 }
             </tbody>
         </table>

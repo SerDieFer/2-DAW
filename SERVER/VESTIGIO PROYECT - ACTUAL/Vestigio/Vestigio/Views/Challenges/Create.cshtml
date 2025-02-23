@@ -309,11 +309,6 @@
             validateAssociation();
         }
 
-                document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('SolutionMode').value = "";
-            toggleUnlockFields();
-        });
-
         // Unlock fields management
         function toggleUnlockFields() {
             const mode = document.getElementById('SolutionMode').value;
@@ -325,6 +320,7 @@
 
             validateSolutionMode();
         }
+
         // Validation functions
         function validateAssociation(event) {
             const levelValue = document.getElementById('ProductLevel').value;
@@ -354,7 +350,7 @@
         }
 
         // Agregar el evento de validación al enviar el formulario
-        document.getElementById('challengeForm').addEventListener('submit', function(event) {
+        document.getElementById('challengeForm').addEventListener('submit', function (event) {
             if (!validateAssociation(event)) {
                 event.preventDefault();  // Impide el envío si hay un error
             }
@@ -377,7 +373,7 @@
                 const password = document.getElementById('Password').value;
                 isValid = password.trim() !== '';
                 errorMessage = 'Password is required';
-            } 
+            }
             else if (mode === 'TimeBased') {
                 const releaseDateInput = document.getElementById('ReleaseDate');
                 const releaseDate = new Date(releaseDateInput.value);
@@ -480,5 +476,6 @@
                 if (productCard) selectProduct(productCard);
             }
         });
+
     </script>
 }

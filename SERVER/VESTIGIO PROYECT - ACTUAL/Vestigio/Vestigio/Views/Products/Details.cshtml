@@ -14,12 +14,10 @@
                     @if (Model.Images?.Any() == true)
                     {
                         <div class="position-absolute top-0 end-0 m-3 z-3">
-
                             <div class="badge px-4 py-2 border-2 fw-bold fs-5 shadow"
                                  style="background: @GetRarityColor(Model.RarityLevel);">
                                 Lv. @Model.RarityLevel - @Model.RarityName
                             </div>
-
                         </div>
 
                         <img src="@Model.Images.First().Url" alt="@Model.Name"
@@ -69,7 +67,7 @@
                 </div>
 
                 <!-- Categories -->
-                <div class="d-flex flex-column  mb-4">
+                <div class="d-flex flex-column mb-4">
                     <h3 class="h4 fw-semibold mb-3">Categories</h3>
                     <div class="d-flex flex-row flex-wrap gap-2">
                         @foreach (var category in Model.ProductCategories)
@@ -125,7 +123,6 @@
                     </div>
                 </div>
 
-
                 <!-- Price and Actions -->
                 <div class="border-top pt-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -135,26 +132,33 @@
                         </div>
                     </div>
 
-                    <div class="d-flex gap-3 flex-wrap">
-                        <a href="/Product/Edit/@Model.Id" class="btn btn-primary px-4 py-3 flex-grow-1">
-                            <i class="bi bi-pencil-square me-2"></i>Edit Product
+                    <div class="d-flex gap-3">
+                        <a href="/Product/Edit/@Model.Id" class="btn btn-primary px-4 py-3 btn-custom">
+                            <i class="bi bi-pencil-square me-2"></i>Edit
                         </a>
-                        <form asp-action="Delete" method="post" class="flex-grow-1">
-                            <button type="submit" class="btn btn-danger w-100 px-4 py-3">
-                                <i class="bi bi-trash3 me-2"></i>Delete
-                            </button>
-                        </form>
-                        <a href="/Products/Index" class="btn btn-outline-secondary px-4 py-3 flex-grow-1">
+                        <button type="button" class="btn btn-danger px-4 py-3 btn-custom" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                        <a href="/Products/Index" class="btn btn-outline-secondary px-4 py-3 btn-custom">
                             <i class="bi bi-arrow-left me-2"></i>Back
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Incluir el modal de confirmación de eliminación -->
+    @await Html.PartialAsync("_DeleteModal", Model)
 </div>
 
 <style>
+    .btn-custom {
+        min-width: 150px; /* Ancho mínimo para los botones */
+        text-align: center; /* Centrar el texto */
+    }
+
     .size-card {
         min-width: 200px;
         max-width: 240px;

@@ -35,7 +35,7 @@
             <div class="row filter-rows g-4">
 
                 <!-- Filter by Name -->
-                <div class="col-md-4">  
+                <div class="col-md-4">
                     <label class="form-label small text-uppercase text-muted fw-500">Challenge Name</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-search"></i></span>
@@ -134,8 +134,8 @@
         </form>
     </div>
 
-        <div class="table-container mb-5">
-            <table class="table table-hover table-custom">
+    <div class="table-container mb-5">
+        <table class="table table-hover table-custom">
             <thead class="text-white text-center">
                 <tr>
                     <th style="width: 70px;"><i class="bi bi-power"></i></th>
@@ -168,7 +168,7 @@
                                     <h6 class="mb-0 fw-500">@item.Title</h6>
                                 </div>
                             </td>
-   
+
                             <td class="text-center">
                                 <div class="d-flex align-items-center justify-content-center">
                                     <div class="rarity-indicator" style="background-color: @GetRarityColor(item.RarityLevel);"></div>
@@ -205,24 +205,23 @@
                                             <i style="color:black" class="bi bi-clock h5 py-1 me-2 m-0"></i>
                                             <span class="text-black m-0 fw-bold">@item.SolutionMode</span>
                                         }
-                                        
                                     </span>
 
                                     <!-- Detalle -->
-                                        @if (item.SolutionMode == SolutionMode.Password)
-                                        {
+                                    @if (item.SolutionMode == SolutionMode.Password)
+                                    {
                                         <span class="badge bg-success bg-gradient py-1 px-4 d-flex align-items-center justify-content-center">
-                                                <i class="bi bi-key h5 py-1 me-2 m-0"></i>
-                                                <span class="m-0 fw-bold">@item.Password</span>
-                                            </span>
-                                        }
-                                        else
-                                        {
+                                            <i class="bi bi-key h5 py-1 me-2 m-0"></i>
+                                            <span class="m-0 fw-bold">@item.Password</span>
+                                        </span>
+                                    }
+                                    else
+                                    {
                                         <span class="badge bg-warning bg-gradient py-1 px-4 d-flex align-items-center justify-content-center">
                                             <i style="color:black" class="bi bi-calendar3 h5 py-1 me-2 m-0"></i>
                                             <span class="m-0 fw-bold text-dark">@item.ReleaseDate?.ToString("dd/MM/yyyy HH:mm")</span>
-                                            </span>
-                                        }
+                                        </span>
+                                    }
                                 </div>
                             </td>
 
@@ -242,7 +241,6 @@
                                     <span class="badge bg-info bg-gradient text-decoration-none py-1 px-3 d-flex align-items-center justify-content-center">
                                         <i class="bi bi-bar-chart-line h5 py-1 me-2 m-0"></i>
                                         <span class="m-0 fw-bold">Level @item.ProductLevel</span>
-                                        
                                     </span>
                                 }
                                 else
@@ -294,26 +292,30 @@
                             <td class="align-middle">
                                 <div class="btn-group-vertical d-flex align-items-center gap-2 w-100" role="group" aria-label="Item actions">
                                     <a asp-action="Edit" asp-route-id="@item.Id"
-                                        class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
-                                        aria-label="Edit"
-                                        style="width: 2.5rem; height: 2.5rem;">
+                                       class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                                       aria-label="Edit"
+                                       style="width: 2.5rem; height: 2.5rem;">
                                         <i class="bi bi-pencil-square fs-5"></i>
                                     </a>
                                     <a asp-action="Details" asp-route-id="@item.Id"
-                                        class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
-                                        aria-label="Details"
-                                        style="width: 2.5rem; height: 2.5rem;">
+                                       class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                                       aria-label="Details"
+                                       style="width: 2.5rem; height: 2.5rem;">
                                         <i class="bi bi-eye fs-5"></i>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id"
-                                        class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
-                                        aria-label="Delete"
-                                        style="width: 2.5rem; height: 2.5rem;">
+
+                                    <!-- Botón para abrir el modal de eliminación -->
+                                    <button type="button" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                            style="width: 2.5rem; height: 2.5rem;"
+                                            data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id">
                                         <i class="bi bi-trash fs-5"></i>
-                                    </a>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
+
+                        <!-- Incluir el modal de confirmación de eliminación para cada desafío -->
+                        @await Html.PartialAsync("_DeleteModal", item)
                     }
                 }
                 else

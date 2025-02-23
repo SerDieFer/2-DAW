@@ -25,7 +25,7 @@ namespace Vestigio.Models
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "The price is required.")]
-        [Range(0.01, double.MaxValue, ErrorMessage = "The prise should be bigger than 0")]
+        [Range(0, double.MaxValue, ErrorMessage = "The prise should be bigger than 0")]
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
 

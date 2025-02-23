@@ -128,6 +128,7 @@ namespace Vestigio.Controllers
 
             var challenge = await _context.Challenges
                 .Include(c => c.Product)
+                .Include(c => c.Images)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (challenge == null)
             {
@@ -206,8 +207,7 @@ namespace Vestigio.Controllers
         [Bind("Id,IsActive,Title,Description,ExpPoints,Coins,RarityLevel," +
         "CreationDate,ProductLevel,ProductId,SolutionMode,Password,ReleaseDate")]
         Challenge challenge,
-        List<IFormFile> imageFiles,
-        List<int>? deleteImageIds)
+        List<IFormFile> imageFiles)
         {
             if (id != challenge.Id) return NotFound();
 
@@ -221,35 +221,21 @@ namespace Vestigio.Controllers
                         .Include(c => c.Images)
                         .FirstOrDefaultAsync(c => c.Id == id);
 
-                    // Eliminar imágenes seleccionadas
-                    if (deleteImageIds != null)
+                    if (existingChallenge == null)
                     {
-                        foreach (var imageId in deleteImageIds)
-                        {
-                            var image = existingChallenge.Images.FirstOrDefault(i => i.Id == imageId);
-                            if (image != null)
-                            {
-                                // Eliminar archivo físico
-                                var imagePath = Path.Combine(
-                                    Directory.GetCurrentDirectory(),
-                                    "wwwroot",
-                                    image.Url.TrimStart('/'));
-
-                                if (System.IO.File.Exists(imagePath))
-                                {
-                                    System.IO.File.Delete(imagePath);
-                                }
-
-                                _context.Images.Remove(image);
-                            }
-                        }
+                        return NotFound();
                     }
 
                     // Actualizar propiedades
                     _context.Entry(existingChallenge).CurrentValues.SetValues(challenge);
 
-                    // Guardar nuevas imágenes
-                    await SaveImages(imageFiles, challenge.Id);
+                    // Manejar imágenes
+                    if (imageFiles != null && imageFiles.Any())
+                    {
+                        await DeleteImages(existingChallenge.Images);
+                        existingChallenge.Images.Clear();
+                        await SaveImages(imageFiles, challenge.Id);
+                    }
 
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -322,10 +308,50 @@ namespace Vestigio.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsInactive(int id)
+        {
+            // Buscar el desafío por su ID
+            var challenge = await _context.Challenges.FindAsync(id);
+
+            // Si no se encuentra el desafío, devolver un error 404
+            if (challenge == null)
+            {
+                return NotFound();
+            }
+
+            // Marcar el desafío como inactivo
+            challenge.IsActive = false;
+
+            try
+            {
+                // Guardar los cambios en la base de datos
+                _context.Update(challenge);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Manejar errores de concurrencia
+                if (!ChallengeExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            // Redirigir a la vista de índice después de marcar como inactivo
+            return RedirectToAction(nameof(Index));
+        }
+
         private bool ChallengeExists(int id)
         {
             return _context.Challenges.Any(e => e.Id == id);
         }
+
 
         private void ValidateChallenge(Challenge challenge)
         {
@@ -402,6 +428,22 @@ namespace Vestigio.Controllers
                     ChallengeId = challengeId
                 });
             }
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task DeleteImages(ICollection<Image> images)
+        {
+            if (images == null || !images.Any()) return;
+
+            foreach (var image in images)
+            {
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", image.Url.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+            _context.Images.RemoveRange(images);
             await _context.SaveChangesAsync();
         }
     }

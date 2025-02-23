@@ -2,104 +2,417 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<style>
+    .header-bar {
+        background: #222222;
+        padding: 1.5rem 0;
+    }
 
-<h4>Challenge</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    .tier-card, .product-card {
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 2px solid transparent;
+    }
+
+        .tier-card:hover, .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .tier-card.active, .product-card.active {
+            border-color: #0d6efd;
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+
+    #dropZone.dragover {
+        border-color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    .img-thumbnail {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+    }
+
+    .validation-summary {
+        border-radius: 0.5rem;
+    }
+
+    .association-section {
+        display: none;
+    }
+</style>
+
+<div class="container mb-5">
+    <form asp-action="Edit" enctype="multipart/form-data" novalidate class="card shadow-lg border-0" id="challengeForm">
+        <div class="header-bar">
+            <div class="container d-flex align-items-center px-4 py-2 px-lg-5 py-lg-2">
+                <a asp-action="Index" class="btn btn-light btn-sm rounded-pill px-3">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                </a>
+                <h1 class="text-white mb-0 ms-3 fs-4 fw-bold">Edit Challenge</h1>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger validation-summary"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
+
+            <!-- Basic Data Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-info-circle me-2"></i>Basic Data</h5>
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label"><i class="bi bi-tag me-2"></i>Challenge Title</label>
+                        <input asp-for="Title" class="form-control form-control-lg" placeholder="Enter challenge name" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"><i class="bi bi-chat-text me-2"></i>Challenge Story</label>
+                        <textarea asp-for="Description" rows="3" class="form-control" placeholder="Describe the challenge's story"></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ExpPoints" class="control-label"></label>
-                <input asp-for="ExpPoints" class="form-control" />
-                <span asp-validation-for="ExpPoints" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Coins" class="control-label"></label>
-                <input asp-for="Coins" class="form-control" />
-                <span asp-validation-for="Coins" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RarityLevel" class="control-label"></label>
-                <input asp-for="RarityLevel" class="form-control" />
-                <span asp-validation-for="RarityLevel" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreationDate" class="control-label"></label>
-                <input asp-for="CreationDate" class="form-control" />
-                <span asp-validation-for="CreationDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductLevel" class="control-label"></label>
-                <select asp-for="ProductLevel" class="form-control" asp-items="ViewBag.ProductLevel"></select>
-                <span asp-validation-for="ProductLevel" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
-                <span asp-validation-for="ProductId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="SolutionMode" class="control-label"></label>
-                <select asp-for="SolutionMode" class="form-control"></select>
-                <span asp-validation-for="SolutionMode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ReleaseDate" class="control-label"></label>
-                <input asp-for="ReleaseDate" class="form-control" />
-                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label>Existing Images</label>
-                @foreach (var image in Model.Images)
-                {
-                    <div class="image-container">
-                        <img src="@image.Url" alt="Challenge image" style="max-width: 200px;" />
-                        <div class="form-check">
-                            <input type="checkbox"
-                                   name="deleteImageIds"
-                                   value="@image.Id"
-                                   class="form-check-input" />
-                            <label class="form-check-label">Delete</label>
+
+            <!-- Rewards Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-gem me-2"></i>Rewards</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="ExpPoints" class="form-label"><i class="bi bi-lightning-charge me-2"></i>Experience Points</label>
+                                <input asp-for="ExpPoints" type="number" min="0" class="form-control" placeholder="XP points" required />
+                                <span asp-validation-for="ExpPoints" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Coins" class="form-label"><i class="bi bi-coin me-2"></i>Coins</label>
+                                <input asp-for="Coins" type="number" min="0" class="form-control" placeholder="Coin amount" required />
+                                <span asp-validation-for="Coins" class="text-danger small"></span>
+                            </div>
                         </div>
                     </div>
-                }
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+            <!-- Exclusivity Level Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-award me-2"></i>Exclusivity Level</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Rarity Tier</label>
+                        <select asp-for="RarityLevel" class="form-select form-select-md">
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i - @Vestigio.Utilities.LevelsNaming.GetLevelName(i)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="RarityLevel" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unlock Mechanism Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-unlock me-2"></i>Unlock Mechanism</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Unlock Type</label>
+                        <select asp-for="SolutionMode" class="form-select" onchange="toggleUnlockFields()">
+                            <option value="" selected>Select unlock method</option>
+                            <option value="Password">Password Protected</option>
+                            <option value="TimeBased">Timed Release</option>
+                        </select>
+                        <span asp-validation-for="SolutionMode" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Campos con validación individual -->
+                    <div id="passwordField" class="mb-3 d-none">
+                        <label class="form-label">Password</label>
+                        <input asp-for="Password" class="form-control" placeholder="Enter password" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    <div id="releaseDateField" class="mb-3 d-none">
+                        <label class="form-label">Release Time</label>
+                        <input type="datetime-local" asp-for="ReleaseDate" class="form-control"
+                               min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                        <span asp-validation-for="ReleaseDate" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge Association Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-collection me-2"></i>Challenge Association</h5>
+                    <div id="association-error" class="alert alert-danger d-none mb-3">
+                        <i class="bi bi-exclamation-circle me-2"></i><span class="error-text"></span>
+                    </div>
+
+                    <div class="btn-group w-100 mb-3" role="group">
+                        <button type="button" class="btn btn-outline-dark" onclick="toggleAssociation('level')">
+                            <i class="bi bi-layers me-2"></i>By Level
+                        </button>
+                        <button type="button" class="btn btn-outline-dark" onclick="toggleAssociation('product')">
+                            <i class="bi bi-box-seam me-2"></i>By Product
+                        </button>
+                    </div>
+
+                    <!-- Level Association -->
+                    <div id="levelAssociation" class="d-none">
+                        <label class="form-label">Select Tier</label>
+                        <div class="row g-3">
+                            @foreach (var level in ViewBag.ProductLevels as IEnumerable<SelectListItem>)
+                            {
+                                <div class="col-md-4">
+                                    <div class="card tier-card @(level.Selected ? "active" : "")"
+                                         data-tier="@level.Value"
+                                         onclick="selectTier(this)">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title mb-1">@level.Text</h5>
+                                            <p class="card-text text-muted small">Unlocks @level.Text.Split('-')[0] items</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <select asp-for="ProductLevel" class="form-select d-none">
+                            <option value="">Select tier</option>
+                            @foreach (var level in ViewBag.ProductLevels as IEnumerable<SelectListItem>)
+                            {
+                                <option value="@level.Value">@level.Text</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ProductLevel" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Product Association -->
+                    <div id="productAssociation" class="d-none">
+                        <label class="form-label">Select Product</label>
+                        <div class="row g-3">
+                            @foreach (var product in ViewBag.Products as IEnumerable<SelectListItem>)
+                            {
+                                <div class="col-md-4">
+                                    <div class="card product-card"
+                                         data-product-id="@product.Value"
+                                         onclick="selectProduct(this)">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title mb-1">@product.Text</h5>
+                                            <p class="card-text text-muted small">ID: @product.Value</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <select asp-for="ProductId" class="form-select d-none">
+                            <option value="">Select product</option>
+                            @foreach (var product in ViewBag.Products as IEnumerable<SelectListItem>)
+                            {
+                                <option value="@product.Value">@product.Text</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ProductId" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Challenge Images Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-image me-2"></i>Challenge Images</h5>
+                    <div class="border border-2 border-dashed rounded-3 p-4 text-center position-relative" id="dropZone"
+                         ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+                        <input type="file" name="imageFiles" id="images" multiple
+                               class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                               accept="image/*" onchange="handleFileSelect(event)" />
+                        <div class="space-y-2" id="uploadPrompt">
+                            <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
+                            <p class="text-muted mb-1">Drag & drop or click to upload</p>
+                        </div>
+                        <div id="imagePreviews" class="d-flex flex-wrap gap-3 mt-3">
+                            @foreach (var image in Model.Images)
+                            {
+                                <img src="@image.Url" class="img-thumbnail" alt="Challenge Image" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-5">
+                <button type="submit" class="btn btn-dark btn-lg w-100 py-3">
+                    <i class="bi bi-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // State management
+        let selectedTierCard = null;
+        let selectedProductCard = null;
+
+        // Tier selection
+        function selectTier(element) {
+            if (selectedTierCard) selectedTierCard.classList.remove('active');
+            element.classList.add('active');
+            selectedTierCard = element;
+            document.getElementById('ProductLevel').value = element.dataset.tier;
+            validateAssociation();
+        }
+
+        // Product selection
+        function selectProduct(element) {
+            if (selectedProductCard) selectedProductCard.classList.remove('active');
+            element.classList.add('active');
+            selectedProductCard = element;
+            document.getElementById('ProductId').value = element.dataset.productId;
+            validateAssociation();
+        }
+
+        // Toggle association type
+        function toggleAssociation(type) {
+            const levelSection = document.getElementById('levelAssociation');
+            const productSection = document.getElementById('productAssociation');
+
+            // Reset button states
+            document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/hide sections
+            levelSection.classList.toggle('d-none', type !== 'level');
+            productSection.classList.toggle('d-none', type !== 'product');
+
+            // Reset opposite fields
+            if (type === 'level') {
+                document.getElementById('ProductId').value = '';
+                if (selectedProductCard) {
+                    selectedProductCard.classList.remove('active');
+                    selectedProductCard = null;
+                }
+            } else {
+                document.getElementById('ProductLevel').value = '';
+                if (selectedTierCard) {
+                    selectedTierCard.classList.remove('active');
+                    selectedTierCard = null;
+                }
+            }
+            validateAssociation();
+        }
+
+        // Unlock fields management
+        function toggleUnlockFields() {
+            const mode = document.getElementById('SolutionMode').value;
+            const passwordField = document.getElementById('passwordField');
+            const releaseDateField = document.getElementById('releaseDateField');
+
+            passwordField.classList.toggle('d-none', mode !== 'Password');
+            releaseDateField.classList.toggle('d-none', mode !== 'TimeBased');
+
+            validateSolutionMode();
+        }
+
+        // Validation functions
+        function validateAssociation(event) {
+            const levelValue = document.getElementById('ProductLevel').value;
+            const productValue = document.getElementById('ProductId').value;
+            const errorElement = document.getElementById('association-error');
+
+            // Sólo se valida si se está intentando enviar el formulario
+            if (event.type === 'submit') {
+                const bothSelected = levelValue && productValue;
+                const noneSelected = !levelValue && !productValue;
+
+                // Muestra u oculta el error dependiendo de la selección
+                errorElement.classList.toggle('d-none', !(bothSelected || noneSelected));
+
+                if (bothSelected) {
+                    errorElement.querySelector('.error-text').textContent = "You can't select both association types";
+                } else if (noneSelected) {
+                    errorElement.querySelector('.error-text').textContent = "You must select one association type";
+                }
+
+                // Si no se selecciona ni un nivel ni un producto o si se seleccionan ambos, se bloquea el envío del formulario
+                return !(bothSelected || noneSelected);
+            }
+
+            // Si no es un envío del formulario, no se valida todavía
+            return true;
+        }
+
+        // Agregar el evento de validación al enviar el formulario
+        document.getElementById('challengeForm').addEventListener('submit', function (event) {
+            if (!validateAssociation(event)) {
+                event.preventDefault();  // Impide el envío si hay un error
+            }
+        });
+
+        function validateSolutionMode() {
+            const mode = document.getElementById('SolutionMode').value;
+            const errorElement = document.getElementById('solution-error');
+
+            // No mostrar error si no se ha seleccionado un método de desbloqueo
+            if (!mode) {
+                errorElement.classList.add('d-none');
+                return true;
+            }
+
+            let isValid = true;
+            let errorMessage = '';
+
+            if (mode === 'Password') {
+                const password = document.getElementById('Password').value;
+                isValid = password.trim() !== '';
+                errorMessage = 'Password is required';
+            }
+            else if (mode === 'TimeBased') {
+                const releaseDateInput = document.getElementById('ReleaseDate');
+                const releaseDate = new Date(releaseDateInput.value);
+                const now = new Date();
+
+                isValid = releaseDateInput.value !== '' && releaseDate > now;
+                errorMessage = isValid ? '' : 'A valid future date is required';
+
+                // Update the model value
+                const formattedDate = releaseDate.toISOString().slice(0, 16);
+                document.getElementById('ReleaseDate').value = formattedDate;
+            }
+
+            errorElement.classList.toggle('d-none', isValid);
+            errorElement.querySelector('.error-text').textContent = errorMessage;
+            return isValid;
+        }
+
+        // Form submission handler
+        document.getElementById('challengeForm').addEventListener('submit', function (e) {
+            const isAssociationValid = validateAssociation();
+            const isSolutionValid = validateSolutionMode();
+
+            if (!isAssociationValid || !isSolutionValid) {
+                e.preventDefault();
+                const firstError = document.querySelector('.alert:not(.d-none)');
+                if (firstError) {
+                    window.scrollTo({
+                        top: firstError.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+
+    </script>
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vestigio.Data;
 
@@ -11,9 +12,11 @@ using Vestigio.Data;
 namespace Vestigio.Migrations
 {
     [DbContext(typeof(VestigioDbContext))]
-    partial class VestigioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250222235149_refix")]
+    partial class refix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -590,7 +593,7 @@ namespace Vestigio.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserUnlockedProduct", (string)null);
+                    b.ToTable("UserUnlockedProduct");
                 });
 
             modelBuilder.Entity("Vestigio.Models.UserUnlockedProductByLevel", b =>
@@ -615,7 +618,7 @@ namespace Vestigio.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserUnlockedProductByLevel", (string)null);
+                    b.ToTable("UserUnlockedProductByLevel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -674,7 +677,7 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.Product", "Product")
                         .WithMany("Challenges")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Product");
                 });

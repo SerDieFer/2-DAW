@@ -109,6 +109,20 @@ namespace Vestigio.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+                    // Obtener el usuario logueado
+                    var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+
+                    // Obtener los roles del usuario
+                    var roles = await _signInManager.UserManager.GetRolesAsync(user);
+
+                    // Redirigir según el rol
+                    if (roles.Contains("Admin"))
+                    {
+                        // Si el usuario es admin
+                        return RedirectToAction("AdminPanel", "Home");
+                    }
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

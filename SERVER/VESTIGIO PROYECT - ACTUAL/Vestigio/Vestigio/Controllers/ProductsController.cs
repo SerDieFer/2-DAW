@@ -14,11 +14,13 @@ namespace Vestigio.Controllers
     {
         private readonly VestigioDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<ProductsController> _logger;
 
-        public ProductsController(VestigioDbContext context, UserManager<User> userManager)
+        public ProductsController(VestigioDbContext context, UserManager<User> userManager, ILogger<ProductsController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         // GET: Products
@@ -136,6 +138,7 @@ namespace Vestigio.Controllers
             Dictionary<string, int> sizes, // Cambiar a Dictionary para recibir tamaños y stock
             List<IFormFile> imageFiles) // Cambiar a List<IFormFile> para recibir las imágenes
         {
+
             if (ModelState.IsValid)
             {
                 try
@@ -175,6 +178,13 @@ namespace Vestigio.Controllers
                             }
                         }
                     }
+
+                    if (product.Price.ToString().Contains(","))
+                    {
+                        var priceString = product.Price.ToString().Replace(',', '.');
+                        product.Price = Convert.ToDecimal(priceString);
+                    }
+
 
                     // Guardar el producto en la base de datos
                     _context.Products.Add(product);
@@ -229,7 +239,15 @@ namespace Vestigio.Controllers
                 return NotFound();
             }
 
-            ViewData["Categories"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
+            // Configurar ViewBag.Categories
+            ViewBag.Categories = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                })
+                .ToListAsync();
+
             ViewData["ProductSizes"] = ClothingSizes.Sizes.Keys.ToList();
             ViewData["SelectedCategories"] = product.ProductCategories.Select(pc => pc.CategoryId).ToList();
             ViewData["SelectedSizes"] = product.ProductSizes.ToDictionary(ps => ps.Size, ps => ps.Stock);
@@ -240,11 +258,11 @@ namespace Vestigio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-        int id,
-        [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")] Product product,
-        List<int> categoryIds, // Cambiar a List<int> para recibir los IDs de las categorías
-        Dictionary<string, int> sizes, // Recibir los tamaños y stock como un diccionario
-        List<IFormFile> imageFiles)
+            int id,
+            [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")] Product product,
+            List<int> categoryIds,
+            Dictionary<string, int> sizes,
+            List<IFormFile> imageFiles)
         {
             if (id != product.Id)
             {
@@ -255,10 +273,11 @@ namespace Vestigio.Controllers
             {
                 try
                 {
-                    // Obtener el producto existente con sus relaciones
+                    // Obtener el producto existente junto a sus relaciones
                     var existingProduct = await _context.Products
                         .Include(p => p.ProductCategories)
                         .Include(p => p.ProductSizes)
+                        .Include(p => p.Images)
                         .FirstOrDefaultAsync(p => p.Id == id);
 
                     if (existingProduct == null)
@@ -266,58 +285,88 @@ namespace Vestigio.Controllers
                         return NotFound();
                     }
 
-                    // Actualizar propiedades básicas del producto
+                    // Actualizar las propiedades básicas del producto
                     _context.Entry(existingProduct).CurrentValues.SetValues(product);
 
-                    // Actualizar categorías
-                    existingProduct.ProductCategories.Clear(); // Eliminar categorías existentes
+                    // Actualizar las categorías:
+                    // Se eliminan las existentes y se agregan las nuevas
+                    existingProduct.ProductCategories.Clear();
                     foreach (var categoryId in categoryIds)
                     {
                         existingProduct.ProductCategories.Add(new ProductCategory
                         {
-                            ProductId = product.Id, // Asignar el ID del producto
-                            CategoryId = categoryId // Asignar el ID de la categoría
+                            ProductId = product.Id,
+                            CategoryId = categoryId
                         });
                     }
 
-                    // Actualizar tamaños y stock
-                    existingProduct.ProductSizes.Clear(); // Eliminar tamaños existentes
-                    foreach (var size in sizes)
+                    // Actualizar los tamaños (ProductSizes)
+                    // Actualizar los existentes, agregar los nuevos y eliminar los que ya no existan
+
+                    // Actualizar o agregar tallas según el diccionario 'sizes'
+                    foreach (var newSize in sizes)
                     {
-                        existingProduct.ProductSizes.Add(new ProductSize
+                        // Buscar si la talla ya existe
+                        var existingSize = existingProduct.ProductSizes
+                            .FirstOrDefault(ps => ps.Size == newSize.Key);
+
+                        if (existingSize != null)
                         {
-                            ProductId = product.Id, // Asignar el ID del producto
-                            Size = size.Key, // Asignar el tamaño
-                            Stock = size.Value // Asignar el stock
-                        });
+                            // Actualizar la talla existente
+                            existingSize.Stock = newSize.Value;
+                            existingSize.IsActive = newSize.Value > 0;
+                        }
+                        else
+                        {
+                            // Agregar nueva talla
+                            existingProduct.ProductSizes.Add(new ProductSize
+                            {
+                                ProductId = product.Id,
+                                Size = newSize.Key,
+                                Stock = newSize.Value,
+                                IsActive = newSize.Value > 0
+                            });
+                        }
                     }
 
-                    // Guardar cambios en la base de datos
+                    // Eliminar las tallas que ya no se encuentran en la nueva selección
+                    var sizesToRemove = existingProduct.ProductSizes
+                        .Where(ps => !sizes.ContainsKey(ps.Size))
+                        .ToList();
+
+                    foreach (var sizeToRemove in sizesToRemove)
+                    {
+                        existingProduct.ProductSizes.Remove(sizeToRemove);
+                    }
+
+                    // Manejar imágenes
+                    if (imageFiles != null && imageFiles.Any())
+                    {
+                        await DeleteImages(existingProduct.Images);
+                        existingProduct.Images.Clear();
+                        await SaveImages(imageFiles, product.Id);
+                    }
+
                     _context.Update(existingProduct);
                     await _context.SaveChangesAsync();
 
-                    // Guardar imágenes (si hay)
-                    await SaveImages(imageFiles, product.Id);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError(string.Empty, $"Error: {ex.Message}");
+                    _logger.LogError(ex, "Error al editar el producto ID {ProductId}", product.Id);
                 }
-                return RedirectToAction(nameof(Index));
             }
 
-            // Si el modelo no es válido, recargar los datos necesarios en la vista
-            ViewData["Categories"] = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
+            // Recargar datos para la vista en caso de error
+            ViewBag.Categories = await _context.Categories
+                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+                .ToListAsync();
             ViewData["ProductSizes"] = ClothingSizes.Sizes.Keys.ToList();
             return View(product);
         }
+
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -341,20 +390,82 @@ namespace Vestigio.Controllers
             return View(product);
         }
 
-        // POST: Products/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // DELETE
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
+            // Buscar el producto con todas sus relaciones
+            var product = await _context.Products
+                .Include(p => p.ProductSizes) // Tamaños
+                .Include(p => p.ProductCategories) // Categorías
+                .Include(p => p.OrderDetails) // Detalles de pedido
+                .Include(p => p.Images) // Imágenes
+                .Include(p => p.Challenges) // Desafíos
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
             {
-                _context.Products.Remove(product);
+                return NotFound();
             }
 
+            // Eliminar los tamaños relacionados
+            _context.ProductSizes.RemoveRange(product.ProductSizes);
+
+            // Eliminar las categorías relacionadas
+            _context.ProductCategories.RemoveRange(product.ProductCategories);
+
+            // Eliminar los detalles de pedido relacionados
+            _context.OrderDetails.RemoveRange(product.OrderDetails);
+
+            // Eliminar las imágenes relacionadas
+            _context.Images.RemoveRange(product.Images);
+
+            // Eliminar los desafíos relacionados
+            _context.Challenges.RemoveRange(product.Challenges);
+
+            // Eliminar el producto
+            _context.Products.Remove(product);
+
+            // Guardar los cambios en la base de datos
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkInactive(int id)
+        {
+            // Buscar el producto incluyendo sus desafíos asociados
+            var product = await _context.Products
+                .Include(p => p.Challenges)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Marcar el producto como inactivo
+            product.IsActive = false;
+
+            // Marcar también los desafíos asociados como inactivos
+            if (product.Challenges != null && product.Challenges.Any())
+            {
+                foreach (var challenge in product.Challenges)
+                {
+                    challenge.IsActive = false;
+                    _context.Update(challenge);
+                }
+            }
+
+            _context.Update(product);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         private bool ProductExists(int id)
         {
@@ -389,5 +500,22 @@ namespace Vestigio.Controllers
             }
             await _context.SaveChangesAsync();
         }
+
+        private async Task DeleteImages(ICollection<Image> images)
+        {
+            if (images == null || !images.Any()) return;
+
+            foreach (var image in images)
+            {
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", image.Url.TrimStart('/'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+            _context.Images.RemoveRange(images);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

@@ -336,7 +336,7 @@
         function removeSizeCard(button) {
             if (document.querySelectorAll('.size-card-container').length > 1) {
                 button.closest('.size-card-container').remove();
-                reindexSizeInputs(); // Reindexar los inputs después de eliminar
+                reindexSizeInputs(); // Llamar a la función de reindexación
                 updateSizeOptions();
                 updateRemoveButtons();
             }

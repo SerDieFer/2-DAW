@@ -65,40 +65,49 @@
         </div>
     </div>
 
-    <!-- Listado de órdenes (sin cambios) -->
-    <div class="row orders-grid">
-        @foreach (var order in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body text-center">
-                            <h5 class="card-title">Order #@order.Id</h5>
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    <strong>Order Date:</strong> @order.CreationDate.ToString("dd/MM/yyyy")<br />
-                                    <strong>Status:</strong>
-                                    <span class="badge @GetStatusBadgeClass(order.OrderStatus.StatusName)">
-                                        @order.OrderStatus.StatusName
-                                    </span><br />
-                                    <strong>Total:</strong>
-                                    @if (order.OrderStatusId == 1)
-                                    {
-                                        <span>@order.OrderDetails.Sum(d => d.Price * d.Quantity).ToString("C")</span>
-                                    }
-                                    else
-                                    {
-                                        <span>@order.Total.ToString("C")</span>
-                                    }
-                                </small>
-                            </p>
-                            <a href="@Url.Action("Details", new { id = order.Id })" class="btn btn-outline-dark btn-sm hover-scale">
-                                Check Details
-                            </a>
+    <!-- Listado de órdenes -->
+    @if (Model.Count > 0)
+    {
+        <div class="row orders-grid">
+            @foreach (var order in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body text-center">
+                                <h5 class="card-title">Order #@order.Id</h5>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <strong>Order Date:</strong> @order.CreationDate.ToString("dd/MM/yyyy")<br />
+                                        <strong>Status:</strong>
+                                        <span class="badge @GetStatusBadgeClass(order.OrderStatus.StatusName)">
+                                            @order.OrderStatus.StatusName
+                                        </span><br />
+                                        <strong>Total:</strong>
+                                        @if (order.OrderStatusId == 1)
+                                        {
+                                            <span>@order.OrderDetails.Sum(d => d.Price * d.Quantity).ToString("C")</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@order.Total.ToString("C")</span>
+                                        }
+                                    </small>
+                                </p>
+                                <a href="@Url.Action("Details", new { id = order.Id })" class="btn btn-outline-dark btn-sm hover-scale">
+                                    Check Details
+                                </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning mt-4 fade-in" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>You don't have any orders.
+        </div>
+    }
 
     <!-- Paginación interactiva -->
     @if (Model.TotalPages > 1)

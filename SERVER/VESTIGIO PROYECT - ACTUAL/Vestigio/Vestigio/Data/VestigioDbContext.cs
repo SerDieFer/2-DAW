@@ -62,11 +62,12 @@ namespace Vestigio.Data
                 .HasIndex(cr => new { cr.UserId, cr.ChallengeId })
                 .IsUnique();
 
+            // RELATION: CHALLENGE - IMAGE (1:N)
             modelBuilder.Entity<Challenge>()
-               .HasMany(c => c.Resolutions)
-               .WithOne(r => r.Challenge)
-               .HasForeignKey(r => r.ChallengeId)
-               .OnDelete(DeleteBehavior.Cascade);
+                .HasMany(c => c.Images)
+                .WithOne(i => i.Challenge)
+                .HasForeignKey(i => i.ChallengeId)
+                .OnDelete(DeleteBehavior.Cascade); // Habilitar eliminación en cascada
 
             // RELATION: PRODUCT - ORDER DETAILS (1:N)
             modelBuilder.Entity<Product>()
@@ -74,6 +75,35 @@ namespace Vestigio.Data
                 .WithOne(od => od.Product)
                 .HasForeignKey(od => od.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+             .HasMany(p => p.ProductSizes)
+             .WithOne(ps => ps.Product)
+             .HasForeignKey(ps => ps.ProductId)
+             .OnDelete(DeleteBehavior.Cascade); // Eliminar tallas al borrar el producto
+
+            // Configurar relación Product ↔ ProductCategory (N:N)
+            modelBuilder.Entity<ProductCategory>()
+                .HasKey(pc => new { pc.ProductId, pc.CategoryId });
+
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(pc => pc.Product)
+                .WithMany(p => p.ProductCategories)
+                .HasForeignKey(pc => pc.ProductId)
+                .OnDelete(DeleteBehavior.Cascade); // Eliminar relaciones al borrar el producto
+
+            modelBuilder.Entity<ProductCategory>()
+                .HasOne(pc => pc.Category)
+                .WithMany(c => c.ProductCategories)
+                .HasForeignKey(pc => pc.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict); // No eliminar categorías al borrar relaciones
+
+            // Configurar relación ProductSize ↔ OrderDetail (1:N)
+            modelBuilder.Entity<ProductSize>()
+                .HasMany(ps => ps.OrderDetails)
+                .WithOne(od => od.ProductSize)
+                .HasForeignKey(od => od.ProductSizeId)
+                .OnDelete(DeleteBehavior.Restrict); // No eliminar tallas si hay pedidos asociados
 
             // RELATION: PRODUCT - PRODUCT CATEGORY (MANY-TO-MANY)
             modelBuilder.Entity<ProductCategory>()
@@ -118,8 +148,6 @@ namespace Vestigio.Data
                 .WithOne(od => od.Order)
                 .HasForeignKey(od => od.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-
         }
     }
 }

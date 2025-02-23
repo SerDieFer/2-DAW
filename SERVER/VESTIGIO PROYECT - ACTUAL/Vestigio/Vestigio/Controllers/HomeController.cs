@@ -15,7 +15,19 @@ namespace Vestigio.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "Showcase");
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("AdminPanel", "Home");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Showcase");
+            }
+        }
+
+        public IActionResult AdminPanel()
+        {
+            return View();
         }
 
         public IActionResult Privacy()
