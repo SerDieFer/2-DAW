@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using Vestigio.Data;
 using Vestigio.Models;
 
@@ -91,7 +93,29 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
+var esCulture = new CultureInfo("es-ES");
+esCulture.NumberFormat.CurrencyDecimalSeparator = ",";
+esCulture.NumberFormat.CurrencyGroupSeparator = ".";
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture(esCulture);
+    options.SupportedCultures = new[] { esCulture };
+    options.SupportedUICultures = new[] { esCulture };
+});
+
+
 var app = builder.Build();
+
+// LOCALIZATION
+var supportedCultures = new[] { new CultureInfo("es-ES") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("es-ES"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 // CONFIGURE THE HTTP REQUEST PIPELINE.
 if (app.Environment.IsDevelopment())
@@ -134,5 +158,6 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Error durante la inicialización de datos: {ex.Message}");
     }
 }
+
 
 app.Run();

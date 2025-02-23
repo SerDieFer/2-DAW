@@ -10,6 +10,11 @@
     background: var(--light-bg);
 }
 
+
+#administration-index container {
+    padding-bottom:10rem;
+}
+
 #administration-index .table-hover tbody tr {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }

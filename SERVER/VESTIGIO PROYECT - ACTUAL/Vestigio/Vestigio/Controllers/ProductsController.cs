@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
 using Vestigio.Utilities;
+using System.Globalization;
 
 namespace Vestigio.Controllers
 {
@@ -132,17 +133,33 @@ namespace Vestigio.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")]
+            [Bind("Id,IsActive,Name,Description,PriceInput,RarityLevel,CreationDate")]
             Product product,
             List<int> categoryIds, // Cambiar a List<int> para recibir los IDs de las categorías
             Dictionary<string, int> sizes, // Cambiar a Dictionary para recibir tamaños y stock
             List<IFormFile> imageFiles) // Cambiar a List<IFormFile> para recibir las imágenes
         {
-
             if (ModelState.IsValid)
             {
                 try
                 {
+
+                    // Convertir PriceInput a Price (manualmente)
+                    if (!string.IsNullOrEmpty(product.PriceInput))
+                    {
+                        if (decimal.TryParse(product.PriceInput.Replace(',', '.'),
+                                           NumberStyles.Any,
+                                           CultureInfo.InvariantCulture,
+                                           out var parsedPrice))
+                        {
+                            product.Price = parsedPrice;
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("PriceInput", "Formato inválido");
+                        }
+                    }
+
                     // Procesar las categorías seleccionadas
                     if (categoryIds != null && categoryIds.Any())
                     {
@@ -178,13 +195,6 @@ namespace Vestigio.Controllers
                             }
                         }
                     }
-
-                    if (product.Price.ToString().Contains(","))
-                    {
-                        var priceString = product.Price.ToString().Replace(',', '.');
-                        product.Price = Convert.ToDecimal(priceString);
-                    }
-
 
                     // Guardar el producto en la base de datos
                     _context.Products.Add(product);
@@ -259,7 +269,7 @@ namespace Vestigio.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
-            [Bind("Id,IsActive,Name,Description,Price,RarityLevel,CreationDate")] Product product,
+            [Bind("Id,IsActive,Name,Description,PriceInput,RarityLevel,CreationDate")] Product product,
             List<int> categoryIds,
             Dictionary<string, int> sizes,
             List<IFormFile> imageFiles)
@@ -273,6 +283,23 @@ namespace Vestigio.Controllers
             {
                 try
                 {
+
+                    // Convertir PriceInput a Price (manualmente)
+                    if (!string.IsNullOrEmpty(product.PriceInput))
+                    {
+                        if (decimal.TryParse(product.PriceInput.Replace(',', '.'),
+                                           NumberStyles.Any,
+                                           CultureInfo.InvariantCulture,
+                                           out var parsedPrice))
+                        {
+                            product.Price = parsedPrice;
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("PriceInput", "Formato inválido");
+                        }
+                    }
+
                     // Obtener el producto existente junto a sus relaciones
                     var existingProduct = await _context.Products
                         .Include(p => p.ProductCategories)
@@ -366,7 +393,6 @@ namespace Vestigio.Controllers
             ViewData["ProductSizes"] = ClothingSizes.Sizes.Keys.ToList();
             return View(product);
         }
-
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)

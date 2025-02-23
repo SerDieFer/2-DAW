@@ -4,8 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid vh-100 py-4">
-    <div class="row g-4 h-75">
+<div class="container w-100 mb-5">
+    <div class="row g-4 p-5">
         <!-- Gallery Section -->
         <div class="col-lg-7 h-100">
             <div class="h-100 d-flex flex-column">
@@ -155,7 +155,7 @@
                         <a href="/Challenges/Edit/@Model.Id" class="btn btn-primary w-100 btn-custom d-flex align-items-center justify-content-evenly">
                             <i class="bi bi-pencil-square me-2"></i>Edit
                         </a>
-                        <button type="button" class="btn btn-danger w-100 btn-custom d-flex align-items-center justify-content-evenly" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
+                        <button type="button" class="btn btn-danger w-100 btn-custom d-flex align-items-center justify-content-evenly" data-bs-toggle="modal" data-bs-target="#deleteChallengeModal-@Model.Id">
                             <i class="bi bi-trash"></i>Delete
                         </button>
                         <a href="/Challenges/Index" class="btn btn-outline-secondary w-100 btn-custom d-flex align-items-center justify-content-evenly">
@@ -168,7 +168,7 @@
     </div>
 
     <!-- Incluir el modal de confirmación de eliminación -->
-    @await Html.PartialAsync("_DeleteModal", Model)
+    @await Html.PartialAsync("_DeleteChallengeModal", Model)
 </div>
 
 <style>

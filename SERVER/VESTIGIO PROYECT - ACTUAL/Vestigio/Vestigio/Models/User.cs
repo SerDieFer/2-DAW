@@ -6,6 +6,7 @@ namespace Vestigio.Models
 {
     public class User : IdentityUser
     {
+
         public string? Nickname { get; set; }
 
         [Display(Name = "Level")]
@@ -30,25 +31,25 @@ namespace Vestigio.Models
 
         // PERSONAL INFO
         [Display(Name = "First Name")]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [Display(Name = "Last Name")]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         [Display(Name = "ID")]
         [StringLength(9, MinimumLength = 9)]
         [RegularExpression(@"^((([A-Za-z])\d{8})|(\d{8}([A-Za-z])))$", ErrorMessage = "ID must contain a letter at the or at the beginning")]
-        public string DNI { get; set; }
+        public string? DNI { get; set; }
 
         [Display(Name = "Adress")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [Display(Name = "City")]
-        public string City { get; set; }
+        public string? City { get; set; }
 
         [Display(Name = "Postal Code")]
         [RegularExpression(@"^\d{5}$", ErrorMessage = "Postal code must be a 5-digit number")]
-        public string PostalCode { get; set; }
+        public string? PostalCode { get; set; }
 
 
         // RELATIONS

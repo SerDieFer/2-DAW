@@ -205,9 +205,11 @@
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="flex-grow-1">
-        <div class="container py-5">
-            @RenderBody()
-            @await RenderSectionAsync("Styles", required: false)
+        <div class="container-fluid p-5">
+            <div class="container w-100 mb-5">
+                @RenderBody()
+                @await RenderSectionAsync("Styles", required: false)
+             </div>
         </div>
     </main>
 

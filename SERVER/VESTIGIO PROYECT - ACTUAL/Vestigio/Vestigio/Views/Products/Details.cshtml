@@ -4,8 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid vh-100 py-4">
-    <div class="row g-4 h-75">
+<div class="container w-100 mb-5">
+    <div class="row g-4 p-5">
         <!-- Gallery Section -->
         <div class="col-lg-7 h-100">
             <div class="h-100 d-flex flex-column">
@@ -132,14 +132,14 @@
                         </div>
                     </div>
 
-                    <div class="d-flex gap-3">
-                        <a href="/Product/Edit/@Model.Id" class="btn btn-primary px-4 py-3 btn-custom">
+                    <div class="d-flex gap-3 mt-3 p-3 justify-content-between">
+                        <a href="/Product/Edit/@Model.Id" class="btn btn-primary w-100 btn-custom d-flex align-items-center justify-content-evenly">
                             <i class="bi bi-pencil-square me-2"></i>Edit
                         </a>
-                        <button type="button" class="btn btn-danger px-4 py-3 btn-custom" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
-                            <i class="bi bi-trash"></i> Delete
+                        <button type="button" class="btn btn-danger w-100 btn-custom d-flex align-items-center justify-content-evenly" data-bs-toggle="modal" data-bs-target="#deleteModal-@Model.Id">
+                            <i class="bi bi-trash"></i>Delete
                         </button>
-                        <a href="/Products/Index" class="btn btn-outline-secondary px-4 py-3 btn-custom">
+                        <a href="/Products/Index" class="btn btn-outline-secondary w-100 btn-custom d-flex align-items-center justify-content-evenly">
                             <i class="bi bi-arrow-left me-2"></i>Back
                         </a>
                     </div>
@@ -155,7 +155,6 @@
 
 <style>
     .btn-custom {
-        min-width: 150px; /* Ancho mínimo para los botones */
         text-align: center; /* Centrar el texto */
     }
 

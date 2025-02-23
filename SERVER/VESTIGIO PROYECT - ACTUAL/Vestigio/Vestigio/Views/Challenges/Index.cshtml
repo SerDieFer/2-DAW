@@ -21,7 +21,7 @@
     var endReleaseDate = ViewData["endReleaseDate"] != null ? (string)ViewData["endReleaseDate"] : null;
 }
 
-<div class="container" id="administration-index">
+<div class="container mb-5 pb-5" id="administration-index" style="padding-bottom: 10rem;">
     <h1 class="text-center mb-4 display-4 fw-600" style="color: var(--primary-color);">
         Challenge Management
         <hr class="mx-auto" style="width: 120px; height: 3px; background: var(--secondary-color); opacity: 1;">
@@ -134,7 +134,7 @@
         </form>
     </div>
 
-    <div class="table-container mb-5">
+    <div class="table-container mb-5 pb-5">
         <table class="table table-hover table-custom">
             <thead class="text-white text-center">
                 <tr>
@@ -307,7 +307,7 @@
                                     <!-- Botón para abrir el modal de eliminación -->
                                     <button type="button" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
                                             style="width: 2.5rem; height: 2.5rem;"
-                                            data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id">
+                                            data-bs-toggle="modal" data-bs-target="#deleteChallengeModal-@item.Id">
                                         <i class="bi bi-trash fs-5"></i>
                                     </button>
                                 </div>
@@ -315,7 +315,7 @@
                         </tr>
 
                         <!-- Incluir el modal de confirmación de eliminación para cada desafío -->
-                        @await Html.PartialAsync("_DeleteModal", item)
+                        @await Html.PartialAsync("_DeleteChallengeModal", item)
                     }
                 }
                 else

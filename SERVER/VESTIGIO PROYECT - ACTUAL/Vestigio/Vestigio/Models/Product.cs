@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using Vestigio.Utilities;
 
 namespace Vestigio.Models
@@ -24,10 +26,18 @@ namespace Vestigio.Models
         [Display(Name = "Description")]
         public string? Description { get; set; }
 
+
+        // USER INPUT PROPERTY (PRICE)
+        [Display(Name = "Price")]
+        [RegularExpression(@"^\d+([,.]\d{1,2})?$", ErrorMessage = "Invalid format. Example: 22,22")]
         [Required(ErrorMessage = "The price is required.")]
-        [Range(0, double.MaxValue, ErrorMessage = "The prise should be bigger than 0")]
-        [DataType(DataType.Currency)]
+        [Range(0, 999999.99, ErrorMessage = "The price must be bigger than 0")]
+        public string PriceInput { get; set; }
+
+        //DB PROPERTY
+        [HiddenInput]
         public decimal Price { get; set; }
+
 
         [Required]
         [Display(Name = "Rarity Level")]

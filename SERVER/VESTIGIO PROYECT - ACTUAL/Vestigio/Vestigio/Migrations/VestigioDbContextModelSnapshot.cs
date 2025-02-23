@@ -400,6 +400,10 @@ namespace Vestigio.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
+                    b.Property<string>("PriceInput")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RarityLevel")
                         .HasColumnType("int");
 
@@ -467,11 +471,9 @@ namespace Vestigio.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Coins")
@@ -482,7 +484,6 @@ namespace Vestigio.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DNI")
-                        .IsRequired()
                         .HasMaxLength(9)
                         .HasColumnType("nvarchar(9)");
 
@@ -497,11 +498,9 @@ namespace Vestigio.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Level")
@@ -537,7 +536,6 @@ namespace Vestigio.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PostalCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RegistrationDate")
@@ -590,7 +588,7 @@ namespace Vestigio.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserUnlockedProduct", (string)null);
+                    b.ToTable("UserUnlockedProduct");
                 });
 
             modelBuilder.Entity("Vestigio.Models.UserUnlockedProductByLevel", b =>
@@ -615,7 +613,7 @@ namespace Vestigio.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserUnlockedProductByLevel", (string)null);
+                    b.ToTable("UserUnlockedProductByLevel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -674,7 +672,7 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.Product", "Product")
                         .WithMany("Challenges")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Product");
                 });
@@ -785,7 +783,7 @@ namespace Vestigio.Migrations
                     b.HasOne("Vestigio.Models.Product", "Product")
                         .WithMany("ProductSizes")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");

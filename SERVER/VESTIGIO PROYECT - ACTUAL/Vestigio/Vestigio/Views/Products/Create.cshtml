@@ -97,12 +97,25 @@
                         <span asp-validation-for="Description" class="text-danger small"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="Price" class="form-label"><i class="bi bi-cash me-2"></i>Price</label>
+                        <label asp-for="PriceInput" class="form-label">
+                            <i class="bi bi-cash me-2"></i>Price
+                        </label>
                         <div class="input-group">
                             <span class="input-group-text">€</span>
-                            <input asp-for="Price" class="form-control" placeholder="59.99" min="0" />
+                            <input asp-for="PriceInput"
+                                   type="text"
+                                   class="form-control"
+                                   placeholder="24,99"
+                                   data-val="true"
+                                   data-val-decimal="Invalid format"
+                                   data-val-range="The price must be ≥ 0"
+                                   data-val-range-min="0"
+                                   data-val-range-max="999999.99"
+                                   data-val-regex="Invalid format. Example: 24,99"
+                                   data-val-regex-pattern="^\d+([,.]\d{1,2})?$"
+                                   oninput="formatPrice(this)" />
                         </div>
-                        <span asp-validation-for="Price" class="text-danger small"></span>
+                        <span asp-validation-for="PriceInput" class="text-danger small"></span>
                     </div>
                 </div>
             </div>
@@ -422,6 +435,42 @@
             );
         }
 
+        // Sobrescribir validación de jQuery para aceptar comas
+        $(document).ready(function () {
+            // Validación personalizada para aceptar comas y puntos
+            $.validator.addMethod("decimal", function (value, element) {
+                return this.optional(element) || /^\d+([,.]\d{1,2})?$/.test(value);
+            });
+
+            // Sobrescribir validación de número
+            $.validator.methods.number = function (value, element) {
+                return this.optional(element) || /^\d+([,.]\d{1,2})?$/.test(value);
+            };
+
+            // Sobrescribir validación de rango
+            $.validator.methods.range = function (value, element, param) {
+                var numericValue = parseFloat(value.replace(',', '.'));
+                return this.optional(element) || (numericValue >= param[0] && numericValue <= param[1]);
+            };
+        });
+
+        // Función para formatear el input
+        function formatPrice(input) {
+            // Permitir números, comas y puntos
+            let value = input.value.replace(/[^0-9.,]/g, '');
+
+            // Reemplazar puntos por comas
+            value = value.replace(/\./g, ',');
+
+            // Asegurar que solo haya una coma
+            const parts = value.split(',');
+            if (parts.length > 1) {
+                value = parts[0] + ',' + parts[1].slice(0, 2); // Limitar a 2 decimales
+            }
+
+            // Actualizar el valor del campo
+            input.value = value;
+        }
     // Función para reindexar los inputs de tallas
     function reindexSizeInputs() {
         const containers = document.querySelectorAll('.size-card-container');

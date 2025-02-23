@@ -44,7 +44,7 @@
 @Html.Partial("_FiltersPartial")
 
 <!-- CONTENEDOR DINÁMICO -->
-<div id="tabContent">
+<div id="tabContent" class="pb-5">
     @if (activeTab == "challenges")
     {
         @Html.Partial("_ChallengesPartial", Model)

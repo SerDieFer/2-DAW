@@ -77,7 +77,6 @@ public class RegisterModel : PageModel
         if (ModelState.IsValid)
         {
             var user = CreateUser();
-            user.GainExp(100);
 
             // Asignar el Nickname aquí
             user.Nickname = Input.Nickname;
