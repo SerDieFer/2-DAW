@@ -1,0 +1,26 @@
+------------- TO DO -------------
+
+Admin de pedidos generales.
+
+Rediseño visual Identity.
+
+Foto default sino hay fotos añadidas.
+
+------------- TO FIX-------------
+
+Contador productos/desafios fixear cuando se filtra.
+
+------------- SECUNDARIO -------------
+
+Mejoras de diseño.
+
+Refactorizaciones de codigo y mejoras.
+
+Aplicar AJAX a multiples filtrados, para que se haga sin recarga.
+
+------------- NOT POSSIBLE DUE TO TIME LIMITS -------------
+
+Sistema de monedas interna y compra de productos con esta.
+
+Probar a usar servicios de filtrado mediante API y 
+que el server maneje estas llamadas.                      

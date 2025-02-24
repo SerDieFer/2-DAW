@@ -7,7 +7,7 @@ using Vestigio.Models;
 
 namespace Vestigio.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class CartController : Controller
     {
         private readonly VestigioDbContext _context;
@@ -320,13 +320,14 @@ namespace Vestigio.Controllers
                 await transaction.CommitAsync();
                 HttpContext.Session.Remove("CurrentOrderId");
                 TempData["SuccessMessage"] = "Compra confirmada correctamente";
+                return RedirectToAction("Details", "UserOrders", new { id = order.Id });
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 TempData["ErrorMessage"] = $"Error al confirmar: {ex.Message}";
+                return RedirectToAction("Index", "Cart");
             }
-            return RedirectToAction("Index", "Orders");
         }
 
         // Métodos auxiliares

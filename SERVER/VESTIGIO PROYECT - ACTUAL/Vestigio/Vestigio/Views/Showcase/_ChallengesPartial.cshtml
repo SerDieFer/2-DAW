@@ -18,6 +18,9 @@ else
             var isUnlocked = challenge.RarityLevel <= userLevel &&
             (challenge.SolutionMode != SolutionMode.TimeBased || challenge.IsPublic);
             var isSolved = solvedChallenges.Contains(challenge.Id);
+            var isLockedByDate = challenge.SolutionMode == SolutionMode.TimeBased && !challenge.IsPublic;
+
+
             <div class="col-md-6 col-lg-4">
                 <div class="challenge-card @( !isUnlocked ? "locked" : "" ) @( isSolved ? "solved" : "" )">
                     <div class="challenge-image position-relative">
@@ -74,7 +77,14 @@ else
                         {
                             <div class="lock-message">
                                 <i class="fas fa-lock"></i>
-                                <span>Requires Level @challenge.RarityLevel</span>
+                                @if (isLockedByDate && userLevel >= challenge.RarityLevel)
+                                {
+                                    <span>Available on @challenge.ReleaseDate?.ToString("dd/MM/yyyy HH:mm")</span>
+                                }
+                                else
+                                {
+                                    <span>Requires Level @challenge.RarityLevel</span>
+                                }
                             </div>
                         }
                     </div>

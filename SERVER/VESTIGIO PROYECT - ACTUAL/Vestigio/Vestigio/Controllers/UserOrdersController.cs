@@ -9,7 +9,7 @@ using Vestigio.Utilities;
 
 namespace Vestigio.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "User")]
     public class UserOrdersController : Controller
     {
         private readonly VestigioDbContext _context;

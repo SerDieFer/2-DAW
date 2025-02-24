@@ -7,6 +7,7 @@ using Vestigio.Utilities;
 
 namespace Vestigio.Controllers
 {
+    // EN UN FUTURO EL USUARIO PODRÁ VERLOS Y EL ADMIN MANEJARLOS
     public class ChallengeResolutionsController : Controller
     {
         private readonly VestigioDbContext _context;

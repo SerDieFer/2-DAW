@@ -218,13 +218,14 @@
                                     {
                                         <tr>
                                             <td class="text-center">
-                                                <img src="@item.Product.Images.First().Url"
-                                                     class="product-thumb-lg img-fluid rounded"
-                                                     alt="@item.Product.Name">
+                                                <a href="#" class="open-product-modal" data-product-id="@item.Product.Id">
+                                                    <img src="@item.Product.Images.First().Url"
+                                                         class="product-thumb-lg img-fluid rounded"
+                                                         alt="@item.Product.Name">
+                                                </a>
                                             </td>
                                             <td class="text-center">
                                                 <div class="fw-bold">@item.Product.Name</div>
-                                                <small class="text-muted">@item.Product.Description</small>
                                             </td>
                                             <td class="text-center">@item.ProductSize.Size</td>
                                             <td class="text-center">@item.Quantity</td>

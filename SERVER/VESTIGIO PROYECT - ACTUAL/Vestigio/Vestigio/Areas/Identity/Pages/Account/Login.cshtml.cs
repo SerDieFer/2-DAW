@@ -112,6 +112,10 @@ namespace Vestigio.Areas.Identity.Pages.Account
 
                     // Obtener el usuario logueado
                     var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+                    if (user == null)
+                    {
+                        user.Level = 1;
+                    }
 
                     // Obtener los roles del usuario
                     var roles = await _signInManager.UserManager.GetRolesAsync(user);
