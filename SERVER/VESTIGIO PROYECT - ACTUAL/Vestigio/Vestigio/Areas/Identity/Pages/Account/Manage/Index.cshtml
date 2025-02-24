@@ -5,71 +5,164 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
+<style>
+    .profile-container {
+        max-width: 1200px;
+        background: #fff;
+    }
 
-<form id="profile-form" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    .profile-header {
+        border-bottom: 3px solid #000;
+        padding-bottom: 1.5rem;
+        margin-bottom: 2rem;
+    }
 
-    <!-- Dos columnas para el resto de los campos -->
-    <div class="row">
-        <!-- Columna Izquierda -->
-        <div class="col-md-6">
-            <div class="form-floating mb-3">
-                <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
-                <label asp-for="Input.FirstName" class="form-label"></label>
-                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.LastName" class="form-control" placeholder="Last Name" />
-                <label asp-for="Input.LastName" class="form-label"></label>
-                <span asp-validation-for="Input.LastName" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.DNI" class="form-control" placeholder="ID" />
-                <label asp-for="Input.DNI" class="form-label"></label>
-                <span asp-validation-for="Input.DNI" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone Number" />
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-        </div>
+        .profile-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
 
-        <!-- Columna Derecha -->
-        <div class="col-md-6">
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Nickname" class="form-control" placeholder="Nickname" />
-                <label asp-for="Input.Nickname" class="form-label"></label>
-                <span asp-validation-for="Input.Nickname" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Address" class="form-control" placeholder="Address" />
-                <label asp-for="Input.Address" class="form-label"></label>
-                <span asp-validation-for="Input.Address" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.City" class="form-control" placeholder="City" />
-                <label asp-for="Input.City" class="form-label"></label>
-                <span asp-validation-for="Input.City" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PostalCode" class="form-control" placeholder="Postal Code" />
-                <label asp-for="Input.PostalCode" class="form-label"></label>
-                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-            </div>
-        </div>
+    .form-floating label {
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #666;
+        padding-left: 0.5rem;
+    }
+
+    .form-control {
+        border-radius: 0;
+        border: none;
+        border-bottom: 2px solid #e0e0e0;
+        padding-left: 0.5rem;
+        background: transparent;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-bottom-color: #000;
+            background: #f8f9fa;
+        }
+
+    #update-profile-button {
+        background: #000;
+        color: #fff;
+        border: 2px solid #000;
+        padding: 1.25rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        transition: all 0.3s ease;
+        margin-top: 2rem;
+    }
+
+        #update-profile-button:hover {
+            background: transparent;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+    .validation-summary ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .text-danger {
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: block;
+        font-weight: 500;
+    }
+
+    @@media (max-width: 768px) {
+        .profile-container {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+
+        .profile-header h3 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h3>User Profile</h3>
+        <partial name="_StatusMessage" for="StatusMessage" />
     </div>
 
-    <!-- Botón de Guardar en fila completa -->
-    <div class="row">
-        <div class="col-12">
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+    <form id="profile-form" method="post">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-md-6">
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.FirstName" class="form-control" placeholder="First Name" />
+                    <label asp-for="Input.FirstName"></label>
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.LastName" class="form-control" placeholder="Last Name" />
+                    <label asp-for="Input.LastName"></label>
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.DNI" class="form-control" placeholder="ID" />
+                    <label asp-for="Input.DNI"></label>
+                    <span asp-validation-for="Input.DNI" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Phone Number" />
+                    <label asp-for="Input.PhoneNumber"></label>
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-6">
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.Nickname" class="form-control" placeholder="Nickname" />
+                    <label asp-for="Input.Nickname"></label>
+                    <span asp-validation-for="Input.Nickname" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.Address" class="form-control" placeholder="Address" />
+                    <label asp-for="Input.Address"></label>
+                    <span asp-validation-for="Input.Address" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.City" class="form-control" placeholder="City" />
+                    <label asp-for="Input.City"></label>
+                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.PostalCode" class="form-control" placeholder="Postal Code" />
+                    <label asp-for="Input.PostalCode"></label>
+                    <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                </div>
+            </div>
         </div>
-    </div>
-</form>
+
+        <button id="update-profile-button" type="submit" class="w-100 btn btn-lg">
+            <i class="fas fa-fingerprint me-2"></i>Update Data
+        </button>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 }

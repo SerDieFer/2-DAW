@@ -264,7 +264,7 @@ namespace Vestigio.Controllers
                 var userId = _userManager.GetUserId(User);
 
                 var order = await _context.Orders
-                    .Include(o => o.OrderStatus) // Asegurar que OrderStatus esté incluido
+                    .Include(o => o.OrderStatus)
                     .Include(o => o.OrderDetails)
                     .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
 

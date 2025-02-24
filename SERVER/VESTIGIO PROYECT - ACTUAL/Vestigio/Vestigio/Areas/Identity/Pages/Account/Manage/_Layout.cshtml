@@ -1,5 +1,5 @@
 ﻿@{
-    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout !=  null)
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
     {
         Layout = parentLayout.ToString();
     }
@@ -9,16 +9,84 @@
     }
 }
 
-<h1>Manage your account</h1>
+<style>
+    .account-manager-container {
+        max-width: 1400px;
+        margin: 3rem auto;
+        margin-bottom: 9rem;
+        padding: 2rem 4rem;
+        background: #fff;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+    }
 
-<div>
-    <h2>Change your account settings</h2>
-    <hr />
+    .management-header {
+        border-bottom: 3px solid #000;
+        margin-bottom: 3rem;
+        padding-bottom: 1.5rem;
+        position: relative;
+    }
+
+        .management-header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .management-header h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: #666;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+    .nav-column {
+        border-right: 3px solid #000;
+        padding-right: 3rem !important;
+    }
+
+    .content-column {
+        padding-left: 3rem !important;
+    }
+
+    @@media (max-width: 992px) {
+        .account-manager-container {
+            padding: 2rem;
+            margin: 1rem;
+        }
+
+        .nav-column {
+            border-right: none;
+            border-bottom: 3px solid #000;
+            padding-right: 0 !important;
+            margin-bottom: 2rem;
+        }
+
+        .content-column {
+            padding-left: 0 !important;
+        }
+
+        .management-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="account-manager-container">
+    <div class="management-header">
+        <h1>Control Panel</h1>
+        <h2>User Data Management</h2>
+    </div>
+
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 nav-column">
             <partial name="_ManageNav" />
         </div>
-        <div class="col-md-9">
+
+        <div class="col-md-9 content-column">
             @RenderBody()
         </div>
     </div>
@@ -26,4 +94,5 @@
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 }

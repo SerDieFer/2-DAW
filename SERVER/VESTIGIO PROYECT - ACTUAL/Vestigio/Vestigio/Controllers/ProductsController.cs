@@ -201,11 +201,7 @@ namespace Vestigio.Controllers
 
                     await _context.SaveChangesAsync();
 
-                    // Procesar las imágenes (si hay)
-                    if (imageFiles != null && imageFiles.Any())
-                    {
-                        await SaveImages(imageFiles, product.Id);
-                    }
+                    await SaveImages(imageFiles, product.Id);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -501,7 +497,18 @@ namespace Vestigio.Controllers
         // AUX METHOD TO SAVE IMAGES
         private async Task SaveImages(List<IFormFile> imageFiles, int productId)
         {
-            if (imageFiles == null || !imageFiles.Any()) return;
+            if (imageFiles == null || !imageFiles.Any())
+            {
+                // DEFAULT IMAGE
+                _context.Images.Add(new Image
+                {
+                    Url = "/images/no-photo.jpg",
+                    ProductId = productId
+                });
+
+                await _context.SaveChangesAsync();
+                return;
+            }
 
             var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "products");
             if (!Directory.Exists(imageDirectory)) Directory.CreateDirectory(imageDirectory);

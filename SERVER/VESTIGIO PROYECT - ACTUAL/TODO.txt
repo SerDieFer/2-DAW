@@ -1,14 +1,9 @@
 ------------- TO DO -------------
 
-Admin de pedidos generales.
-
-Rediseño visual Identity.
-
-Foto default sino hay fotos añadidas.
 
 ------------- TO FIX-------------
 
-Contador productos/desafios fixear cuando se filtra.
+Contador productos/desafios fix cuando se filtra.
 
 ------------- SECUNDARIO -------------
 

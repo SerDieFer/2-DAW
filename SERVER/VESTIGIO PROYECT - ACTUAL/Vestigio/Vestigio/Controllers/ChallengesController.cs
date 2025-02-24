@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
@@ -166,12 +167,7 @@ namespace Vestigio.Controllers
                 {
                     _context.Add(challenge);
                     await _context.SaveChangesAsync();
-
-                    if (imageFiles != null && imageFiles.Any())
-                    {
-                        await SaveImages(imageFiles, challenge.Id);
-                    }
-
+                    await SaveImages(imageFiles, challenge.Id);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateException ex)
@@ -405,7 +401,18 @@ namespace Vestigio.Controllers
         // AUX METHOD TO SAVE IMAGES
         private async Task SaveImages(List<IFormFile> imageFiles, int challengeId)
         {
-            if (imageFiles == null || !imageFiles.Any()) return;
+            if (imageFiles == null || !imageFiles.Any())
+            {
+                // DEFAULT IMAGE
+                _context.Images.Add(new Image
+                {
+                    Url = "/images/no-photo.jpg",
+                    ChallengeId = challengeId
+                });
+
+                await _context.SaveChangesAsync();
+                return;
+            }
 
             var imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "challenges");
             if (!Directory.Exists(imageDirectory)) Directory.CreateDirectory(imageDirectory);

@@ -457,24 +457,23 @@
             };
         });
 
+        // Función para formatear el input
         function formatPrice(input) {
-            // Función para formatear el input
-            function formatPrice(input) {
-                // Permitir números, comas y puntos
-                let value = input.value.replace(/[^0-9.,]/g, '');
+            // Permitir números, comas y puntos
+            let value = input.value.replace(/[^0-9.,]/g, '');
 
-                // Reemplazar puntos por comas
-                value = value.replace(/\./g, ',');
+            // Reemplazar puntos por comas
+            value = value.replace(/\./g, ',');
 
-                // Asegurar que solo haya una coma
-                const parts = value.split(',');
-                if (parts.length > 1) {
-                    value = parts[0] + ',' + parts[1].slice(0, 2); // Limitar a 2 decimales
-                }
-
-                // Actualizar el valor del campo
-                input.value = value;
+            // Asegurar que solo haya una coma
+            const parts = value.split(',');
+            if (parts.length > 1) {
+                value = parts[0] + ',' + parts[1].slice(0, 2); // Limitar a 2 decimales
             }
+
+            // Actualizar el valor del campo
+            input.value = value;
+        }
 
 
         // Validación del formulario
