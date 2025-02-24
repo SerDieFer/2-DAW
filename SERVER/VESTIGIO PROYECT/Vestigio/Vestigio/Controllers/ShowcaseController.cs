@@ -24,6 +24,7 @@ namespace Vestigio.Controllers
 
         public async Task<IActionResult> Index(
             int? minLevel = null, int? maxLevel = null,
+            int? minProductLevel = null, int? maxProductLevel = null,
             int? minXP = null, int? maxXP = null,
             int? minCoins = null, int? maxCoins = null,
             decimal? minPrice = null, decimal? maxPrice = null,
@@ -88,7 +89,7 @@ namespace Vestigio.Controllers
                     // ONLY APPLY FILTERS IS THE TAB IS ACTIVE
                     if (activeTab == "products")
                     {
-                        productsQuery = ApplyProductFilters(productsQuery, minPrice, maxPrice, minLevel, maxLevel, categories, sizes);
+                        productsQuery = ApplyProductFilters(productsQuery, minPrice, maxPrice, minProductLevel, maxProductLevel, categories, sizes);
                         productsQuery = ApplyProductSorting(productsQuery, productSort);
                     }
 
@@ -154,6 +155,8 @@ namespace Vestigio.Controllers
             {
                 MinLevel = activeTab == "challenges" ? minLevel : null,
                 MaxLevel = activeTab == "challenges" ? maxLevel : null,
+                MinProductLevel = activeTab == "products" ? minProductLevel : null,
+                MaxProductLevel = activeTab == "products" ? maxProductLevel : null,
                 SolutionType = activeTab == "challenges" ? solutionType : null,
                 MinXP = activeTab == "challenges" ? minXP : null,
                 MaxXP = activeTab == "challenges" ? maxXP : null,
@@ -252,7 +255,7 @@ namespace Vestigio.Controllers
         private IQueryable<Product> ApplyProductFilters(
             IQueryable<Product> query,
             decimal? minPrice, decimal? maxPrice,
-            int? minLevel, int? maxLevel,
+            int? minProductLevel, int? maxProductLevel,
             List<int> categories, List<string> sizes)
         {
             if (minPrice.HasValue) query = query.Where(p => p.Price >= minPrice);
@@ -260,8 +263,8 @@ namespace Vestigio.Controllers
             if (categories != null && categories.Any())
                 query = query.Where(p => p.ProductCategories.Any(pc => categories.Contains(pc.CategoryId)));
 
-            if (minLevel.HasValue) query = query.Where(c => c.RarityLevel >= minLevel);
-            if (maxLevel.HasValue) query = query.Where(c => c.RarityLevel <= maxLevel);
+            if (minProductLevel.HasValue) query = query.Where(c => c.RarityLevel >= minProductLevel);
+            if (maxProductLevel.HasValue) query = query.Where(c => c.RarityLevel <= maxProductLevel);
 
             if (sizes != null && sizes.Any())
             {
