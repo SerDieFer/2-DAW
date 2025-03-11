@@ -1,0 +1,251 @@
+﻿@model Product
+<div class="modal fade product-modal" id="productModal-@Model.Id" data-product-id="@Model.Id" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0">
+            <div class="modal-body p-0">
+                <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row g-0">
+                    <!-- Carousel de Imágenes -->
+                    <div class="col-lg-6">
+                        <div id="productCarousel-@Model.Id" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
+                            <div class="carousel-inner h-100" style="position: relative;">
+                                <span class="rarity-badge-product">
+                                    <i class="fas fa-gem rarity-icon"></i>
+                                    @Model.RarityName
+                                </span>
+                                @foreach (var image in Model.Images.Select((value, index) => new { value, index }))
+                                {
+                                    <div class="h-100 carousel-item @(image.index == 0 ? "active" : "")">
+                                        <img src="@image.value.Url" class="d-block w-100" alt="@Model.Name" style="object-fit: cover; height: 100%;">
+                                    </div>
+                                }
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel-@Model.Id" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel-@Model.Id" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Detalles del Producto -->
+                    <div class="col-lg-6 product-details">
+                        <div class="details-scroll">
+                            <div class="product-header">
+                                <h2 class="product-title">@Model.Name</h2>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price-tag">@Model.Price.ToString("C")</span>
+                                </div>
+                                <div class="category-tags">
+                                    @foreach (var pc in Model.ProductCategories)
+                                    {
+                                        <span class="badge bg-secondary me-1">@pc.Category.Name</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="product-story">
+                                <h3 class="section-title">Description</h3>
+                                <p class="description">@Model.Description</p>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between text-muted small py-4">
+                                    <span><i class="fas fa-box-open me-2"></i>Total stock: @Model.TotalStock</span>
+                                    <span><i class="fas fa-calendar-alt me-2"></i>Released: @Model.CreationDate.ToString("dd-MM-yyyy")</span>
+                                </div>
+                                <h3 class="section-title">Available sizes</h3>
+                                <div class="size-grid">
+                                    @foreach (var size in Model.ProductSizes.OrderBy(s => s.Size))
+                                    {
+                                        <button class="size-btn @(size.Stock <= 0 ? "disabled" : "")">
+                                            <span class="size-label">@size.Size</span>
+                                            <div class="stock-indicator" style="--stock-level: @((size.Stock * 100)/Model.TotalStock)%"></div>
+                                            <span class="stock-count">@size.Stock units</span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Modal Container */
+    .product-modal {
+        display: block;
+        z-index: 9999;
+    }
+
+    /* Modal Header (Cierre del Modal) */
+    .modal-close {
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #333;
+    }
+
+        .modal-close i {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+    /* Modal Body */
+    .modal-body {
+        padding: 0;
+    }
+
+    /* Imagenes del producto (Carrusel) */
+    .carousel-inner {
+        position: relative;
+        height: 100%;
+    }
+
+    .carousel-item {
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+        .carousel-item img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+    /* Indicadores de stock (Nivel de Stock) */
+    .stock-indicator {
+        position: relative;
+        width: 100%;
+        height: 5px;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+    }
+
+        .stock-indicator:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: #28a745;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+
+    /* Detalles del Producto */
+    .product-details {
+        padding: 20px;
+    }
+
+    .product-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .price-tag {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .category-tags .badge {
+        background-color: #6c757d;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    .description {
+        margin-top: 10px;
+        color: #555;
+    }
+
+    /* Grid de Tamaños Disponibles */
+    .size-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* Estilo para los botones de talla deshabilitados */
+    .modal .size-btn {
+        pointer-events: none;
+    }
+
+        .modal .size-btn.disabled {
+            cursor: not-allowed;
+            background-color: #f1f1f1;
+            color: #ccc;
+        }
+
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .size-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .size-btn {
+        background: #fff;
+        border: 1px solid #fff;
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .size-btn:not(.disabled):hover {
+            border-color: #222222;
+        }
+
+        .size-btn.active {
+            background: #222222;
+            border-color: #222222;
+            color: #fff;
+        }
+
+    .size-label {
+        font-weight: 600;
+    }
+
+    .stock-indicator {
+        width: 100%;
+        height: 4px;
+        background: #e5e5e5;
+        overflow: hidden;
+    }
+
+        .stock-indicator::after {
+            content: '';
+            display: block;
+            height: 100%;
+            width: var(--stock-level);
+            background: currentColor;
+            transition: width 0.3s ease;
+        }
+
+    .stock-count {
+        font-size: 0.75rem;
+        color: #666;
+    }
+</style>

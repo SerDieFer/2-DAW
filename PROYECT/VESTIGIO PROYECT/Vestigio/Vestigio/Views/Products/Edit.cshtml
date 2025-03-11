@@ -1,0 +1,531 @@
+﻿@model Vestigio.Models.Product
+
+@{
+    ViewData["Title"] = "Edit Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .header-bar {
+        background: #222222;
+        padding: 1.5rem 0;
+    }
+
+    .category-card, .size-card {
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+        .category-card.active {
+            border-color: #198754;
+            background-color: rgba(25, 135, 84, 0.05);
+            transform: translateY(-3px);
+        }
+
+        .category-card:hover, .size-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+    #dropZone.dragover {
+        border-color: #0d6efd;
+        background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    .img-thumbnail {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 0.5rem;
+    }
+
+    .validation-summary {
+        border-radius: 0.5rem;
+    }
+
+    .dynamic-item .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .size-card {
+        border: 2px solid #0d6efd;
+        background-color: rgba(13, 110, 253, 0.03);
+        transition: all 0.2s ease;
+    }
+
+        .size-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+        }
+
+    .remove-size {
+        transition: transform 0.2s ease;
+    }
+
+        .remove-size:hover {
+            transform: scale(1.1);
+        }
+</style>
+
+<div class="container mb-5">
+    <form asp-action="Edit" enctype="multipart/form-data" novalidate class="card shadow-lg border-0" id="productForm">
+        <div class="header-bar">
+            <div class="container d-flex align-items-center px-4 py-2 px-lg-5 py-lg-2">
+                <a asp-action="Index" class="btn btn-light btn-sm rounded-pill px-3">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                </a>
+                <h1 class="text-white mb-0 ms-3 fs-4 fw-bold">Edit Product</h1>
+            </div>
+        </div>
+
+        <div class="card-body p-4 p-lg-5">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger validation-summary mb-4"></div>
+
+            <!-- Basic Information Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-info-circle me-2"></i>Basic Information</h5>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"><i class="bi bi-tag me-2"></i>Product Name</label>
+                        <input asp-for="Name" class="form-control form-control-lg" placeholder="Classic Hoodie..." />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"><i class="bi bi-chat-text me-2"></i>Description</label>
+                        <textarea asp-for="Description" rows="3" class="form-control" placeholder="A comfortable and stylish hoodie..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label">
+                            <i class="bi bi-cash me-2"></i>Price
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <input asp-for="PriceInput"
+                                   type="text"
+                                   class="form-control"
+                                   placeholder="24,99"
+                                   data-val="true"
+                                   data-val-decimal="Invalid format"
+                                   data-val-range="The price must be ≥ 0"
+                                   data-val-range-min="0"
+                                   data-val-range-max="999999.99"
+                                   data-val-regex="Invalid format. Example: 24,99"
+                                   data-val-regex-pattern="^\d+([,.]\d{1,2})?$"
+                                   oninput="formatPrice(this)" />
+                        </div>
+                        <span asp-validation-for="Price" class="text-danger small"></span>
+                    </div>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" asp-for="IsActive" />
+                        <label class="form-check-label" asp-for="IsActive">Active</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Level Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-award me-2"></i>Product Level</h5>
+                    <div class="mb-4">
+                        <label asp-for="RarityLevel" class="form-label"><i class="bi bi-award me-2"></i>Rarity Level</label>
+                        <select asp-for="RarityLevel" class="form-select">
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                <option value="@i">@i - @Vestigio.Utilities.LevelsNaming.GetLevelName(i)</option>
+                            }
+                        </select>
+                        <span asp-validation-for="RarityLevel" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Associations Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-puzzle me-2"></i>Product Configuration</h5>
+                    <div id="config-error" class="alert alert-danger d-none mb-3">
+                        <i class="bi bi-exclamation-circle me-2"></i><span class="error-text"></span>
+                    </div>
+
+                    <div class="btn-group w-100 mb-4" role="group">
+                        <button type="button" class="btn btn-outline-dark active" onclick="toggleConfigSection('categories')">
+                            <i class="bi bi-bookmarks me-2"></i>Categories
+                        </button>
+                        <button type="button" class="btn btn-outline-dark" onclick="toggleConfigSection('sizes')">
+                            <i class="bi bi-rulers me-2"></i>Sizes & Stock
+                        </button>
+                    </div>
+
+                    <!-- Categories Selection -->
+                    <div id="categoriesSection">
+                        <div class="row g-3">
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <div class="col-md-4">
+                                    <div class="card category-card @(Model.ProductCategories.Any(pc => pc.CategoryId == int.Parse(category.Value)) ? "active" : "")"
+                                         data-category-id="@category.Value">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title mb-1">@category.Text</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <select multiple class="form-select d-none" name="categoryIds">
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <option value="@category.Value" selected="@(Model.ProductCategories.Any(pc => pc.CategoryId == int.Parse(category.Value)))">
+                                    @category.Text
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="ProductCategories" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Sizes & Stock Configuration -->
+                    <div id="sizesSection" class="d-none">
+                        <div class="row g-3" id="sizesContainer">
+                            @{
+                                int sizeIndex = 0;
+                            }
+                            @foreach (var size in Model.ProductSizes)
+                            {
+                                <div class="col-md-6 size-card-container">
+                                    <div class="card size-card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center g-2">
+                                                <div class="col-5">
+                                                    <select class="form-select size-select" name="sizes[@sizeIndex].Key" required>
+                                                        <option value="@size.Size" selected>@size.Size</option>
+                                                        @foreach (var availableSize in (List<string>)ViewData["ProductSizes"])
+                                                        {
+                                                            <option value="@availableSize">@availableSize</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-5">
+                                                    <input type="number" class="form-control stock-input"
+                                                           name="sizes[@sizeIndex].Value" min="1" value="@size.Stock" required>
+                                                </div>
+                                                <div class="col-2 text-end">
+                                                    <button type="button" class="btn btn-danger btn-sm remove-size"
+                                                            onclick="removeSizeCard(this)">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                sizeIndex++;
+                            }
+                        </div>
+
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-outline-dark" onclick="addSizeCard()">
+                                <i class="bi bi-plus-circle me-2"></i>Add Size
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Images Section -->
+            <div class="card mb-4 border shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"><i class="bi bi-image me-2"></i>Product Images</h5>
+                    <div class="border border-2 border-dashed rounded-3 p-4 text-center position-relative" id="dropZone"
+                         ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+                        <input type="file" name="imageFiles" id="images" multiple
+                               class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                               accept="image/*" onchange="handleFileSelect(event)" />
+                        <div class="space-y-2" id="uploadPrompt">
+                            <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
+                            <p class="text-muted mb-1">Drag & drop or click to upload</p>
+                        </div>
+                        <div id="imagePreviews" class="d-flex flex-wrap gap-3 mt-3">
+                            @foreach (var image in Model.Images)
+                            {
+                                <img src="@image.Url" class="img-thumbnail" alt="Product Image" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="mt-5">
+                <button type="submit" class="btn btn-dark btn-lg w-100 py-3">
+                    <i class="bi bi-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Gestión de Categorías
+        let selectedCategories = new Set(@Html.Raw(Json.Serialize(Model.ProductCategories.Select(pc => pc.CategoryId))));
+        const categoryCards = document.querySelectorAll('.category-card');
+
+        function toggleCategorySelection(cardElement) {
+            const categoryId = cardElement.dataset.categoryId;
+            cardElement.classList.toggle('active');
+
+            if (selectedCategories.has(categoryId)) {
+                selectedCategories.delete(categoryId);
+            } else {
+                selectedCategories.add(categoryId);
+            }
+
+            updateCategorySelect();
+        }
+
+        function updateCategorySelect() {
+            const select = document.querySelector('select[name="categoryIds"]');
+            Array.from(select.options).forEach(option => {
+                option.selected = selectedCategories.has(option.value);
+            });
+        }
+
+        categoryCards.forEach(card => {
+            card.addEventListener('click', () => toggleCategorySelection(card));
+        });
+
+        // Gestión de Tallas
+        let sizeCounter = @Model.ProductSizes.Count;
+        const allSizes = @Html.Raw(Json.Serialize(ViewData["ProductSizes"]));
+
+        function updateSizeOptions() {
+            const selectedSizes = new Set();
+            document.querySelectorAll('.size-select').forEach(select => {
+                if (select.value) selectedSizes.add(select.value);
+            });
+
+            document.querySelectorAll('.size-select').forEach(select => {
+                const currentValue = select.value;
+                Array.from(select.options).forEach(option => {
+                    if (option.value) {
+                        option.disabled = selectedSizes.has(option.value) && option.value !== currentValue;
+                    }
+                });
+            });
+        }
+
+        function addSizeCard() {
+            if (document.querySelectorAll('.size-card-container').length >= allSizes.length) {
+                alert("No hay más tallas disponibles para agregar.");
+                return;
+            }
+
+            const template = `
+                        <div class="col-md-6 size-card-container">
+                            <div class="card size-card mb-3">
+                                <div class="card-body">
+                                    <div class="row align-items-center g-2">
+                                        <div class="col-5">
+                                            <select class="form-select size-select" name="sizes[${sizeCounter}].Key" required onchange="updateSizeOptions()">
+                                                <option value="" disabled selected>Select size</option>
+                                                ${allSizes.map(size => `
+                                                    <option value="${size}">${size}</option>
+                                                `).join('')}
+                                            </select>
+                                        </div>
+                                        <div class="col-5">
+                                            <input type="number" class="form-control stock-input"
+                                                   name="sizes[${sizeCounter}].Value" min="1" value="1" required>
+                                        </div>
+                                        <div class="col-2 text-end">
+                                            <button type="button" class="btn btn-danger btn-sm remove-size"
+                                                    onclick="removeSizeCard(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+
+            document.getElementById('sizesContainer').insertAdjacentHTML('beforeend', template);
+            sizeCounter++;
+            updateSizeOptions();
+            updateRemoveButtons();
+        }
+
+        function removeSizeCard(button) {
+            if (document.querySelectorAll('.size-card-container').length > 1) {
+                button.closest('.size-card-container').remove();
+                reindexSizeInputs();
+                updateSizeOptions();
+                updateRemoveButtons();
+            }
+        }
+
+        function reindexSizeInputs() {
+            const containers = document.querySelectorAll('.size-card-container');
+            containers.forEach((container, index) => {
+                const keyInput = container.querySelector('.size-select');
+                const valueInput = container.querySelector('.stock-input');
+                keyInput.name = `sizes[${index}].Key`;
+                valueInput.name = `sizes[${index}].Value`;
+            });
+            sizeCounter = containers.length;
+        }
+
+        function updateRemoveButtons() {
+            const sizeCards = document.querySelectorAll('.size-card-container');
+            sizeCards.forEach((card, index) => {
+                const removeBtn = card.querySelector('.remove-size');
+                removeBtn.disabled = sizeCards.length === 1;
+            });
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            // Asegurar al menos una talla inicial
+            if (document.querySelectorAll('.size-card-container').length === 0) {
+                addSizeCard();
+            }
+            updateRemoveButtons();
+            updateSizeOptions();
+        });
+
+        // Gestión de pestañas
+        function toggleConfigSection(section) {
+            document.getElementById('categoriesSection').classList.toggle('d-none', section !== 'categories');
+            document.getElementById('sizesSection').classList.toggle('d-none', section !== 'sizes');
+
+            document.querySelectorAll('.btn-group .btn').forEach(btn =>
+                btn.classList.toggle('active', btn.textContent.toLowerCase().includes(section))
+            );
+        }
+
+        // Gestión de imágenes
+        function handleDragOver(event) {
+            event.preventDefault();
+            document.getElementById('dropZone').classList.add('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            document.getElementById('dropZone').classList.remove('dragover');
+            const files = event.dataTransfer.files;
+            handleFileSelect({ target: { files } });
+        }
+
+        function handleFileSelect(event) {
+            const files = event.target.files;
+            const previewContainer = document.getElementById('imagePreviews');
+            previewContainer.innerHTML = ''; // Limpiar vistas previas anteriores
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('img-thumbnail', 'me-2', 'mb-2');
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Sobrescribir validación de jQuery para aceptar comas
+        $(document).ready(function () {
+            // Validación personalizada para aceptar comas y puntos
+            $.validator.addMethod("decimal", function (value, element) {
+                return this.optional(element) || /^\d+([,.]\d{1,2})?$/.test(value);
+            });
+
+            // Sobrescribir validación de número
+            $.validator.methods.number = function (value, element) {
+                return this.optional(element) || /^\d+([,.]\d{1,2})?$/.test(value);
+            };
+
+            // Sobrescribir validación de rango
+            $.validator.methods.range = function (value, element, param) {
+                var numericValue = parseFloat(value.replace(',', '.'));
+                return this.optional(element) || (numericValue >= param[0] && numericValue <= param[1]);
+            };
+        });
+
+        // Función para formatear el input
+        function formatPrice(input) {
+            // Permitir números, comas y puntos
+            let value = input.value.replace(/[^0-9.,]/g, '');
+
+            // Reemplazar puntos por comas
+            value = value.replace(/\./g, ',');
+
+            // Asegurar que solo haya una coma
+            const parts = value.split(',');
+            if (parts.length > 1) {
+                value = parts[0] + ',' + parts[1].slice(0, 2); // Limitar a 2 decimales
+            }
+
+            // Actualizar el valor del campo
+            input.value = value;
+        }
+
+
+        // Validación del formulario
+        document.getElementById('productForm').addEventListener('submit', function (e) {
+            let isValid = true;
+            const errorElement = document.getElementById('config-error');
+
+            // Validar categorías
+            if (selectedCategories.size === 0) {
+                isValid = false;
+                errorElement.classList.remove('d-none');
+                errorElement.querySelector('.error-text').textContent =
+                    "Please select at least one category.";
+                setTimeout(() => toggleConfigSection('categories'), 100);
+            }
+
+            // Validar tallas
+            const sizeSelects = document.querySelectorAll('.size-select');
+            if (sizeSelects.length === 0 || Array.from(sizeSelects).some(select => !select.value)) {
+                isValid = false;
+                errorElement.classList.remove('d-none');
+                errorElement.querySelector('.error-text').textContent =
+                    "Please configure at least one valid size.";
+                setTimeout(() => toggleConfigSection('sizes'), 100);
+            }
+
+            // Validar duplicados
+            const selectedSizes = new Set();
+            let hasDuplicates = false;
+            sizeSelects.forEach(select => {
+                if (select.value) {
+                    if (selectedSizes.has(select.value)) {
+                        hasDuplicates = true;
+                        select.setCustomValidity('Size already selected');
+                    } else {
+                        selectedSizes.add(select.value);
+                        select.setCustomValidity('');
+                    }
+                }
+            });
+
+            if (hasDuplicates) {
+                isValid = false;
+                errorElement.classList.remove('d-none');
+                errorElement.querySelector('.error-text').textContent =
+                    "Duplicate sizes detected. Please select unique sizes.";
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    </script>
+}

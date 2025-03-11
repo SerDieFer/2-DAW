@@ -1,0 +1,306 @@
+﻿@model Vestigio.Utilities.PaginatedList<Vestigio.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+    var searchName = ViewData["searchName"]?.ToString();
+    var minPrice = ViewData["minPrice"] != null ? (decimal)ViewData["minPrice"] : (decimal?)null;
+    var maxPrice = ViewData["maxPrice"] != null ? (decimal)ViewData["maxPrice"] : (decimal?)null;
+    var rarityLevel = ViewData["rarityLevel"] != null ? (int)ViewData["rarityLevel"] : (int?)null;
+    var selectedCategoryId = ViewData["categoryId"] != null ? (int)ViewData["categoryId"] : 0;
+    var isActive = ViewData["isActive"] != null ? (bool?)ViewData["isActive"] : null;
+    var stockLessThan = ViewData["minStock"] != null ? (int?)ViewData["minStock"] : null;
+    var startDate = ViewData["startDate"] != null ? (string)ViewData["startDate"] : null;
+    var endDate = ViewData["endDate"] != null ? (string)ViewData["endDate"] : null;
+    var minStock = ViewData["minStock"] != null ? (int)ViewData["minStock"] : (int?)null;
+    var maxStock = ViewData["maxStock"] != null ? (int)ViewData["maxStock"] : (int?)null;
+}
+
+<div class="container" id="administration-index" style="padding-bottom: 10rem;">
+
+    <h1 class="text-center mb-4 display-4 fw-600" style="color: var(--primary-color);">
+        Product Management
+        <hr class="mx-auto" style="width: 120px; height: 3px; background: var(--secondary-color); opacity: 1;">
+    </h1>
+
+    <!-- Filters -->
+    <div class="filter-card">
+        <form method="get" action="@Url.Action("Index")">
+
+            <!-- Row 1 -->
+            <div class="row filter-rows g-4">
+
+                <!-- Filter by Name -->
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Product Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" name="searchName" class="form-control" value="@searchName">
+                    </div>
+                </div>
+
+                <!-- Filter by Category -->
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Category</label>
+                    <select name="categoryId" class="form-select">
+                        <option value="0">All Categories</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.Id" selected="@(selectedCategoryId == category.Id)">@category.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Filter by Status -->
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Status</label>
+                    <select name="isActive" class="form-select">
+                        <option value="">Any Status</option>
+                        <option value="true" selected="@(isActive == true)">Active</option>
+                        <option value="false" selected="@(isActive == false)">Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Filter by Level -->
+                <div class="col-md-3">
+                    <label class="form-label small text-uppercase text-muted fw-500">Rarity Level</label>
+                    <input type="number" name="rarityLevel" class="form-control"
+                           min="1" max="10" placeholder="1-10" value="@rarityLevel">
+                </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="row g-3 mt-1">
+
+                <!-- Filter by Price -->
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Price Range</label>
+                    <div class="input-group">
+                        <input type="number" name="minPrice" class="form-control" placeholder="Min" min="1" value="@minPrice">
+                        <span class="input-group-text">-</span>
+                        <input type="number" name="maxPrice" class="form-control" placeholder="Max" min="1" value="@maxPrice">
+                    </div>
+                </div>
+
+                <!-- Filter by Stock -->
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Stock Range</label>
+                    <div class="input-group">
+                        <input type="number" name="minStock" class="form-control" placeholder="Min" min="1" value="@minStock">
+                        <span class="input-group-text">-</span>
+                        <input type="number" name="maxStock" class="form-control" placeholder="Max" min="1" value="@maxStock">
+                    </div>
+                </div>
+
+                <!-- Filter by Creatio Date -->
+                <div class="col-md-4">
+                    <label class="form-label small text-uppercase text-muted fw-500">Creation Date Range</label>
+                    <div class="input-group">
+                        <input type="date" class="form-control" id="startDate" name="startDate" value="@startDate">
+                        <span class="input-group-text">-</span>
+                        <input type="date" class="form-control" id="endDate" name="endDate" value="@endDate">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="action-buttons d-flex justify-content-between align-items-center mt-4">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-light px-4">
+                        <i class="bi bi-funnel me-2"></i>Apply Filters
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-light px-4">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Clear Filters
+                    </a>
+                </div>
+                <a asp-action="Create" class="btn btn-light px-4">
+                    <i class="bi bi-plus-circle me-2"></i>New Product
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-container mb-5">
+        <table class="table table-hover table-custom">
+            <thead class="text-white text-center">
+                <tr>
+                    <th style="width: 70px;"><i class="bi bi-power"></i></th>
+                    <th style="width: 15%;">Product</th>
+                    <th style="width: 10%;">Rarity</th>
+                    <th style="width: 10%;">Price</th>
+                    <th style="width: 12%;">Categories</th>
+                    <th style="width: 12%;">Stock</th>
+                    <th style="width: 7.5%;">Creation Date</th>
+                    <th style="width: 150px;">Preview</th>
+                    <th style="width: 100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-center">
+                            <div class="d-flex">
+                                <div class="form-check form-switch d-flex justify-content-center">
+                                    <input class="form-check-input" type="checkbox" role="switch" @(item.IsActive ? "checked" : "") disabled>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="product-name-cell">
+                            <div class="product-name-content">
+                                <h6 class="mb-0 fw-500">@item.Name</h6>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <div class="rarity-indicator" style="background-color: @GetRarityColor(item.RarityLevel);"></div>
+                                <span style="color: @GetRarityColor(item.RarityLevel)">
+                                    @item.RarityName (@item.RarityLevel)
+                                </span>
+                            </div>
+                        </td>
+
+                        <td class="text-center">@item.Price.ToString("C")</td>
+
+                        <td class="text-center">
+                            @if (item.ProductCategories?.Any() == true)
+                            {
+                                <div class="d-flex flex-column gap-2">
+                                    @foreach (var cat in item.ProductCategories)
+                                    {
+                                        <span class="badge bg-secondary bg-gradient text-decoration-none py-3 d-flex align-items-center justify-content-center">
+                                            <span class="m-0 fw-bold">@cat.Category.Name</span>
+                                        </span>
+                                    }
+                                 </div>
+                            }
+                        </td>
+
+                        <td class="text-center">
+                            <div class="d-flex flex-column gap-2">
+                                <span class="badge py-1 px-4 d-flex align-items-center justify-content-center bg-gradient @(item.TotalStock > 10 ? "bg-success" : "bg-warning")">
+                                    @if (item.TotalStock > 10)
+                                    {
+                                        <i class="bi bi-bag-fill h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold">@item.TotalStock in stock</span>
+                                    }
+                                    else
+                                    {
+                                        <i style="color:black" class="bi bi-bag-fill h5 py-1 me-2 m-0"></i>
+                                        <span class="m-0 fw-bold text-black">@item.TotalStock in stock</span>
+                                    }
+                                </span>
+                            </div>
+                        </td>
+                        <td class="text-center">@item.CreationDate.ToString("dd-MM-yyyy")</td>
+                        <td class="w-100">
+                            @if (item.Images?.Any() == true)
+                            {
+                                var imageList = item.Images.ToList();
+                                <div class="carousel-container">
+                                    <div id="carousel-@item.Id" class="carousel slide" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            @for (int i = 0; i < imageList.Count; i++)
+                                            {
+                                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                    <img src="@imageList[i].Url" class="d-block w-100"
+                                                    alt="Product image @(i + 1)">
+                                                </div>
+                                            }
+                                        </div>
+                                        @if (imageList.Count > 1)
+                                        {
+                                            <button class="carousel-control-prev" type="button"
+                                                    data-bs-target="#carousel-@item.Id" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon"></span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                    data-bs-target="#carousel-@item.Id" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon"></span>
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </td>
+                        <td class="align-middle">
+                            <div class="btn-group-vertical d-flex align-items-center gap-2 w-100" role="group" aria-label="Item actions">
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center"
+                                   aria-label="Edit"
+                                   style="width: 2.5rem; height: 2.5rem;">
+                                    <i class="bi bi-pencil-square fs-5"></i>
+                                </a>
+
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                                   aria-label="Details"
+                                   style="width: 2.5rem; height: 2.5rem;">
+                                    <i class="bi bi-eye fs-5"></i>
+                                </a>
+          
+                                <button type="button" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                        style="width: 2.5rem; height: 2.5rem;"
+                                        data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id">
+                                    <i class="bi bi-trash fs-5"></i>
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Renderizar el modal para cada producto -->
+                    @await Html.PartialAsync("_DeleteModal", item)
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="d-flex justify-content-center mt-4">
+            <ul class="pagination pagination-lg">
+                <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
+
+@functions {
+    private string GetRarityColor(int level)
+    {
+        return level switch
+        {
+            1 => "#6c757d",
+            2 => "#28a745",
+            3 => "#17a2b8",
+            4 => "#007bff",
+            5 => "#6610f2",
+            6 => "#dc3545",
+            7 => "#fd7e14",
+            8 => "#ffc107",
+            9 => "#e83e8c",
+            10 => "#20c997",
+            _ => "#6c757d"
+        };
+    }
+}

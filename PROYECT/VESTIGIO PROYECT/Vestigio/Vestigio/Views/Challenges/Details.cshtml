@@ -1,0 +1,242 @@
+﻿@model Vestigio.Models.Challenge
+@{
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container w-100 mb-5">
+    <div class="row g-4 p-5">
+        <!-- Gallery Section -->
+        <div class="col-lg-7 h-100">
+            <div class="h-100 d-flex flex-column">
+                <!-- Main Image -->
+                <div class="ratio ratio-1x1 bg-light rounded-4 overflow-hidden shadow-lg position-relative">
+                    @if (Model.Images?.Any() == true)
+                    {
+                        <div class="position-absolute top-0 end-0 m-3 z-3">
+                            <div class="badge px-4 py-2 border-2 fw-bold fs-5 shadow"
+                                 style="background: @GetRarityColor(Model.RarityLevel);">
+                                Lv. @Model.RarityLevel - @Model.RarityName
+                            </div>
+                        </div>
+
+                        <img src="@Model.Images.First().Url" alt="@Model.Title"
+                             class="main-image w-100 h-100 object-fit-cover"
+                             id="mainChallengeImage"
+                             style="transition: opacity 0.3s ease;" />
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-center align-items-center h-100">
+                            <i class="bi bi-image text-muted fs-1"></i>
+                        </div>
+                    }
+                </div>
+
+                <!-- Thumbnails (Only show if more than 1 image) -->
+                @if (Model.Images?.Count > 1)
+                {
+                    <div class="mt-3 h-25">
+                        <div class="d-flex gap-3 h-100 overflow-x-auto pb-2 px-1">
+                            @foreach (var image in Model.Images.Take(8))
+                            {
+                                <div class="thumbnail-item flex-shrink-0 h-100 ratio ratio-1x1 bg-white rounded-3 shadow-sm p-1">
+                                    <img src="@image.Url" alt="Thumbnail"
+                                         class="thumbnail-img w-100 h-100 object-fit-cover cursor-pointer"
+                                         style="transition: transform 0.2s ease;"
+                                         data-fullimage="@image.Url" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Challenge Info Section -->
+        <div class="col-lg-5 h-100">
+            <div class="d-flex flex-column bg-white rounded-4 p-4 shadow-lg">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="display-5 fw-bold mb-0">@Model.Title</h1>
+                    <div class="badge @(Model.IsActive ? "bg-success" : "bg-danger") text-white px-4 py-2 fs-6">
+                        @(Model.IsActive ? "Active" : "Disabled")
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="d-flex flex-column mb-4">
+                    <h3 class="h4 fw-semibold mb-3">Description</h3>
+                    <div class="text-muted lh-lg fs-5">
+                        @Model.Description
+                    </div>
+                </div>
+
+                <!-- Details -->
+                <div class="d-flex flex-column mb-4">
+                    <h3 class="h4 fw-semibold mb-3">Details</h3>
+                    <div class="d-flex flex-column gap-2">
+                        <!-- Experience Points -->
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-star fs-5 text-warning"></i>
+                            <span class="fs-5 fw-bold">Experience Points:</span>
+                            <span class="fs-5">@Model.ExpPoints</span>
+                        </div>
+
+                        <!-- Coins -->
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-coin fs-5 text-warning"></i>
+                            <span class="fs-5 fw-bold">Coins:</span>
+                            <span class="fs-5">@Model.Coins</span>
+                        </div>
+
+                        <!-- Solution Mode -->
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-shield fs-5 text-success"></i>
+                            <span class="fs-5 fw-bold">Solution Mode:</span>
+                            <span class="fs-5">@Model.SolutionMode</span>
+                        </div>
+
+                        <!-- Release Date (if applicable) -->
+                        @if (Model.SolutionMode == SolutionMode.TimeBased && Model.ReleaseDate.HasValue)
+                        {
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-calendar3 fs-5 text-info"></i>
+                                <span class="fs-5 fw-bold">Release Date:</span>
+                                <span class="fs-5">@Model.ReleaseDate.Value.ToString("dd-MM-yyyy HH:mm")</span>
+                            </div>
+                        }
+
+                        <!-- Password (if applicable) -->
+                        @if (Model.SolutionMode == SolutionMode.Password && !string.IsNullOrEmpty(Model.Password))
+                        {
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-key fs-5 text-danger"></i>
+                                <span class="fs-5 fw-bold">Password:</span>
+                                <span class="fs-5">@Model.Password</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Linked To -->
+                <div class="d-flex flex-column mb-4">
+                    <h3 class="h4 fw-semibold mb-3">Linked To</h3>
+                    <div class="d-flex align-items-center gap-2">
+                        @if (Model.ProductId != null)
+                        {
+                            <a asp-controller="Products"
+                               asp-action="Details"
+                               asp-route-id="@Model.ProductId"
+                               class="badge bg-info bg-gradient text-decoration-none py-1 px-3 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-box-seam h5 py-1 me-2 m-0"></i>
+                                <span class="m-0 fw-bold">Product #@Model.ProductId</span>
+                            </a>
+                        }
+                        else if (Model.ProductLevel != null)
+                        {
+                            <i class="bi bi-bar-chart-line fs-5 text-info"></i>
+                            <span class="fs-5 fw-bold">Level:</span>
+                            <span class="fs-5">@Model.ProductLevel</span>
+                        }
+                        else
+                        {
+                            <span class="fs-5 text-muted">Not linked</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="border-top pt-4">
+                    <div class="text-muted small">
+                        <span class="text-muted small py-3">Created: @Model.CreationDate.ToString("dd-MM-yyyy")</span>
+                    </div>
+                    <div class="d-flex gap-3 mt-3 p-3 justify-content-between">
+                        <a href="/Challenges/Edit/@Model.Id" class="btn btn-primary w-100 btn-custom d-flex align-items-center justify-content-evenly">
+                            <i class="bi bi-pencil-square me-2"></i>Edit
+                        </a>
+                        <button type="button" class="btn btn-danger w-100 btn-custom d-flex align-items-center justify-content-evenly" data-bs-toggle="modal" data-bs-target="#deleteChallengeModal-@Model.Id">
+                            <i class="bi bi-trash"></i>Delete
+                        </button>
+                        <a href="/Challenges/Index" class="btn btn-outline-secondary w-100 btn-custom d-flex align-items-center justify-content-evenly">
+                            <i class="bi bi-arrow-left me-2"></i>Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incluir el modal de confirmación de eliminación -->
+    @await Html.PartialAsync("_DeleteChallengeModal", Model)
+</div>
+
+<style>
+    .btn-custom {
+        text-align: center;
+    }
+
+    .thumbnail-item {
+        width: 120px;
+        transition: transform 0.2s ease;
+    }
+
+        .thumbnail-item:hover {
+            transform: translateY(-2px);
+        }
+
+    #mainChallengeImage {
+        object-position: center center;
+    }
+
+    .badge.bg-opacity-10 {
+        border: 1px solid currentColor;
+    }
+
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const thumbnails = document.querySelectorAll('.thumbnail-img');
+            const mainImage = document.getElementById('mainChallengeImage');
+
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function () {
+                    mainImage.style.opacity = '0';
+                    setTimeout(() => {
+                        mainImage.src = this.dataset.fullimage;
+                        mainImage.style.opacity = '1';
+                    }, 200);
+
+                    document.querySelectorAll('.thumbnail-item').forEach(t => {
+                        t.classList.remove('border-primary');
+                        t.style.transform = 'none';
+                    });
+                    this.parentElement.classList.add('border-primary');
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+            });
+        });
+    </script>
+}
+
+@functions {
+    private string GetRarityColor(int level)
+    {
+        return level switch
+        {
+            1 => "#6c757d",
+            2 => "#28a745",
+            3 => "#17a2b8",
+            4 => "#007bff",
+            5 => "#6610f2",
+            6 => "#dc3545",
+            7 => "#fd7e14",
+            8 => "#ffc107",
+            9 => "#e83e8c",
+            10 => "#20c997",
+            _ => "#6c757d"
+        };
+    }
+}

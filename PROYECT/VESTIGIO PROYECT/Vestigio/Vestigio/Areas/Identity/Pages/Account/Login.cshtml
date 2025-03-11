@@ -1,0 +1,193 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Street Challenge Vault";
+}
+
+<style>
+    :root {
+        --pure-white: #FFFFFF;
+        --deep-black: #000000;
+        --carbon: #2B2B2B;
+        --silver: #E8E8E8;
+    }
+
+    body {
+        background: var(--pure-white);
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-container {
+        padding: 4rem;
+        background: var(--pure-white);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .login-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--deep-black);
+        position: relative;
+    }
+
+        .login-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--deep-black);
+        }
+
+    .form-floating {
+        margin-bottom: 2rem;
+    }
+
+    .form-control {
+        background: transparent;
+        border: 2px solid var(--carbon);
+        border-radius: 0;
+        padding: 1.25rem;
+        font-size: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .form-control:focus {
+            border-color: var(--deep-black);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+    .form-label {
+        color: var(--carbon);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    #login-submit {
+        background: var(--deep-black);
+        color: var(--pure-white);
+        border: 2px solid var(--deep-black);
+        padding: 1.25rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        transition: all 0.3s ease;
+        margin: 1.5rem 0;
+    }
+
+        #login-submit:hover {
+            background: transparent;
+            color: var(--deep-black);
+            transform: translateY(-2px);
+        }
+
+    .auth-links {
+        display: flex;
+        justify-content: space-between;
+        margin: 1rem 0;
+    }
+
+        .auth-links a {
+            color: var(--carbon);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+        }
+
+            .auth-links a:after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 0;
+                height: 1px;
+                background: var(--deep-black);
+                transition: width 0.3s ease;
+            }
+
+            .auth-links a:hover:after {
+                width: 100%;
+            }
+
+    .external-login .btn {
+        background: transparent;
+        border: 2px solid var(--carbon);
+        color: var(--deep-black);
+        padding: 1rem;
+        margin: 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+        .external-login .btn:hover {
+            border-color: var(--deep-black);
+            background: var(--silver);
+        }
+
+    @@media (max-width: 768px) {
+        body {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-section {
+            display: none;
+        }
+
+        .form-container {
+            border-left: none;
+            padding: 2rem;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <h1 class="login-title">LOGIN</h1>
+
+    <form id="account" method="post">
+        <div class="form-floating">
+            <input asp-for="Input.Email" class="form-control" placeholder=" " />
+            <label asp-for="Input.Email">EMAIL</label>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-floating">
+            <input asp-for="Input.Password" class="form-control" placeholder=" " />
+            <label asp-for="Input.Password">PASSWORD</label>
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+
+        <div class="checkbox mb-3">
+            <label asp-for="Input.RememberMe" class="form-label">
+                <input class="form-check-input" asp-for="Input.RememberMe" />
+                @Html.DisplayNameFor(m => m.Input.RememberMe)
+            </label>
+        </div>
+
+        <button id="login-submit" type="submit" class="w-100 btn btn-lg">AUTHENTICATE</button>
+
+        <div class="auth-links">
+            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Sign up</a>
+            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+}

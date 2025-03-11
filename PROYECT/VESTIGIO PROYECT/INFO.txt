@@ -1,0 +1,40 @@
+--------------- USUARIOS --------------
+
+	- User1
+		Correo: user1@vestigio.com
+		Contraseña: User1-Vestigio
+
+		Este usuario es Nivel 10 y tiene todo desbloqueado,
+		además ha realizado varios pedidos y tiene un par pendientes,
+		así como algunos completados.
+
+		Ya tiene sus datos personales aportados.
+
+	- User2
+		Correo: user2@vestigio.com
+		Contraseña: User2-Vestigio
+
+		Este usuario es Nivel 1 y tiene que descubrir que pasa al
+		desbloquear desafios, así podrá ver que ocurre, por ende,
+		no tiene pedidos pendientes ni de ningún tipo.
+
+		Al comprar sino rellena sus datos personalesen el apartado
+		de su cuenta le redirigirá allí o no será posible la compra
+
+	- Admin
+		Correo: admin@vestigio.com
+		Contraseña: Vestigio-123
+
+		El admin puede crear,editar,borrar desafios y productos, así
+		como gestionar datos como las categorías, etc.
+
+
+--------------- DESAFIOS ---------------
+
+	El usuario solo puede desbloquear desafios de su nivel o inferiores,
+	en caso contrario le avisa del nivel requerido para acceder a este.
+
+		Todos los desafios se desbloquean con la contraseña 123
+		(Evidentemente esto debería ser distinto).
+
+		Otros se reclaman cuando llega la fecha determinada.

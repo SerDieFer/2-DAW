@@ -1,0 +1,207 @@
+﻿@{
+    var activeTab = ViewBag.ActiveTab as string ?? "challenges";
+    var filters = ViewBag.Filters;
+    var validCategories = ViewBag.ValidCategories as List<Category> ?? new List<Category>();
+    var validSizes = ViewBag.ValidSizes;
+}
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="filterOffcanvas">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Filters</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="filterForm" method="get">
+            <input type="hidden" name="activeTab" id="activeTab" value="@activeTab" />
+
+            <!-- Filtros Challenges -->
+            <div class="filter-section" id="challengesFilters" style='@(activeTab == "challenges" ? "display:block;" : "display:none;")'>
+                <div class="mb-3">
+                    <label class="form-label">Challenge Level</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <input type="number"
+                                   name="minLevel"
+                                   class="form-control"
+                                   placeholder="Mín"
+                                   value="@filters?.MinLevel"
+                                   min="1"
+                                   max="10" />
+                        </div>
+                        <div class="col">
+                            <input type="number"
+                                   name="maxLevel"  
+                                   class="form-control"
+                                   placeholder="Máx"
+                                   value="@filters?.MaxLevel"
+                                   min="1"
+                                   max="10" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Unlock Type</label>
+                    <select class="form-select" name="solutionType">
+                        <option value="">All</option>
+                        <option value="Password" selected=@(filters?.SolutionType == "Password" ? "selected" : "")>Password</option>
+                        <option value="TimeBased" selected=@(filters?.SolutionType == "TimeBased" ? "selected" : "")>Time</option>
+                    </select>
+                </div>
+                <!-- Filtro de XP -->
+                <div class="mb-3">
+                    <label class="form-label">XP</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <input type="number"
+                                   name="minXP"
+                                   class="form-control"
+                                   placeholder="Mín"
+                                   value="@filters?.MinXP"
+                                   min="0" />
+                        </div>
+                        <div class="col">
+                            <input type="number"
+                                   name="maxXP"
+                                   class="form-control"
+                                   placeholder="Máx"
+                                   value="@filters?.MaxXP"
+                                   min="0" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Filtro de Monedas -->
+                <div class="mb-3">
+                    <label class="form-label">Coins</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <input type="number"
+                                   name="minCoins"
+                                   class="form-control"
+                                   placeholder="Mín"
+                                   value="@filters?.MinCoins"
+                                   min="0" />
+                        </div>
+                        <div class="col">
+                            <input type="number"
+                                   name="maxCoins"
+                                   class="form-control"
+                                   placeholder="Máx"
+                                   value="@filters?.MaxCoins"
+                                   min="0" />
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-select" name="showSolved">
+                        <option value="">All</option>
+                        <option value="true" selected=@(filters?.ShowSolved == true ? "selected" : "")>Solved</option>
+                        <option value="false" selected=@(filters?.ShowSolved == false ? "selected" : "")>Unsolved</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Order by</label>
+                    <select class="form-select" name="challengeSort">
+                        <option value="level_asc" selected=@(filters?.ChallengeSort == "level_asc" ? "selected" : "")>Level (Asc)</option>
+                        <option value="level_desc" selected=@(filters?.ChallengeSort == "level_desc" ? "selected" : "")>Level (Desc)</option>
+                        <option value="date_asc" selected=@(filters?.ChallengeSort == "date_asc" ? "selected" : "")>Date (Asc)</option>
+                        <option value="date_desc" selected=@(filters?.ChallengeSort == "date_desc" ? "selected" : "")>Date (Desc)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Filtros Productos -->
+            <div class="filter-section" id="productsFilters" style='@(activeTab == "products" ? "display:block;" : "display:none;")'>
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <input type="number" name="minPrice" class="form-control"
+                                   placeholder="Min" value="@filters?.MinPrice"
+                                   min="0" step="0.01" />
+                        </div>
+                        <div class="col">
+                            <input type="number" name="maxPrice" class="form-control"
+                                   placeholder="Max" value="@filters?.MaxPrice"
+                                   min="0" step="0.01" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtro de Niveles -->
+                <div class="mb-3">
+                    <label class="form-label">Product Level</label>
+                    <div class="row g-2">
+                        <div class="col">
+                            <input type="number"
+                                   name="minProductLevel"
+                                   class="form-control"
+                                   placeholder="Mín"
+                                   value="@filters?.MinProductLevel"
+                                   min="1"
+                                   max="10" />
+                        </div>
+                        <div class="col">
+                            <input type="number"
+                                   name="maxProductLevel"
+                                   class="form-control"
+                                   placeholder="Máx"
+                                   value="@filters?.MaxProductLevel"
+                                   min="1"
+                                   max="10" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtro de Tallas -->
+                <div class="mb-3">
+                    <label class="form-label">Sizes</label>
+                    @foreach (var size in ViewBag.ValidSizes)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" 
+                                   type="checkbox" 
+                                   name="sizes"
+                                   value="@size.Item2"
+                                   id="size-@size.Item2" />
+                            <label class="form-check-label" for="size-@size.Item2">
+                                @size.Item2
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <!-- Filtro de Categorías -->
+                <div class="mb-3">
+                    <label class="form-label">Categories</label>
+                    @foreach (var category in validCategories)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox"
+                                   name="categories" value="@category.Id"
+                                   id="category-@category.Id"
+                            @(filters?.Categories?.Contains(category.Id) == true ? "checked" : "") />
+                            <label class="form-check-label" for="category-@category.Id">
+                                @category.Name
+                            </label>
+                        </div>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Order by</label>
+                    <select class="form-select" name="productSort">
+                        <option value="price_asc" selected=@(filters?.ProductSort == "price_asc" ? "selected" : "")>Price (Asc)</option>
+                        <option value="price_desc" selected=@(filters?.ProductSort == "price_desc" ? "selected" : "")>Price (Desc)</option>
+                        <option value="rarity_asc" selected=@(filters?.ProductSort == "rarity_asc" ? "selected" : "")>Level (Asc)</option>
+                        <option value="rarity_desc" selected=@(filters?.ProductSort == "rarity_desc" ? "selected" : "")>Level (Desc)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <button type="button" id="resetFilters" class="btn btn-outline-secondary">Reset</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,154 @@
+﻿@page
+@model EmailModel
+@{
+    ViewData["Title"] = "Email Configuration";
+    ViewData["ActivePage"] = ManageNavPages.Email;
+}
+
+<style>
+    .email-container {
+        max-width: 800px;
+    }
+
+    .email-header {
+        border-bottom: 3px solid #000;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+
+        .email-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+    .verified-badge {
+        background: #000;
+        color: #fff;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-floating label {
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+        color: #666;
+    }
+
+    #change-email-button {
+        background: #000;
+        color: #fff;
+        border: 2px solid #000;
+        padding: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        transition: all 0.3s ease;
+        width:100%;
+        border-radius:0.5rem;
+        margin-top:1rem;
+    }
+
+        #change-email-button:hover {
+            background: transparent;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+    #email-verification {
+        border: 2px solid #000;
+        background: transparent;
+        color: #000;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+    }
+
+        #email-verification:hover {
+            background: #000;
+            color: #fff;
+        }
+
+    .input-group-text {
+        background: #000;
+        color: #fff;
+        border: none;
+        border-radius: 0;
+        font-weight: 700;
+    }
+
+    @@media (max-width: 768px) {
+        .email-container {
+            padding: 1.5rem;
+        }
+
+        .email-header h3 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<div class="email-container">
+    <div class="email-header">
+        <h3>Email Management</h3>
+    </div>
+
+    <partial name="_StatusMessage" for="StatusMessage" />
+
+    <div class="row">
+        <div class="col-md-12">
+            <form id="email-form" method="post" class="w-100">
+                @*<div asp-validation-summary="All" class="alert alert-danger" role="alert">Email not verified!</div> *@
+
+                @if (Model.IsEmailConfirmed)
+                {
+                    <div class="mb-4">
+                        <div class="verified-badge">
+                            <i class="fas fa-check-circle"></i>
+                            Verified Email
+                        </div>
+                        <div class="form-floating mt-3">
+                            <input asp-for="Email" class="form-control" disabled />
+                            <label asp-for="Email"></label>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-floating mb-4 d-flex align-items-center justify-items-center gap-3">
+                        <input asp-for="Email" class="form-control" disabled />
+                        <label asp-for="Email"></label>
+                        <button id="email-verification" type="submit" asp-page-handler="SendVerificationEmail">
+                            <i class="fas fa-shield-alt me-2"></i>Verify
+                        </button>
+                    </div>
+                }
+
+                <div class="form-floating mb-4">
+                    <input asp-for="Input.NewEmail" class="form-control" autocomplete="email" />
+                    <label asp-for="Input.NewEmail"></label>
+                    <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
+                </div>
+
+                <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail">
+                    <i class="fas fa-sync-alt me-2"></i>Update Email
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+}

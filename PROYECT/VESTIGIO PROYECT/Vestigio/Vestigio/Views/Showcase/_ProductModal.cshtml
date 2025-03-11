@@ -1,0 +1,113 @@
+﻿@model Product
+<div class="modal fade product-modal" id="productModal-@Model.Id" data-product-id="@Model.Id" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0">
+            <div class="modal-body p-0">
+                <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="row g-0">
+                    <!-- Carousel de Imágenes -->
+                    <div class="col-lg-6">
+                        <div id="productCarousel-@Model.Id" class="carousel slide carousel-fade h-100" data-bs-ride="carousel">
+                            <div class="carousel-inner h-100" style="position: relative;">
+                                <span class="rarity-badge-product">
+                                    <i class="fas fa-gem rarity-icon"></i>
+                                    @Model.RarityName
+                                </span>
+                                @foreach (var image in Model.Images.Select((value, index) => new { value, index }))
+                                {
+                                    <div class="h-100 carousel-item @(image.index == 0 ? "active" : "")">
+                                        <img src="@image.value.Url" class="d-block w-100" alt="@Model.Name" style="object-fit: cover; height: 100%;">
+                                    </div>
+                                }
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel-@Model.Id" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel-@Model.Id" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Detalles del Producto -->
+                    <div class="col-lg-6 product-details">
+                        <div class="details-scroll">
+                            <div class="product-header">
+                                <h2 class="product-title">@Model.Name</h2>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price-tag">@Model.Price.ToString("C")</span>
+                                </div>
+                                <div class="category-tags">
+                                    @foreach (var pc in Model.ProductCategories)
+                                    {
+                                        <span class="badge bg-secondary me-1">@pc.Category.Name</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="product-story">
+                                <h3 class="section-title">Description</h3>
+                                <p class="description">@Model.Description</p>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between text-muted small py-4">
+                                    <span><i class="fas fa-box-open me-2"></i>Total stock: @Model.TotalStock</span>
+                                    <span><i class="fas fa-calendar-alt me-2"></i>Released: @Model.CreationDate.ToString("dd-MM-yyyy")</span>
+                                </div>
+                                <h3 class="section-title">Available sizes</h3>
+                                <div class="size-grid">
+                                    @foreach (var size in Model.ProductSizes.OrderBy(s => s.Size))
+                                    {
+                                        <button class="size-btn @(size.Stock <= 0 ? "disabled" : "")"
+                                                data-stock="@size.Stock"
+                                                data-size-id="@size.Id"
+                                                data-product-id="@Model.Id">
+                                            <span class="size-label">@size.Size</span>
+                                            <div class="stock-indicator" style="--stock-level: @((size.Stock * 100)/Model.TotalStock)%"></div>
+                                            <span class="stock-count">@size.Stock units</span>
+                                        </button>   
+                                    }
+                                </div>
+
+                                <!-- Add to Cart Form -->
+                                <form asp-action="AddToCart" method="post" class="add-to-cart-form" data-product-id="@Model.Id">
+                                    <input type="hidden" name="productSizeId" id="selectedSize-@Model.Id" value="">
+                                    <input type="hidden" name="quantity" id="selectedQuantity-@Model.Id" value="1">
+
+                                    <div class="d-flex justify-content-between align-items-center py-4">
+                                        <div class="quantity-custom-selector d-flex">
+
+                                            <button type="button" class="qty-btn qty-decrease">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+
+                                            <input type="text"
+                                                   id="quantity-@Model.Id"
+                                                   data-product-id="@Model.Id"
+                                                   class="form-control quantity-input text-center border-0 w-50"
+                                                   value="1"
+                                                   inputmode="numeric"
+                                                   pattern="[0-9]*"
+                                                   aria-label="Cantidad">
+
+                                            <button type="button" class="qty-btn qty-increase">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+
+                                        <button type="submit" class="w-50 btn-add-cart d-flex align-items-center" disabled>
+                                            <i class="fas fa-shopping-cart me-2"></i>
+                                            Add to cart
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

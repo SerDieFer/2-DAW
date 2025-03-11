@@ -1,0 +1,67 @@
+﻿@model List<Challenge>
+@{
+    var activeTab = ViewBag.ActiveTab as string ?? "challenges";
+    var userLevel = (int?)ViewBag.UserLevel ?? 1;
+    var solvedChallenges = ViewBag.SolvedChallenges as List<int> ?? new List<int>();
+    var unlockedProducts = ViewBag.UnlockedProducts as List<Product> ?? new List<Product>();
+    var validCategories = ViewBag.ValidCategories as List<Category> ?? new List<Category>();
+    var productSizes = ViewBag.ProductSizes as List<string> ?? new List<string>();
+    var filters = ViewBag.Filters as dynamic;
+}
+<!-- NAV -->
+<div class="nav-container mb-5">
+    <ul class="nav nav-pills d-inline-flex mx-auto" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link @(activeTab == "challenges" ? "active" : "")" id="challenges-tab" data-bs-toggle="pill" data-bs-target="#challenges">
+                Challenges
+                <span class="badge ms-2 d-inline-flex align-items-center justify-content-center"
+                      style="width: 1.25rem; height: 1.25rem; border-radius: 50%;">
+                    @(ViewBag.ChallengeCount ?? Model.Count)
+                </span>
+            </button>
+        </li>
+        @if (unlockedProducts.Any())
+        {
+            <li class="nav-item" role="presentation">
+                <button class="nav-link @(activeTab == "products" ? "active" : "")" id="products-tab" data-bs-toggle="pill" data-bs-target="#products">
+                    Collection
+                    <span class="badge ms-2 d-inline-flex align-items-center justify-content-center"
+                          style="width: 1.25rem; height: 1.25rem; border-radius: 50%;">
+                        @(ViewBag.ProductCount ?? unlockedProducts.Count)
+                    </span>
+                </button>
+            </li>
+        }
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+                Filters <i class="fas fa-filter"></i>
+            </button>
+        </li>
+    </ul>
+</div>
+
+<!-- FILTROS -->
+@Html.Partial("_FiltersPartial")
+
+<!-- CONTENEDOR DINÁMICO -->
+<div id="tabContent" class="pb-5">
+    @if (activeTab == "challenges")
+    {
+        @Html.Partial("_ChallengesPartial", Model)
+    }
+    else if (activeTab == "products")
+    {
+        @Html.Partial("_ProductsPartial", unlockedProducts)
+    }
+</div>
+
+<!-- ESTILOS -->
+@section Styles {
+    <link rel="stylesheet" href="~/css/showcase.css" asp-append-version="true" />
+}
+
+<!-- SCRIPTS -->
+@section Scripts {
+    <script src="~/js/showcase/filters.js"></script>
+    <script src="~/js/showcase/products_interactions.js"></script>
+}

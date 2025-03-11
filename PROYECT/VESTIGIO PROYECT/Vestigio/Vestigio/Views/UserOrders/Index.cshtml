@@ -1,0 +1,176 @@
+﻿@model Vestigio.Utilities.PaginatedList<Vestigio.Models.Order>
+@{
+    ViewData["Title"] = "My Orders";
+    var filters = ViewBag.Filters as dynamic;
+}
+
+<div class="container-fluid">
+    <!-- Zona Título y Botón de Filtros -->
+    <div class="d-flex justify-content-between align-items-center mb-4 header-zone">
+        <h1 class="h3 mb-0 header-hover"><i class="bi bi-receipt me-2"></i>@ViewData["Title"]</h1>
+        <button class="btn btn-outline-dark hover-scale filter-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filters">
+            <strong>
+                <i class="bi bi-funnel"></i> Filters
+            </strong>
+        </button>
+    </div>
+
+    <!-- Offcanvas Dinámico de Filtros -->
+    <div class="offcanvas offcanvas-end offcanvas-dynamic" tabindex="-1" id="filters">
+        <div class="offcanvas-header offcanvas-header-dynamic">
+            <h5 class="offcanvas-title">Orders Filters</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <form method="get" class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">Date Range</label>
+                    <div class="input-group">
+                        <input type="date" name="startDate" class="form-control" value="@filters?.startDate?.ToString("dd/MM/yyyy")">
+                        <span class="input-group-text">-</span>
+                        <input type="date" name="endDate" class="form-control" value="@filters?.endDate?.ToString("dd/MM/yyyy")">
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Status</label>
+                    <select name="statusId" class="form-select">
+                        <option value="">All</option>
+                        @foreach (var status in ViewBag.Statuses)
+                        {
+                            <option value="@status.Id" selected=@(filters?.statusId == status.Id ? "selected" : null)>
+                                @status.StatusName
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Price Range</label>
+                    <div class="input-group">
+                        <input type="number" step="0.01" name="minTotal" class="form-control" placeholder="Min" value="@filters?.minTotal">
+                        <input type="number" step="0.01" name="maxTotal" class="form-control" placeholder="Max" value="@filters?.maxTotal">
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-dark w-100 mb-2 hover-scale">
+                        <i class="bi bi-filter-circle me-2"></i>Apply Filters
+                    </button>
+                    <a href="@Url.Action("Index")" class="btn btn-outline-danger w-100 hover-scale">
+                        <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Filters
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Listado de órdenes -->
+    @if (Model.Count > 0)
+    {
+        <div class="row orders-grid">
+            @foreach (var order in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body text-center">
+                                <h5 class="card-title">Order #@order.Id</h5>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        <strong>Order Date:</strong> @order.CreationDate.ToString("dd/MM/yyyy")<br />
+                                        <strong>Status:</strong>
+                                        <span class="badge @GetStatusBadgeClass(order.OrderStatus.StatusName)">
+                                            @order.OrderStatus.StatusName
+                                        </span><br />
+                                        <strong>Total:</strong>
+                                        @if (order.OrderStatusId == 1)
+                                        {
+                                            <span>@order.OrderDetails.Sum(d => d.Price * d.Quantity).ToString("C")</span>
+                                        }
+                                        else
+                                        {
+                                            <span>@order.Total.ToString("C")</span>
+                                        }
+                                    </small>
+                                </p>
+                                <a href="@Url.Action("Details", new { id = order.Id })" class="btn btn-outline-dark btn-sm hover-scale">
+                                    Check Details
+                                </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning mt-4 fade-in" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>You don't have any orders.
+        </div>
+    }
+
+    <!-- Paginación interactiva -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav class="d-flex justify-content-center p-4">
+            <ul class="pagination pagination-dynamic">
+                <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                    <a class="page-link hover-scale" asp-action="Index" asp-all-route-data="GetRouteData(1)">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </a>
+                </li>
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link hover-scale" asp-action="Index" asp-all-route-data="GetRouteData(i)">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                    <a class="page-link hover-scale" asp-action="Index" asp-all-route-data="GetRouteData(Model.TotalPages)">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/orders.css" asp-append-version="true" />
+}
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "bg-warning text-dark",
+            "Confirmed" => "bg-success",
+            "Cancelled" => "bg-danger",
+            "Sent" => "bg-info",
+            _ => "bg-secondary"
+        };
+    }
+
+    Dictionary<string, string> GetRouteData(int page)
+    {
+        var routeData = new Dictionary<string, string>();
+        var filters = ViewBag.Filters as dynamic;
+
+        if (filters?.startDate != null)
+            routeData.Add("startDate", filters.startDate.ToString("dd/MM/yyyy"));
+        if (filters?.endDate != null)
+            routeData.Add("endDate", filters.endDate.ToString("dd/MM/yyyy"));
+        if (filters?.minTotal != null)
+            routeData.Add("minTotal", filters.minTotal.ToString());
+        if (filters?.maxTotal != null)
+            routeData.Add("maxTotal", filters.maxTotal.ToString());
+        if (filters?.statusId != null)
+            routeData.Add("statusId", filters.statusId.ToString());
+
+        routeData.Add("pageNumber", page.ToString());
+        return routeData;
+    }
+}
