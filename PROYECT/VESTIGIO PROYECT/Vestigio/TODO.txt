@@ -3,13 +3,13 @@
 
 ------------- TO FIX-------------
 
-Contador productos/desafios fix cuando se filtra.
+Contador productos/desafíos fix cuando se filtra.
 
 ------------- SECUNDARIO -------------
 
 Mejoras de diseño.
 
-Refactorizaciones de codigo y mejoras.
+Re-factorizaciones de código y mejoras.
 
 Aplicar AJAX a multiples filtrados, para que se haga sin recarga.
 

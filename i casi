@@ -1,0 +1,894 @@
+[33mcommit 14fbb3eefc742368be3bc32c6a108a7de92779b3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Sergio Diez <sdiez@desarrollo.local>
+Date:   Tue Mar 11 11:16:04 2025 +0100
+
+    Add project files
+
+[33mcommit a0a1c5c4628bc8b77845639d4ed851c63daa53c1[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Feb 24 19:10:27 2025 +0100
+
+    FIN
+
+[33mcommit 642e5852127277aea05840be3ab69f7fa3894f0b[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Mon Feb 24 14:58:45 2025 +0100
+
+    cambio
+
+[33mcommit beda303b935849367789308523982f2b2572a65a[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Mon Feb 24 13:16:02 2025 +0100
+
+    finish
+
+[33mcommit ff3e1821d98d7902490bdc0c8d93a988b89992a7[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Mon Feb 24 01:09:07 2025 +0100
+
+    casi casi
+
+[33mcommit f4c2ddd5c9355dba4598998dcf95c46ee072bed5[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Feb 23 23:53:55 2025 +0100
+
+    cosas
+
+[33mcommit 37348163f829698690ee0ae757940d00a6a3720b[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Feb 23 03:42:39 2025 +0100
+
+    cosas
+
+[33mcommit 073fcd1e45b8cd51ef7c30a2898425ea80324dff[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sat Feb 22 22:38:43 2025 +0100
+
+    MUCHAS COSAS
+
+[33mcommit 2a952592f1543fdff77ce1c5a4252e9301cbecad[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Feb 20 23:18:20 2025 +0100
+
+    detalles pedido finalizados
+
+[33mcommit 976b3764d0573e839d1905e4d3e1c142964d60e1[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Feb 20 14:23:42 2025 +0100
+
+    orders fixed
+
+[33mcommit 8524f8809e44c17b99280bc161a8733d0606eb8f[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Wed Feb 19 20:05:13 2025 +0100
+
+    fixes varios
+
+[33mcommit 03be9f5c4ba62bcbbb1ee3a14b789d7e5122c34f[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Wed Feb 19 18:27:09 2025 +0100
+
+    showcased implemented
+
+[33mcommit 26df704ded16171520510ba59a6dcf8fad5cb917[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Wed Feb 19 12:37:08 2025 +0100
+
+    REFACTORES
+
+[33mcommit 36225b620cc0d75a9a86e1f57bd7d89fda971f34[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Feb 18 18:51:13 2025 +0100
+
+    revertir en identity new cambios
+
+[33mcommit 29e0dc149cd879167b124e2a0751da8a93e0e03c[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Feb 18 18:50:01 2025 +0100
+
+    FILTROS
+
+[33mcommit 25bd2eac184b1f853243d7ffc0369f262ac69e63[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Tue Feb 18 15:05:10 2025 +0100
+
+    Prueba Servicio Filtrado
+
+[33mcommit 4d62d212924310c186bdbdfdc62906b12171df43[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Feb 17 18:59:01 2025 +0100
+
+    mas cambios, manejar selector de talla y cantidad no funciona
+
+[33mcommit 34f8c9abd676c907b9bea072b61e4d363f32d4c4[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Feb 17 18:37:14 2025 +0100
+
+    Filtros funcionan
+
+[33mcommit 8815c96d9621d124ce4a7b270144b1067c8e3837[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Feb 16 21:40:16 2025 +0100
+
+    filters try
+
+[33mcommit 205c6b595eec10c7e163bde50fee46c35871574f[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Feb 16 21:27:49 2025 +0100
+
+    Improved Showcase, needs fixing for client filters
+
+[33mcommit 55dddff1238acf288a94e46b5e0f067c83fc8e6d[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Feb 12 20:39:39 2025 +0100
+
+    cambios
+
+[33mcommit 207f8f65dcb7ea0e837300a43339410cad7b78e3[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Feb 12 18:37:00 2025 +0100
+
+    SASS y Animaciones
+
+[33mcommit 941b60fbbeb2fa5edc730550024351fdf3b0019e[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Wed Feb 12 14:07:58 2025 +0100
+
+    shwocase ended
+
+[33mcommit 1d44251001b3ebf0d9f78c8f044f185d447d183f[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Feb 11 20:35:47 2025 +0100
+
+    css
+
+[33mcommit b6e35e9f72eba90e5c9ccb39a9b9930ddadf0e46[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Feb 10 19:12:51 2025 +0100
+
+    cambios server
+
+[33mcommit e8a465db22bfee20678e15408b824b176d5edf89[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Feb 9 18:36:03 2025 +0100
+
+    Arregklos, fixes, e implementaciones
+
+[33mcommit 0011b166f83e58eafba1c35aaa14222a05f67996[m
+Merge: b11f66b 96e5563
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sat Feb 8 16:04:43 2025 +0100
+
+    Merge branch 'main' of https://github.com/SerDieFer/2-DAW
+
+[33mcommit b11f66b36a4a3f523e0d68166074518d4ad503f6[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sat Feb 8 16:04:31 2025 +0100
+
+    cambios
+
+[33mcommit 96e5563d55a6815e645b095ef7ed05ffdf99bc90[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Feb 5 20:41:30 2025 +0100
+
+    cositas mas
+
+[33mcommit e1d78654ab69f1e869927a20bffd7e2d2e8d1ef0[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Feb 5 19:05:05 2025 +0100
+
+    intento 2
+
+[33mcommit 38873dc38ec84f7df7975c427a2f29185867e61a[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Wed Feb 5 14:05:12 2025 +0100
+
+    Arreglar carrito
+
+[33mcommit 368081e3ddc269f7981a9bb86c166f7a9ce1e251[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Feb 4 20:34:38 2025 +0100
+
+    Cositas
+
+[33mcommit 44d8b1e222458a2ca8a8cb24052ce05da8fef1c6[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Feb 3 20:43:32 2025 +0100
+
+    Escaparate
+
+[33mcommit 634946fd3cbfed0a282729771c014ad45f855bc8[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Feb 2 14:39:58 2025 +0100
+
+    Update
+    
+    Products y Challenges Create, acabados (falta pulir. el tema de las tallas y la validacion general), por otra parte details falta implementarlo en Challenge, aunque es igual a Productos, faltaría tambien finalizar el delete de otra forma
+
+[33mcommit ae5057aab6c7c657d5271c84a2d3c9fac093ccaa[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Jan 30 20:41:25 2025 +0100
+
+    SERVER
+
+[33mcommit 3239d692f0387d189127f857ecec02b3fc206c55[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Jan 29 20:36:48 2025 +0100
+
+    MAS COSITAS
+
+[33mcommit 4daf8a49b7506f3826d76f45724d081550d74c86[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Wed Jan 29 14:21:34 2025 +0100
+
+    Challenges
+
+[33mcommit 3700042116c5aef85f5d7139f89402c0e6ad7d09[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Jan 27 20:42:33 2025 +0100
+
+    COSITAS
+
+[33mcommit 87cfdcd4f55f3c692266b26f2885d414f3ff777e[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Jan 27 17:18:10 2025 +0100
+
+    FUNCA IDENTITY
+
+[33mcommit f1890b2b1bb0076537248b02b8dd9a14c1e109dd[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Jan 26 20:32:36 2025 +0100
+
+    IDENTITY
+
+[33mcommit c15c2dad175597811e20d199f80acebc0094164a[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Jan 26 20:29:38 2025 +0100
+
+    Revert "Identity try"
+    
+    This reverts commit 8d596e1c2ee5be28b6b87232192ec273d6aa725c.
+
+[33mcommit 8d596e1c2ee5be28b6b87232192ec273d6aa725c[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Jan 26 20:29:17 2025 +0100
+
+    Identity try
+
+[33mcommit 27b82bcae6c25c2d694f4ec5faac0a3a5192dbf4[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Fri Jan 24 20:04:17 2025 +0100
+
+    Cositas
+
+[33mcommit 859e68478aa813f8a78b2675a17af062a5c0cd04[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Jan 23 20:41:20 2025 +0100
+
+    Producto en Desarrollo
+
+[33mcommit 6c267832cfa0889c2367ca5fe44221feabbb134c[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Jan 23 19:58:40 2025 +0100
+
+    ARREGLITOS TM
+
+[33mcommit e1f478a8f6fc96a087c17e1e8ab594c07d6edf8e[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Jan 22 20:40:03 2025 +0100
+
+    Srerver
+
+[33mcommit 8691e83c1e7f2aacef2fc633657b054e61c9d7b7[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Jan 22 17:44:06 2025 +0100
+
+    Interfaces
+
+[33mcommit bad01d10d690649c8b189895f1d4f8ca0f2293d3[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Wed Jan 22 02:33:15 2025 +0100
+
+    Mucha cosa
+
+[33mcommit e945eb8fee56ff12e1871dd1b504ecf90ef05e4b[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Jan 21 20:40:58 2025 +0100
+
+    Cositas intento añadir imagenes
+
+[33mcommit 96fc3a19ba51992970c192fda5592a9a44a07430[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Jan 21 20:22:23 2025 +0100
+
+    Paginacion sencilla
+
+[33mcommit 462fd3be2564b7285a2378d9ad13205e37e368c5[m
+Merge: 45d59bd 6e69cbd
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Tue Jan 21 00:19:38 2025 +0100
+
+    Merge branch 'main' of https://github.com/SerDieFer/2-DAW
+
+[33mcommit 45d59bda9ed59461a72ba15fa340183f6face801[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Tue Jan 21 00:19:02 2025 +0100
+
+    Cositas de Server
+
+[33mcommit 6e69cbd24c39932f2dad7f1e7710cf6a8cb02a5d[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Jan 20 20:41:52 2025 +0100
+
+    SERVIDORSITO
+
+[33mcommit c30004606b4a32613b4b2df90fad913ac4f2c867[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Jan 9 20:41:12 2025 +0100
+
+    COSITAS
+
+[33mcommit bfd1ade4ade5ca335ed9a3a115153057616e8bc9[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Jan 9 17:23:12 2025 +0100
+
+    Server
+
+[33mcommit 5501a76c6823d1ce4851f4d05c97b17125d73417[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Jan 9 15:19:27 2025 +0100
+
+    Arreglitos
+
+[33mcommit 9cec785a96102ac6cddd57548ec6c19af2aa0b9a[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Jan 8 20:39:21 2025 +0100
+
+    Interfaces
+
+[33mcommit cd35d1df31124c040e8f01b6ae11f9bd1d556853[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Dec 17 20:25:32 2024 +0100
+
+    cOSITAS
+
+[33mcommit 74a77ff55686d52df022bfc4492c694de6f84427[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Dec 12 20:20:53 2024 +0100
+
+    JIJI JAJA
+
+[33mcommit de238c41f20153734e67848c924c5d5f6bda82ae[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Dec 12 20:03:20 2024 +0100
+
+    Cosas
+
+[33mcommit c8e1bb7b485ff1bda91ab35021373f8bb2029924[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Dec 12 16:44:54 2024 +0100
+
+    Cositas
+
+[33mcommit 06752e8384d7327788488f28efc03bb4a8bad133[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Dec 11 20:41:13 2024 +0100
+
+    cositas
+
+[33mcommit 8fedc18441ddee4bdf7e51c1cc847134d58c3e33[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Dec 10 20:17:03 2024 +0100
+
+    Interfaces
+
+[33mcommit 38d431e7fbb12609a84df0565b8a0c7aa2250e30[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Dec 10 19:04:48 2024 +0100
+
+    Servidorsito
+
+[33mcommit 21729ffe8540a6f7babb93348912583c65967fd9[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Dec 10 15:11:37 2024 +0100
+
+    castellano el server
+
+[33mcommit 6f6c102dc89004b7fcb23417c615227a4ff0aaa3[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Dec 5 20:24:21 2024 +0100
+
+    cositas
+
+[33mcommit 6e4b6648cd3edcd20c5a8decee3b68f1118e800e[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Dec 4 20:39:25 2024 +0100
+
+    mas cositas
+
+[33mcommit d7428ff14667706413300f80d2f27ca5ece63938[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Dec 4 19:06:05 2024 +0100
+
+    Interfaces Reestructuración Entrega Grid
+
+[33mcommit e86c8b6e8ef84fc2ec79420328393d2f2ef797ae[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Dec 3 20:41:26 2024 +0100
+
+    Interfaces
+
+[33mcommit 01119564fbcf9674da38f53464a377162ba06565[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Fri Nov 29 17:20:49 2024 +0100
+
+    cositas de css
+
+[33mcommit ff756428518e5e18465ea44732103754725af8c3[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Nov 28 16:54:51 2024 +0100
+
+    Servidor Acabado
+
+[33mcommit 6e10a9534894981cfd02bc3591a267ba111fd95e[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Nov 27 20:44:43 2024 +0100
+
+    Servidorsito
+
+[33mcommit 26c24e90df7eaf3e1f454980fb6cf6ddf3798cd2[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Nov 27 17:45:30 2024 +0100
+
+    interfaces
+
+[33mcommit 8aadf79847307cc40e5db5b22164015844f2c907[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Nov 26 20:44:53 2024 +0100
+
+    interfasitas
+
+[33mcommit b95ef1016755c96389acd75466ea599c6386542d[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Nov 26 19:45:37 2024 +0100
+
+    Servdorsito
+
+[33mcommit 7b30ca484f49000c644c742a235fa653518b6513[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Nov 25 17:30:46 2024 +0100
+
+    cambios
+
+[33mcommit dd73054d95eef029dfd807aabd27725f42b58c07[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Nov 25 16:50:17 2024 +0100
+
+    borrados
+
+[33mcommit a84a32facb1c5f1779980800bdfcb9120c57a48c[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Fri Nov 22 20:30:12 2024 +0100
+
+    Cliente
+
+[33mcommit c73e605d0e0960216fead1469668b685396d2053[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Nov 21 16:44:23 2024 +0100
+
+    Server
+
+[33mcommit ab0d8ff7d7889e74fb93ee3e92da61c89d9a250b[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Nov 21 16:28:42 2024 +0100
+
+    server
+
+[33mcommit 198a6bc16be328556269c6fc12621b9f6f0aea79[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Nov 21 13:24:22 2024 +0100
+
+    Simulacro 3
+
+[33mcommit d1527632e4406ace69c7df39aa6edd4f83c79cbe[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Nov 20 20:42:06 2024 +0100
+
+    mas cliente
+
+[33mcommit 8fb653260e11ca586aba7108390f5f64d0ec96bc[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Nov 20 19:56:35 2024 +0100
+
+    Cliente extra
+
+[33mcommit a401f8e968a9aedf35654d83684712f3ac6ca7df[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Nov 20 19:28:26 2024 +0100
+
+    Práctica Cliente
+
+[33mcommit f3837bda6c62a45939177e24a4052792b6d06912[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Tue Nov 19 23:46:00 2024 +0100
+
+    DB MIGRATION FIXED HOME ALSO
+
+[33mcommit 17586bd01dd2f30adda8dc5ce40f5b22ec8144f8[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Nov 19 20:45:59 2024 +0100
+
+    a
+
+[33mcommit 79540f9b892aaa1519ee18454ce8573bf8dd15a1[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Nov 19 19:43:00 2024 +0100
+
+    db migrations
+
+[33mcommit a1660e7ab2f10ce0595a8773a92526d6cc7b7e3c[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Nov 19 19:41:43 2024 +0100
+
+    Update .gitignore
+
+[33mcommit 2fc3a4900a4b90cf85e8c08b40a7d2ac3ff22c92[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Nov 19 19:40:28 2024 +0100
+
+    Update .gitignore
+
+[33mcommit 19d01c77dab11988ba2d7ddb158129f802764687[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Nov 19 19:37:14 2024 +0100
+
+    INTENTO EXPORTACION BD
+
+[33mcommit a261fda887a88bb458af465a4faabf5de21ee95e[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Mon Nov 18 18:50:53 2024 +0100
+
+    SERVER
+
+[33mcommit 625f88e9a29c5ca0b71c271a5766a021098202de[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Sun Nov 17 20:14:10 2024 +0100
+
+    cositis
+
+[33mcommit af16bfe53c6ecfe6ba4eebb14e11fda05dcda8cc[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Fri Nov 15 19:49:58 2024 +0100
+
+    MAS PRACTICA CLIENTE
+
+[33mcommit 9e4541af9f56f79dd76c42238011daf4a844790f[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Fri Nov 15 17:30:37 2024 +0100
+
+    COSITAS DE CLIENTE
+
+[33mcommit e79103fac87aa959deedf13e2ab62f8321184cf2[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Fri Nov 15 17:19:50 2024 +0100
+
+    Arreglitos
+
+[33mcommit 5f5f2ea6ca7f5ca640f6d5a4ace42c81d884eeb1[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Fri Nov 15 16:36:21 2024 +0100
+
+    css acabado
+
+[33mcommit 7bf5205e8b478da019da8ddd85b8bf3e8cc888c7[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Nov 14 20:32:56 2024 +0100
+
+    interfaces
+
+[33mcommit cca501591f63d62de150b9b805cae44faef6eb56[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Nov 14 16:56:25 2024 +0100
+
+    COSITAS
+
+[33mcommit 9719bd8c1fe61b1426348944092c2461561d7a74[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Wed Nov 6 17:17:32 2024 +0100
+
+    grid repaso
+
+[33mcommit 11d07ec234c0d43903f4588456e417800cda4a05[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Oct 31 20:16:06 2024 +0100
+
+    nav5
+
+[33mcommit ea381c9560d29c7c0bbb5195f25ee72a26f60b19[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Oct 31 19:54:34 2024 +0100
+
+    nav3
+
+[33mcommit 7866434ff4357117de7a7f46f61299d46c5caf80[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Oct 31 19:43:41 2024 +0100
+
+    nav2
+
+[33mcommit 389d99983284977dad7ce38bc457aaa7fd05da23[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Oct 31 19:04:40 2024 +0100
+
+    chistes
+
+[33mcommit ec1b32db10b4c34fe5c9318e48e9ff446d7bedee[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Oct 31 18:27:50 2024 +0100
+
+    nav Interfaces
+
+[33mcommit 3da280ad817d7c2b8a62918767d0e0df7e1ecf38[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Oct 31 16:46:49 2024 +0100
+
+    Server Arreglo otra vez
+
+[33mcommit fd4b50e3dc28d4423b9fbee9c1a60872648f2fd8[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Oct 29 20:22:12 2024 +0100
+
+    cositas
+
+[33mcommit 955e0de382061b6fc046165aac94616548cab97e[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Fri Oct 25 17:26:42 2024 +0200
+
+    simulacro
+
+[33mcommit de216d28b49ec6c5e997539b9fd5b240a0268f5f[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Fri Oct 25 15:43:30 2024 +0200
+
+    Arreglo
+
+[33mcommit 23ebbb98f138c85ca54d4e69d6c98118b6dfd72f[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Fri Oct 25 15:42:51 2024 +0200
+
+    Interfaces finished
+
+[33mcommit 578baa87bbbee05cde038345f485a03698748583[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Oct 24 20:33:03 2024 +0200
+
+    SERVERSITO E INTERFACES
+
+[33mcommit 614657e3bad457ec83825d4413489c2722c6f32b[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Oct 23 20:41:43 2024 +0200
+
+    Servidorsito e Interfaces
+
+[33mcommit 76a38bd058c2c684b73d38d78176336650bc84cb[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Oct 22 19:31:27 2024 +0200
+
+    TOFIX DECIMAL CONVERSION INSERT
+
+[33mcommit df312b303fe02b1410f6faf73e3969314fdce48b[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Oct 21 20:46:17 2024 +0200
+
+    Servidorsito
+
+[33mcommit e453bcbf5e79f9baabb3a77b3e5fdcb17491e2b1[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Oct 17 20:28:32 2024 +0200
+
+    Serversito
+
+[33mcommit 57bc34ae844c6946c26cb753183cde78d261f562[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Oct 16 20:39:18 2024 +0200
+
+    Server
+
+[33mcommit d0db6231bd8fa9771b1eef53860d61930bc685fa[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Oct 16 17:03:12 2024 +0200
+
+    colorcitos
+
+[33mcommit 524d568b348e387bde7f26935f1e38c8f0e2bbfd[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Oct 15 18:59:39 2024 +0200
+
+    SERVIDORSITO
+
+[33mcommit b15dacde4d4038ce4f8693a6b1cced892b7c684d[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Oct 14 20:46:40 2024 +0200
+
+    cosas
+
+[33mcommit 33450fca460c8e5b240de27cff72ad6d86757556[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Oct 14 16:23:42 2024 +0200
+
+    resubida
+
+[33mcommit 05b5a869952a40a5181e9ebb220fb730d67824b9[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Oct 10 20:48:12 2024 +0200
+
+    interfaces
+
+[33mcommit ef7471e07ab5b200e31319f035f609ea9462b9e9[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Oct 10 17:05:31 2024 +0200
+
+    SERVER ARREGLAR NUEVO CSS EN FLEXBOX PARA EMPLEADOS
+
+[33mcommit 435bea5c90955826242c16af46b005e881108802[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Oct 8 19:28:16 2024 +0200
+
+    Server Acabado
+
+[33mcommit 6880e1935c9e3c7927e2ef20d324698a70093013[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Oct 8 18:27:48 2024 +0200
+
+    Mas cositas
+
+[33mcommit 4c374f64bb5fc6484d93037586c74e15d313b686[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Oct 3 20:31:39 2024 +0200
+
+    MIERDA
+
+[33mcommit 9822885dedfa533124280db012f7dd7d3a3cb6a9[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Oct 3 17:16:27 2024 +0200
+
+    Haha cositas mas
+
+[33mcommit bc8d290f73a7629486aa43bb56af57c026e144fe[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Oct 2 20:40:27 2024 +0200
+
+    Cositas2
+
+[33mcommit 3713ab910815c1446d16cdbada03edbecbd0740e[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Oct 2 19:11:55 2024 +0200
+
+    Cositas
+
+[33mcommit fe9a8ddcf08f1ee7a141bb5927f89008e6a31189[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Sep 30 19:57:44 2024 +0200
+
+    Cositas del Server
+
+[33mcommit b8b7d0f625018f7a34491a470bffd5fbd8d06f72[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Fri Sep 27 19:28:57 2024 +0200
+
+    COSITAS
+
+[33mcommit c34c9438a8e8d7f88568dae5a6872b1d49862472[m
+Author: SerDieFer <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Sep 26 23:31:15 2024 +0200
+
+    Update .gitignore
+
+[33mcommit 0f88d1004ef35138f6fe5e47be14ddaf95923c4e[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Thu Sep 26 20:41:56 2024 +0200
+
+    haha
+
+[33mcommit 67b8480d92b98478ba506334d5a2ba7391a01dca[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Sep 26 18:13:56 2024 +0200
+
+    Servidor Casi Acabado, trabajar el finde
+
+[33mcommit 73c602851d403dd1d270b3b814ffefe37666cad9[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Sep 25 20:44:10 2024 +0200
+
+    CosaS
+
+[33mcommit 527861002de7cc37e700affecb1696db2d88d919[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Sep 24 20:40:46 2024 +0200
+
+    COSAS
+
+[33mcommit b6af6b25eb7fe5d22bcb1c6ecebccf9b32e6bb26[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Mon Sep 23 20:45:40 2024 +0200
+
+    SU3E1-2
+
+[33mcommit 38a351e9d587cd59afc040801572f181d8a9419d[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Sep 19 19:28:02 2024 +0200
+
+    Ignore Interfaces Github Classroom
+
+[33mcommit 87c98419928efb3bea260a479055d8808705515f[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Sep 19 18:32:37 2024 +0200
+
+    Ignore Github Classroom Updates
+
+[33mcommit dfa336d460a6665b614dbc38e8c34f604770b6fb[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Sep 19 18:19:10 2024 +0200
+
+    Más cositas
+
+[33mcommit abb598e666c748034fe512ddbd88404dc943b49b[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Thu Sep 19 17:30:25 2024 +0200
+
+    Cositas
+
+[33mcommit 4ec7be330107d6f1736bc734ac3975ed0917ca96[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Wed Sep 18 20:41:58 2024 +0200
+
+    Ejercicio 3
+
+[33mcommit 034fe3c67a18ac3d78f5a8dbfdbedf738cce1c7c[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Sep 17 19:54:48 2024 +0200
+
+    GG
+
+[33mcommit 5dba460e9cd0d4f44eb2675a64d0ca94fa2e3d44[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Sep 17 17:30:29 2024 +0200
+
+    haha2
+
+[33mcommit dd668dfd6c6966477658e8fadb67a7e2a6c3fbad[m
+Merge: 5f17ccc 009be38
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Sep 17 17:26:14 2024 +0200
+
+    Merge branch 'main' of https://github.com/SerDieFer/2-DAW
+
+[33mcommit 5f17cccb2822d3530f1a930f229144d6e749176a[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Sep 17 17:26:11 2024 +0200
+
+    HAHA
+
+[33mcommit 009be38add7cde2e2a10eafdb23d8f2f34320744[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Tue Sep 17 15:12:08 2024 +0200
+
+    Update README.md
+
+[33mcommit e0a4500e10edcbfffe7df71ab8c34a1ab73ebf70[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Tue Sep 17 15:11:32 2024 +0200
+
+    Update README.md
+
+[33mcommit 1c6065c66c6e776c842dcce60bb64c90b11159be[m
+Author: Sergio Diez Fernández <145585172+SerDieFer@users.noreply.github.com>
+Date:   Tue Sep 17 15:11:18 2024 +0200
+
+    Update README.md
+
+[33mcommit 023263da215c74bfcffad9f6b9cc1ce3c05bfadc[m
+Author: Sergio <serdiefer@alu.edu.gva.es>
+Date:   Tue Sep 17 15:10:09 2024 +0200
+
+    Initial commit
