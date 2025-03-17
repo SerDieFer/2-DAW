@@ -1,0 +1,15 @@
+{
+  "lockfileVersion": 1,
+  "workspaces": {
+    "": {
+      "dependencies": {
+        "git": "^0.1.5",
+      },
+    },
+  },
+  "packages": {
+    "git": ["git@0.1.5", "", { "dependencies": { "mime": "1.2.9" } }, "sha512-N+bfOrXyKMU/fQtCj6D/U9MQOEN0DAA8TLHSLdUQRSWBOkeRvsjJHdrdkvcq05xO7GSDKWc3nDEGoTZ4DfCCSg=="],
+
+    "mime": ["mime@1.2.9", "", {}, "sha512-WiLgbHTIq5AYUvU/Luli4mZ1bUcHpGNHyCsbl+KPMg4zt+XUDpQehWjuBjdLaEvDTinvKj/FgfQt3fPoT7j08g=="],
+  }
+}
