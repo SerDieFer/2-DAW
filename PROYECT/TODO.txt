@@ -1,0 +1,21 @@
+------------- TO DO -------------
+
+
+------------- TO FIX-------------
+
+Contador productos/desafíos fix cuando se filtra.
+
+------------- SECUNDARIO -------------
+
+Mejoras de diseño.
+
+Re-factorizaciones de código y mejoras.
+
+Aplicar AJAX a multiples filtrados, para que se haga sin recarga.
+
+------------- NOT POSSIBLE DUE TO TIME LIMITS -------------
+
+Sistema de monedas interna y compra de productos con esta.
+
+Probar a usar servicios de filtrado mediante API y 
+que el server maneje estas llamadas.                      
