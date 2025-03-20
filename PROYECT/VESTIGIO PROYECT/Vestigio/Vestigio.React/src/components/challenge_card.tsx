@@ -1,6 +1,22 @@
 import React from 'react';
 
-const CardChallenge = ({ challenge, isSolved, isUnlockable, onSolve }) => {
+interface Challenge {
+  id: number;
+  title: string;
+  description: string;
+  expPoints: number;
+  coins: number;
+  images?: string[];
+}
+
+interface CardChallengeProps {
+  challenge: Challenge;
+  isSolved: boolean;
+  isUnlockable: boolean;
+  onSolve: (id: number) => void;
+}
+
+const CardChallenge: React.FC<CardChallengeProps> = ({ challenge, isSolved, isUnlockable, onSolve }) => {
   return (
     <div className="card">
       <div className="card-header">

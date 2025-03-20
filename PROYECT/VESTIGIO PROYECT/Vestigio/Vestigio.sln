@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35514.174
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vestigio", "Vestigio\Vestigio.csproj", "{28A70631-1379-4CD2-BA4D-ABD86942D8C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vestigio.Backend", "Vestigio\Vestigio.Backend.csproj", "{28A70631-1379-4CD2-BA4D-ABD86942D8C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vestigio.Api", "Vestigio.Api\Vestigio.Api.csproj", "{294D6BB9-4C2C-4D60-A28B-FD98872B1FDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{28A70631-1379-4CD2-BA4D-ABD86942D8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28A70631-1379-4CD2-BA4D-ABD86942D8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28A70631-1379-4CD2-BA4D-ABD86942D8C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{294D6BB9-4C2C-4D60-A28B-FD98872B1FDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{294D6BB9-4C2C-4D60-A28B-FD98872B1FDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{294D6BB9-4C2C-4D60-A28B-FD98872B1FDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{294D6BB9-4C2C-4D60-A28B-FD98872B1FDC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

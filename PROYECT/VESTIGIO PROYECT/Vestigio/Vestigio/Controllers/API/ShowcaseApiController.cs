@@ -4,293 +4,277 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Vestigio.Data;
 using Vestigio.Models;
-using Vestigio.Utilities;
-using System.Text.Json;
+using Vestigio.DTO_s;
+using System.ComponentModel.DataAnnotations;
 
 namespace Vestigio.Controllers
 {
-    public class ShowcaseController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ShowcaseApiController : ControllerBase
     {
         private readonly VestigioDbContext _context;
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly ILogger<ShowcaseApiController> _logger;
 
-        public ShowcaseController(VestigioDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
+        public ShowcaseApiController(
+            VestigioDbContext context,
+            UserManager<User> userManager,
+            ILogger<ShowcaseApiController> logger)
         {
             _context = context;
             _userManager = userManager;
-            _signInManager = signInManager;
+            _logger = logger;
         }
 
-        // PRINCIPAL METHOD TO RENDER THE VIEW WITH REACT
-        public IActionResult Index()
+        [HttpGet("challenges")]
+        public async Task<ActionResult<ChallengeResponseDto>> GetChallenges(
+            [FromQuery] ChallengeFilterDto filter)
         {
-            return View();
-        }
-
-        // API TO GET CHALLENGES WITH FILTERING
-        [HttpGet]
-        public async Task<IActionResult> GetChallenges(
-            int? minLevel = null, int? maxLevel = null,
-            int? minXP = null, int? maxXP = null,
-            int? minCoins = null, int? maxCoins = null,
-            string solutionType = null, bool? showSolved = null,
-            string challengeSort = "level_asc")
-        {
-            // BASE DATA
-            int userLevel = 1;
-            List<int> solvedChallenges = new List<int>();
-
-            if (User.Identity.IsAuthenticated)
+            try
             {
-                var user = await _userManager.Users
-                    .Include(u => u.ChallengesResolutions)
-                    .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
+                var user = await GetAuthenticatedUser();
+                var userLevel = user?.Level ?? 1;
+                var solvedChallenges = user?.ChallengesResolutions.Select(cr => cr.ChallengeId).ToList() ?? new List<int>();
 
-                if (user != null)
+                var query = _context.Challenges
+                    .Include(c => c.Images)
+                    .Include(c => c.Product)
+                    .Where(c => c.IsActive)
+                    .AsQueryable();
+
+                query = ApplyChallengeFilters(query, filter, userLevel, solvedChallenges);
+                query = ApplyChallengeSorting(query, filter.Sort, solvedChallenges);
+
+                var challenges = await query.ToListAsync();
+
+                return new ChallengeResponseDto
                 {
-                    userLevel = Math.Clamp(user.Level, 1, 10);
-                    solvedChallenges = user.ChallengesResolutions.Select(cr => cr.ChallengeId).ToList();
-                }
+                    Challenges = challenges.Select(c => new ChallengeDto(c, solvedChallenges.Contains(c.Id))),
+                    Count = challenges.Count,
+                    UserLevel = userLevel
+                };
             }
-
-            var challengesQuery = _context.Challenges
-                .Include(c => c.Images)
-                .Include(c => c.Product)
-                .Where(c => c.IsActive);
-
-            challengesQuery = ApplyChallengeFilters(challengesQuery, minLevel, maxLevel, solutionType,
-                                                  minXP, maxXP, minCoins, maxCoins,
-                                                  userLevel, solvedChallenges, showSolved);
-
-            var filteredChallenges = ApplyChallengeSorting(challengesQuery, challengeSort, solvedChallenges).ToList();
-
-            // ADD INFO ABOUT IF THE CHALLENGE IS SOLVED
-            var result = filteredChallenges.Select(c => new
+            catch (Exception ex)
             {
-                c.Id,
-                c.Title,
-                c.Description,
-                c.RarityLevel,
-                c.ExpPoints,
-                c.Coins,
-                c.SolutionMode,
-                c.IsActive,
-                c.CreationDate,
-                Images = c.Images.Select(i => i.ImagePath),
-                Product = c.Product != null ? new { c.Product.Id, c.Product.Name } : null,
-                IsSolved = solvedChallenges.Contains(c.Id),
-                IsUnlockable = c.RarityLevel <= userLevel,
-                IsPublic = c.IsPublic
-            });
-
-            return Json(result);
+                _logger.LogError(ex, "Error obteniendo desafíos");
+                return StatusCode(500, "Error interno del servidor");
+            }
         }
 
-        // API TO GET PRODUCTS WITH FILTERING
-        [HttpGet]
-        public async Task<IActionResult> GetProducts(
-            int? minProductLevel = null, int? maxProductLevel = null,
-            decimal? minPrice = null, decimal? maxPrice = null,
-            List<int> categories = null, List<string> sizes = null,
-            string productSort = "price_asc")
+        [HttpGet("products")]
+        public async Task<ActionResult<ProductResponseDto>> GetProducts(
+            [FromQuery] ProductFilterDto filter)
         {
-            // BASE DATA
-            List<Product> unlockedProducts = new List<Product>();
-
-            if (User.Identity.IsAuthenticated)
+            try
             {
-                var user = await _userManager.Users
-                    .Include(u => u.UnlockedProducts)
-                        .ThenInclude(up => up.Product)
-                    .Include(u => u.UnlockedProductLevels)
-                    .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
+                var user = await GetAuthenticatedUser();
+                var response = new ProductResponseDto();
 
                 if (user != null)
                 {
-                    // GET UNLOCKED PRODUCTS
                     var unlockedProductIds = user.UnlockedProducts.Select(up => up.ProductId).ToList();
                     var unlockedLevels = user.UnlockedProductLevels.Select(ul => ul.Level).ToList();
 
-                    var productsQuery = _context.Products
+                    var query = _context.Products
                         .Include(p => p.Images)
                         .Include(p => p.ProductSizes)
                         .Include(p => p.ProductCategories)
                             .ThenInclude(pc => pc.Category)
                         .Where(p => p.IsActive &&
-                            (unlockedProductIds.Contains(p.Id) || unlockedLevels.Contains(p.RarityLevel)));
+                            (unlockedProductIds.Contains(p.Id) || unlockedLevels.Contains(p.RarityLevel)))
+                        .AsQueryable();
 
-                    productsQuery = ApplyProductFilters(productsQuery, minPrice, maxPrice, minProductLevel, maxProductLevel, categories, sizes);
-                    productsQuery = ApplyProductSorting(productsQuery, productSort);
+                    query = ApplyProductFilters(query, filter);
+                    query = ApplyProductSorting(query, filter.Sort);
 
-                    unlockedProducts = await productsQuery.ToListAsync();
-                }
-            }
-
-            // FORMAT DATA TO JSON RESPONSE
-            var result = unlockedProducts.Select(p => new
-            {
-                p.Id,
-                p.Name,
-                p.Description,
-                p.Price,
-                p.RarityLevel,
-                p.CreationDate,
-                Images = p.Images.Select(i => i.ImagePath),
-                Sizes = p.ProductSizes.Where(ps => ps.Stock > 0).Select(ps => new
-                {
-                    ps.Id,
-                    ps.Size,
-                    ps.Stock
-                }),
-                Categories = p.ProductCategories.Select(pc => new
-                {
-                    pc.Category.Id,
-                    pc.Category.Name
-                })
-            });
-
-            return Json(result);
-        }
-
-        // API TO GET CATEGORIES
-        [HttpGet]
-        public async Task<IActionResult> GetCategories()
-        {
-            List<Category> categories = new List<Category>();
-
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = await _userManager.GetUserAsync(User);
-                if (user != null)
-                {
-                    var unlockedProductIds = await _context.UserUnlockedProducts
-                        .Where(up => up.UserId == user.Id)
-                        .Select(up => up.ProductId)
+                    response.Products = await query
+                        .Select(p => new ProductDto(p))
                         .ToListAsync();
 
-                    var unlockedLevels = await _context.UserUnlockedProductByLevels
-                        .Where(ul => ul.UserId == user.Id)
-                        .Select(ul => ul.Level)
-                        .ToListAsync();
-
-                    categories = await _context.Categories
-                        .Where(c => c.ProductCategories.Any(pc => 
-                            pc.Product.IsActive && (unlockedProductIds.Contains(pc.ProductId) || 
-                                                   unlockedLevels.Contains(pc.Product.RarityLevel))))
-                        .ToListAsync();
-                }
-            }
-
-            return Json(categories);
-        }
-
-        // API TO GET AVAILABLE SIZES
-        [HttpGet]
-        public async Task<IActionResult> GetSizes()
-        {
-            List<string> sizes = new List<string>();
-
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = await _userManager.GetUserAsync(User);
-                if (user != null)
-                {
-                    var unlockedProductIds = await _context.UserUnlockedProducts
-                        .Where(up => up.UserId == user.Id)
-                        .Select(up => up.ProductId)
-                        .ToListAsync();
-
-                    var unlockedLevels = await _context.UserUnlockedProductByLevels
-                        .Where(ul => ul.UserId == user.Id)
-                        .Select(ul => ul.Level)
-                        .ToListAsync();
-
-                    sizes = await _context.ProductSizes
-                        .Where(ps => ps.Stock > 0 && ps.Product.IsActive && 
-                               (unlockedProductIds.Contains(ps.ProductId) || 
-                                unlockedLevels.Contains(ps.Product.RarityLevel)))
-                        .Select(ps => ps.Size)
+                    response.Categories = await query
+                        .SelectMany(p => p.ProductCategories.Select(pc => pc.Category))
                         .Distinct()
                         .ToListAsync();
-                }
-            }
 
-            return Json(sizes);
+                    response.Sizes = await query
+                        .SelectMany(p => p.ProductSizes
+                            .Where(ps => ps.Stock > 0)
+                            .Select(ps => new ProductSizeDto { Id = ps.Id, Size = ps.Size }))
+                        .GroupBy(ps => ps.Size)
+                        .Select(g => g.First())
+                        .ToListAsync();
+                }
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error obteniendo productos");
+                return StatusCode(500, "Error interno del servidor");
+            }
         }
 
-        // API TO GET USER INFO
-        [HttpGet]
-        public async Task<IActionResult> GetUserInfo()
+        [Authorize]
+        [HttpPost("challenges/{challengeId}/solve")]
+        public async Task<IActionResult> SolveChallenge(int challengeId, [FromBody] ChallengeSolveRequestDto request)
         {
-            if (!User.Identity.IsAuthenticated)
-                return Json(new { isAuthenticated = false, level = 1 });
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var user = await GetAuthenticatedUser();
+                if (user == null) return Unauthorized();
 
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Json(new { isAuthenticated = false, level = 1 });
+                var challenge = await _context.Challenges
+                    .Include(c => c.Product)
+                    .FirstOrDefaultAsync(c => c.Id == challengeId);
 
-            return Json(new { 
-                isAuthenticated = true, 
-                level = user.Level,
-                hasUnlockedProducts = await _context.UserUnlockedProducts.AnyAsync(up => up.UserId == user.Id) ||
-                                    await _context.UserUnlockedProductByLevels.AnyAsync(ul => ul.UserId == user.Id)
-            });
+                if (challenge == null) return NotFound("Desafío no encontrado");
+
+                if (!ValidateChallengeAttempt(user, challenge, request.Password))
+                    return BadRequest("Intento de solución inválido");
+
+                if (user.ChallengesResolutions.Any(cr => cr.ChallengeId == challengeId))
+                    return Conflict("Desafío ya resuelto");
+
+                var resolution = new ChallengeResolution
+                {
+                    UserId = user.Id,
+                    ChallengeId = challengeId,
+                    ResolutionDate = DateTime.UtcNow,
+                    CoinsEarned = challenge.Coins,
+                    PointsEarned = challenge.ExpPoints
+                };
+
+                user.GainExp(challenge.ExpPoints);
+                await _userManager.UpdateAsync(user);
+
+                UnlockRewards(user, challenge);
+                await _context.ChallengeResolutions.AddAsync(resolution);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Ok(new ChallengeSolveResultDto
+                {
+                    NewLevel = user.Level,
+                    EarnedCoins = challenge.Coins,
+                    EarnedXP = challenge.ExpPoints
+                });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error resolviendo desafío");
+                return StatusCode(500, "Error interno del servidor");
+            }
         }
 
-        // CHALLENGES FILTERING METHOD
-        private IQueryable<Challenge> ApplyChallengeFilters(
-            IQueryable<Challenge> query,
-            int? minLevel, int? maxLevel, string solutionType,
-            int? minXP, int? maxXP, int? minCoins, int? maxCoins,
-            int userLevel, List<int> solvedChallenges, bool? showSolved)
+        [Authorize]
+        [HttpPost("cart")]
+        public async Task<ActionResult<CartDto>> AddToCart([FromBody] CartItemRequestDto request)
         {
-            // CUSTOM FILTERS
-            if (minLevel.HasValue) query = query.Where(c => c.RarityLevel >= minLevel);
-            if (maxLevel.HasValue) query = query.Where(c => c.RarityLevel <= maxLevel);
-
-            if (!string.IsNullOrEmpty(solutionType))
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                if (Enum.TryParse<SolutionMode>(solutionType, out var solutionMode))
-                {
-                    query = query.Where(c => c.SolutionMode == solutionMode);
-                }
-            }
+                var user = await GetAuthenticatedUser();
+                if (user == null) return Unauthorized();
 
-            if (minXP.HasValue) query = query.Where(c => c.ExpPoints >= minXP);
-            if (maxXP.HasValue) query = query.Where(c => c.ExpPoints <= maxXP);
-            if (minCoins.HasValue) query = query.Where(c => c.Coins >= minCoins);
-            if (maxCoins.HasValue) query = query.Where(c => c.Coins <= maxCoins);
+                var productSize = await _context.ProductSizes
+                    .Include(ps => ps.Product)
+                    .FirstOrDefaultAsync(ps => ps.Id == request.ProductSizeId);
 
-            if (showSolved.HasValue)
-            {
-                if (showSolved.Value)
+                if (productSize == null) return NotFound("Producto no encontrado");
+                if (productSize.Stock < request.Quantity) return BadRequest("Stock insuficiente");
+
+                var order = await GetOrCreateCartOrder(user.Id);
+
+                var existingItem = order.OrderDetails
+                    .FirstOrDefault(od => od.ProductSizeId == request.ProductSizeId);
+
+                if (existingItem != null)
                 {
-                    query = query.Where(c => solvedChallenges.Contains(c.Id));
+                    if (existingItem.Quantity + request.Quantity > productSize.Stock)
+                        return BadRequest("Cantidad excede el stock disponible");
+
+                    existingItem.Quantity += request.Quantity;
                 }
                 else
                 {
-                    query = query.Where(c => !solvedChallenges.Contains(c.Id));
+                    order.OrderDetails.Add(new OrderDetail
+                    {
+                        ProductSizeId = request.ProductSizeId,
+                        ProductId = productSize.Product.Id,
+                        Quantity = request.Quantity,
+                        Price = productSize.Product.Price
+                    });
                 }
+
+                order.Total = order.OrderDetails.Sum(od => od.Price * od.Quantity);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return new CartDto(order);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error agregando al carrito");
+                return StatusCode(500, "Error interno del servidor");
+            }
+        }
+
+        private async Task<User> GetAuthenticatedUser()
+        {
+            if (!User.Identity.IsAuthenticated) return null;
+
+            return await _userManager.Users
+                .Include(u => u.ChallengesResolutions)
+                .Include(u => u.UnlockedProducts)
+                .Include(u => u.UnlockedProductLevels)
+                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
+        }
+
+        private IQueryable<Challenge> ApplyChallengeFilters(
+            IQueryable<Challenge> query,
+            ChallengeFilterDto filter,
+            int userLevel,
+            List<int> solvedChallenges)
+        {
+            if (filter.MinLevel.HasValue) query = query.Where(c => c.RarityLevel >= filter.MinLevel);
+            if (filter.MaxLevel.HasValue) query = query.Where(c => c.RarityLevel <= filter.MaxLevel);
+
+            if (!string.IsNullOrEmpty(filter.SolutionType) &&
+                Enum.TryParse<SolutionMode>(filter.SolutionType, out var solutionMode))
+            {
+                query = query.Where(c => c.SolutionMode == solutionMode);
+            }
+
+            if (filter.MinXP.HasValue) query = query.Where(c => c.ExpPoints >= filter.MinXP);
+            if (filter.MaxXP.HasValue) query = query.Where(c => c.ExpPoints <= filter.MaxXP);
+            if (filter.MinCoins.HasValue) query = query.Where(c => c.Coins >= filter.MinCoins);
+            if (filter.MaxCoins.HasValue) query = query.Where(c => c.Coins <= filter.MaxCoins);
+
+            if (filter.ShowSolved.HasValue)
+            {
+                query = filter.ShowSolved.Value
+                    ? query.Where(c => solvedChallenges.Contains(c.Id))
+                    : query.Where(c => !solvedChallenges.Contains(c.Id));
             }
 
             return query;
         }
 
-        // CHALLENGES SORTING METHOD
-        private IOrderedQueryable<Challenge> ApplyChallengeSorting(
-            IQueryable<Challenge> query, string sortOrder, List<int> solvedChallenges)
+        private IQueryable<Challenge> ApplyChallengeSorting(
+            IQueryable<Challenge> query,
+            string sortOrder,
+            List<int> solvedChallenges)
         {
             var sortParams = sortOrder.Split('_');
-            string sortBy = sortParams[0];
-            string direction = sortParams.Length > 1 ? sortParams[1] : "asc";
+            var (sortBy, direction) = (sortParams[0], sortParams.Length > 1 ? sortParams[1] : "asc");
 
-            // FIRST UNSOLVED ONES, THE SOLVED TO THE END
-            IOrderedQueryable<Challenge> orderedQuery = query
-                .OrderBy(c => solvedChallenges.Contains(c.Id));
+            var orderedQuery = query.OrderBy(c => solvedChallenges.Contains(c.Id));
 
-            // SORTING
-            return (sortBy, direction) switch
+            return (sortBy.ToLower(), direction.ToLower()) switch
             {
                 ("level", "asc") => orderedQuery.ThenBy(c => c.RarityLevel),
                 ("level", "desc") => orderedQuery.ThenByDescending(c => c.RarityLevel),
@@ -300,221 +284,85 @@ namespace Vestigio.Controllers
             };
         }
 
-        // PRODUCTS FILTERING METHOD
         private IQueryable<Product> ApplyProductFilters(
             IQueryable<Product> query,
-            decimal? minPrice, decimal? maxPrice,
-            int? minProductLevel, int? maxProductLevel,
-            List<int> categories, List<string> sizes)
+            ProductFilterDto filter)
         {
-            if (minPrice.HasValue) query = query.Where(p => p.Price >= minPrice);
-            if (maxPrice.HasValue) query = query.Where(p => p.Price <= maxPrice);
-            if (categories != null && categories.Any())
-                query = query.Where(p => p.ProductCategories.Any(pc => categories.Contains(pc.CategoryId)));
+            if (filter.MinPrice.HasValue) query = query.Where(p => p.Price >= filter.MinPrice);
+            if (filter.MaxPrice.HasValue) query = query.Where(p => p.Price <= filter.MaxPrice);
 
-            if (minProductLevel.HasValue) query = query.Where(c => c.RarityLevel >= minProductLevel);
-            if (maxProductLevel.HasValue) query = query.Where(c => c.RarityLevel <= maxProductLevel);
+            if (filter.Categories?.Any() == true)
+                query = query.Where(p => p.ProductCategories.Any(pc => filter.Categories.Contains(pc.CategoryId)));
 
-            if (sizes != null && sizes.Any())
-            {
-                query = query.Where(p => p.ProductSizes.Any(ps => sizes.Contains(ps.Size) && ps.Stock > 0));
-            }
+            if (filter.MinLevel.HasValue) query = query.Where(p => p.RarityLevel >= filter.MinLevel);
+            if (filter.MaxLevel.HasValue) query = query.Where(p => p.RarityLevel <= filter.MaxLevel);
+
+            if (filter.Sizes?.Any() == true)
+                query = query.Where(p => p.ProductSizes.Any(ps => filter.Sizes.Contains(ps.Size) && ps.Stock > 0));
 
             return query;
         }
 
-        // PRODUCTS SORTING METHOD
         private IQueryable<Product> ApplyProductSorting(IQueryable<Product> query, string sort)
         {
             var sortParams = sort.Split('_');
-            string sortBy = sortParams[0];
-            string direction = sortParams.Length > 1 ? sortParams[1] : "asc";
+            var (sortBy, direction) = (sortParams[0], sortParams.Length > 1 ? sortParams[1] : "asc");
 
-            return sortBy switch
+            return (sortBy.ToLower(), direction.ToLower()) switch
             {
-                "price" => direction == "asc"
-                    ? query.OrderBy(p => p.Price)
-                    : query.OrderByDescending(p => p.Price),
-                "rarity" => direction == "asc"
-                    ? query.OrderBy(p => p.RarityLevel)
-                    : query.OrderByDescending(p => p.RarityLevel),
-                "date" => direction == "asc"
-                    ? query.OrderBy(p => p.CreationDate)
-                    : query.OrderByDescending(p => p.CreationDate),
+                ("price", "asc") => query.OrderBy(p => p.Price),
+                ("price", "desc") => query.OrderByDescending(p => p.Price),
+                ("rarity", "asc") => query.OrderBy(p => p.RarityLevel),
+                ("rarity", "desc") => query.OrderByDescending(p => p.RarityLevel),
+                ("date", "asc") => query.OrderBy(p => p.CreationDate),
+                ("date", "desc") => query.OrderByDescending(p => p.CreationDate),
                 _ => query.OrderBy(p => p.Price)
             };
         }
 
-        // CHALLENGE SOLVING METHOD
-        [HttpPost]
-        public async Task<IActionResult> SolveChallenge(int challengeId, string password)
+        private async Task<Order> GetOrCreateCartOrder(string userId)
         {
-            if (!User.Identity.IsAuthenticated) return Redirect("/Identity/Account/Login");
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound();
+            var order = await _context.Orders
+                .Include(o => o.OrderDetails)
+                .FirstOrDefaultAsync(o => o.UserId == userId && o.OrderStatusId == 1);
 
-            var challenge = await _context.Challenges
-                .Include(c => c.Product)
-                .FirstOrDefaultAsync(c => c.Id == challengeId);
-
-            if (challenge == null) return NotFound();
-
-            if (!ValidateChallengeAttempt(user, challenge, password))
+            if (order == null)
             {
-                return Json(new { success = false, message = "No se pudo resolver el desafío" });
+                order = new Order
+                {
+                    UserId = userId,
+                    CreationDate = DateTime.UtcNow,
+                    OrderStatusId = 1,
+                    OrderDetails = new List<OrderDetail>()
+                };
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
             }
 
-            var resolution = new ChallengeResolution
-            {
-                UserId = user.Id,
-                ChallengeId = challengeId,
-                ResolutionDate = DateTime.UtcNow,
-                CoinsEarned = challenge.Coins,
-                PointsEarned = challenge.ExpPoints
-            };
-
-            user.GainExp(challenge.ExpPoints);
-            await _userManager.UpdateAsync(user);
-            await _signInManager.RefreshSignInAsync(user);
-
-            UnlockRewards(user, challenge);
-            _context.ChallengeResolutions.Add(resolution);
-            await _context.SaveChangesAsync();
-
-            return Json(new { success = true, message = "¡Desafío resuelto!", userLevel = user.Level });
+            return order;
         }
 
-        // CHALLENGE ATTEMPT VALIDATION - Mantener igual
         private bool ValidateChallengeAttempt(User user, Challenge challenge, string password)
         {
             if (user == null || challenge == null) return false;
             if (challenge.RarityLevel > user.Level) return false;
             if (challenge.SolutionMode == SolutionMode.Password && challenge.Password != password) return false;
             if (challenge.SolutionMode == SolutionMode.TimeBased && !challenge.IsPublic) return false;
-            if (user.ChallengesResolutions.Any(cr => cr.ChallengeId == challenge.Id)) return false;
 
             return true;
         }
 
-        // REWARDS UNLOCKING METHOD - Mantener igual
         private void UnlockRewards(User user, Challenge challenge)
         {
-            if (challenge.ProductId.HasValue && !user.UnlockedProducts.Any(up => up.ProductId == challenge.ProductId))
+            if (challenge.ProductId.HasValue &&
+                !user.UnlockedProducts.Any(up => up.ProductId == challenge.ProductId))
             {
                 user.UnlockedProducts.Add(new UserUnlockedProduct { ProductId = challenge.ProductId.Value });
             }
-            else if (challenge.ProductLevel.HasValue && !user.UnlockedProductLevels.Any(ul => ul.Level == challenge.ProductLevel))
+            else if (challenge.ProductLevel.HasValue &&
+                     !user.UnlockedProductLevels.Any(ul => ul.Level == challenge.ProductLevel))
             {
                 user.UnlockedProductLevels.Add(new UserUnlockedProductByLevel { Level = challenge.ProductLevel.Value });
-            }
-        }
-
-        // CART ADD METHOD - REACT
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> AddToCart(int productSizeId, int quantity)
-        {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
-            {
-                var userId = _userManager.GetUserId(User);
-                if (userId == null)
-                    return Json(new { success = false, message = "Usuario no autenticado", redirect = "/Identity/Account/Login" });
-
-                // Se obtiene el pedido actual desde la sesión
-                var currentOrderId = HttpContext.Session.GetInt32("CurrentOrderId");
-                Order order;
-                if (currentOrderId == null)
-                {
-                    // No existe pedido en la sesión: se crea uno nuevo
-                    order = new Order
-                    {
-                        UserId = userId,
-                        CreationDate = DateTime.Now,
-                        OrderStatusId = 1, // Pending
-                        OrderDetails = new List<OrderDetail>()
-                    };
-                    _context.Orders.Add(order);
-                    await _context.SaveChangesAsync();
-
-                    // Se guarda el ID del nuevo pedido en la sesión
-                    HttpContext.Session.SetInt32("CurrentOrderId", order.Id);
-                }
-                else
-                {
-                    // Se intenta cargar el pedido pendiente de la sesión
-                    order = await _context.Orders
-                        .Include(o => o.OrderDetails)
-                        .FirstOrDefaultAsync(o => o.Id == currentOrderId.Value && o.OrderStatusId == 1);
-
-                    if (order == null)
-                    {
-                        // En caso de que exista la variable de sesión pero el pedido ya no esté pendiente,
-                        // se crea un nuevo pedido.
-                        order = new Order
-                        {
-                            UserId = userId,
-                            CreationDate = DateTime.Now,
-                            OrderStatusId = 1,
-                            OrderDetails = new List<OrderDetail>()
-                        };
-                        _context.Orders.Add(order);
-                        await _context.SaveChangesAsync();
-                        HttpContext.Session.SetInt32("CurrentOrderId", order.Id);
-                    }
-                }
-
-                // Se carga la talla del producto y se valida el stock
-                var productSize = await _context.ProductSizes
-                    .Include(ps => ps.Product)
-                    .FirstOrDefaultAsync(ps => ps.Id == productSizeId);
-
-                if (productSize == null)
-                {
-                    return Json(new { success = false, message = "Producto no encontrado." });
-                }
-
-                if (productSize.Stock < quantity)
-                {
-                    return Json(new { success = false, message = $"Stock insuficiente. Disponible: {productSize.Stock}" });
-                }
-
-                // Se calcula la cantidad ya agregada al carrito para esta talla
-                int existingQuantity = order.OrderDetails
-                    .Where(od => od.ProductSizeId == productSizeId)
-                    .Sum(od => od.Quantity);
-
-                if (existingQuantity + quantity > productSize.Stock)
-                {
-                    return Json(new { success = false, message = $"Límite de stock alcanzado. Disponible: {productSize.Stock - existingQuantity}" });
-                }
-
-                // Se agrega el detalle o se actualiza si ya existe
-                var existingDetail = order.OrderDetails.FirstOrDefault(od => od.ProductSizeId == productSizeId);
-                if (existingDetail != null)
-                {
-                    existingDetail.Quantity += quantity;
-                    existingDetail.Price = productSize.Product.Price * existingDetail.Quantity;
-                }
-                else
-                {
-                    order.OrderDetails.Add(new OrderDetail
-                    {
-                        ProductSizeId = productSizeId,
-                        ProductId = productSize.Product.Id,
-                        Quantity = quantity,
-                        Price = productSize.Product.Price
-                    });
-                }
-                order.Total = order.OrderDetails.Sum(od => od.Price * od.Quantity);
-                await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
-                return Json(new { success = true, message = "Producto agregado al carrito", redirect = "/Cart/Index" });
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                return Json(new { success = false, message = "Error al procesar la solicitud" });
             }
         }
     }

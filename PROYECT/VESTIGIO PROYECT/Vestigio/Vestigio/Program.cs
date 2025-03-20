@@ -52,7 +52,12 @@ var dbFileName = "aspnet-Vestigio-592bae53-5786-46d1-acfd-d411bbb0174c.mdf"; // 
 var dbPath = Path.Combine(dbFolderPath, dbFileName);
 
 // BUILD THE CONNECTION STRING USING THE ABSOLUTE ROUTE
-var connectionString = $"Server=(localdb)\\MSSQL15;AttachDbFileName={dbPath};Database=aspnet-Vestigio;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+        // CASA - CLASE
+// var connectionString = $"Server=(localdb)\\MSSQL15;AttachDbFileName={dbPath};Database=aspnet-Vestigio;Trusted_Connection=True;MultipleActiveResultSets=true";
+
+        // EMPRESA?
+var connectionString = $"Server=(localdb)\\MSSQLLocalDB;AttachDbFileName={dbPath};Database=aspnet-Vestigio;Trusted_Connection=True;MultipleActiveResultSets=true";
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 

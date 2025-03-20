@@ -363,7 +363,6 @@ namespace Vestigio.Controllers
             }
         }
 
-
         // CART ADD METHOD
         // Agrega un producto al carrito
         [HttpPost]
